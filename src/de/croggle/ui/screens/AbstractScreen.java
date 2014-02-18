@@ -217,7 +217,8 @@ public abstract class AbstractScreen implements Screen {
 		} catch (GdxRuntimeException ex) {
 			System.err.println("Couldn't load background \"" + backgroundPath
 					+ "\". Falling back to standard.");
-			setBackground("textures/swamp.png");
+			setBackground(BackendHelper.getAssetDirPath()
+					+ "textures/swamp.png");
 			return;
 		}
 		AssetManager manager = de.croggle.data.AssetManager.getInstance();
