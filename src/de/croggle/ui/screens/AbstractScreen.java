@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import de.croggle.AlligatorApp;
+import de.croggle.backends.BackendHelper;
 import de.croggle.data.AssetManager;
 
 /**
