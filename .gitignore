@@ -1,0 +1,11 @@
+*.dex
+*.class
+*.apk
+
+bin/
+gen/
+proguard/
+
+local.properties
+assets/textures/
+!tools/**/*.jar
