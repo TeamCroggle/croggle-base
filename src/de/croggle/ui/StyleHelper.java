@@ -53,8 +53,8 @@ public class StyleHelper {
 			instance.atlas = AssetManager.getInstance().get(
 					getAssetDirPath() + "textures/pack.atlas",
 					TextureAtlas.class);
-			instance.skin = new Skin(Gdx.files.internal("skin.json"),
-					instance.atlas);
+			instance.skin = new Skin(Gdx.files.internal(getAssetDirPath()
+					+ "skin.json"), instance.atlas);
 			instance.generator = new FreeTypeFontGenerator(
 					Gdx.files.internal(getAssetDirPath()
 							+ "fonts/rawengulk_sans.otf"));
