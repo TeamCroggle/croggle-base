@@ -7,6 +7,11 @@ package de.croggle.backends.sqlite;
 public interface DatabaseHelper {
 
 	/**
+	 * The version number of the database.
+	 */
+	public static final int DATABASE_Version = 2;
+
+	/**
 	 * The name of the database.
 	 */
 	public static final String DATABASE_NAME = "persistenceDB";
