@@ -7,9 +7,9 @@ public interface Cursor {
 
 	int getColumnIndex(String name);
 
-	String getString(int index);
+	String getString(int columnIndex);
 
 	int getInt(int columnIndex);
 
-	float getFloat(int column);
+	float getFloat(int columnIndex);
 }
