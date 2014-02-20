@@ -211,8 +211,7 @@ public abstract class AbstractScreen implements Screen {
 			// stupid libgdx (docu), calling getFileHandle would already throw
 			// an exception
 			FileHandle h = Gdx.files.internal(backgroundPath);
-			if (!h.exists()) {
-				System.err.println("Libgdx promise not fulfilled");
+			if (!h.exists() || h.isDirectory()) {
 				throw new GdxRuntimeException("Background not found");
 			}
 		} catch (GdxRuntimeException ex) {

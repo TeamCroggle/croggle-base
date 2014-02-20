@@ -1,6 +1,5 @@
 package de.croggle.game.level;
 
-
 import java.util.List;
 
 import de.croggle.AlligatorApp;
@@ -11,18 +10,18 @@ import de.croggle.game.board.Board;
  * This class represents the concept of a level within the game.
  */
 public abstract class Level {
-	private int levelIndex;
-	private int packageIndex;
+	private final int levelIndex;
+	private final int packageIndex;
 
-	private Board initialBoard;
-	private Board goalBoard;
-	private List<String> animation;
-	private String hint;
-	private String description;
-	private int abortSimulationAfter;
+	private final Board initialBoard;
+	private final Board goalBoard;
+	private final List<String> animation;
+	private final String hint;
+	private final String description;
+	private final int abortSimulationAfter;
 	private boolean unlocked;
 	private boolean solved;
-	private boolean showObjectBar;
+	private final boolean showObjectBar;
 
 	/**
 	 * Creates a new level with the given parameters.
@@ -104,7 +103,7 @@ public abstract class Level {
 	 * @return true if the level has a simulation, otherwise false
 	 */
 	public boolean hasAnimation() {
-		return(!animation.get(0).equals(""));
+		return animation.size() != 0;
 	}
 
 	/**

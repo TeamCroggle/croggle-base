@@ -22,8 +22,8 @@ public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 	private static AssetManager assetManager;
 	private Pixmap uncoloredColor;
 	private Pixmap uncoloredPattern;
-	private Pixmap[] colors;
-	private Pixmap[] patterns;
+	private final Pixmap[] colors;
+	private final Pixmap[] patterns;
 
 	private AssetManager() {
 		colors = new Pixmap[Color.MAX_COLORS];

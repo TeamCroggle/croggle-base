@@ -231,9 +231,14 @@ class LevelLoadHelper {
 	private static List<String> getAnimation(JsonValue json) {
 		List<String> animations = new LinkedList<String>();
 
-		for (int i = 0; i < json.get("animation").size; i++) {
+		JsonValue animationPaths = json.get("animation");
+		for (int i = 0; i < animationPaths.size; i++) {
+			if (animationPaths.getString(i).equals("")) {
+				System.err.println("Warning: Empty animation path");
+				continue;
+			}
 			animations.add(BackendHelper.getAssetDirPath()
-					+ json.get("animation").getString(i));
+					+ animationPaths.getString(i));
 		}
 
 		return animations;

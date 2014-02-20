@@ -2,10 +2,8 @@ package de.croggle.ui.screens;
 
 import static de.croggle.backends.BackendHelper.getAssetDirPath;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -14,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.TimeUtils;
 
 import de.croggle.AlligatorApp;
 import de.croggle.backends.BackendHelper;
@@ -51,14 +48,13 @@ public class SimulationModeScreen extends AbstractScreen implements
 	private ImageButton zoomOut;
 	private ImageButton play;
 
-	private Timer timer;
 	private boolean isSimulating;
 	private long automaticSimulationFrequency = 3000;
 
 	private static final long MAX_AUTOMATIC_SIMULATION_DELAY = 6000;
 	private static final long MIN_AUTOMATIC_SIMULATION_DELAY = 1000;
 
-	private long lastSimulation = TimeUtils.millis();
+	private final StepAction stepper;
 
 	/**
 	 * Creates the screen of a level within the simulation mode. This is the
@@ -93,6 +89,8 @@ public class SimulationModeScreen extends AbstractScreen implements
 		fillTable();
 
 		game.getSettingController().addSettingChangeListener(this);
+		stepper = new StepAction();
+		stage.addAction(stepper);
 	}
 
 	@Override
@@ -171,7 +169,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 				if (isSimulating) {
 					stopAutomaticSimulation();
 				} else {
-					startAutomaticSimulation(0);
+					startAutomaticSimulation(automaticSimulationFrequency);
 				}
 			}
 		});
@@ -191,8 +189,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 						automaticSimulationFrequency = newFrequency;
 						if (isSimulating) {
 							stopAutomaticSimulation();
-							long delay = automaticSimulationFrequency
-									- (TimeUtils.millis() - lastSimulation);
+							long delay = automaticSimulationFrequency;
 							startAutomaticSimulation(Math.max(0, delay));
 						}
 					}
@@ -279,42 +276,58 @@ public class SimulationModeScreen extends AbstractScreen implements
 	}
 
 	private void startAutomaticSimulation(long delay) {
-		if (timer == null) {
+		stepper.setDelay(delay);
+		if (!isSimulating) {
 			play.setStyle(StyleHelper.getInstance().getImageButtonStyleRound(
 					"widgets/icon-pause"));
-			timer = new Timer();
-			timer.schedule(new StepTimer(), delay, automaticSimulationFrequency);
 			isSimulating = true;
 		}
 
 	}
 
 	private void stopAutomaticSimulation() {
-		if (timer != null) {
+		if (isSimulating) {
 			play.setStyle(StyleHelper.getInstance().getImageButtonStyleRound(
 					"widgets/icon-next"));
-			timer.cancel();
-			timer = null;
 			isSimulating = false;
 
 		}
 
 	}
 
-	private class StepTimer extends TimerTask {
+	/**
+	 * 
+	 * This cannot be a Timer, for on desktop, the GLContext is not available in
+	 * the Timer thread. Since the task evaluates and causes BoardActors to
+	 * change/update, possibly causing new Textures or so to be needed, the
+	 * GLContext is mandatory.
+	 */
+	private class StepAction extends Action {
+		private float delay;
+		private float waited = 0;
+
+		public void setDelay(long d) {
+			delay = d / 1000;
+		}
 
 		@Override
-		public void run() {
-			try {
-				gameController.evaluateStep();
-				lastSimulation = TimeUtils.millis();
-			} catch (ColorOverflowException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (AlligatorOverflowException e) {
-				// TODO Auto-generated catch block//
-				e.printStackTrace();
+		public boolean act(float delta) {
+			if (SimulationModeScreen.this.isSimulating) {
+				waited += delta;
+				if (waited >= delay) {
+					try {
+						gameController.evaluateStep();
+					} catch (ColorOverflowException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (AlligatorOverflowException e) {
+						// TODO Auto-generated catch block//
+						e.printStackTrace();
+					}
+					waited -= delay;
+				}
 			}
+			return false;
 		}
 	}
 
