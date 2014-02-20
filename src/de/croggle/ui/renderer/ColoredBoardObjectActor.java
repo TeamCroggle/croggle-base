@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import de.croggle.backends.BackendHelper;
 import de.croggle.data.AssetManager;
 import de.croggle.game.board.ColoredBoardObject;
 
@@ -27,7 +28,8 @@ public class ColoredBoardObjectActor extends BoardObjectActor {
 		AssetManager assetManager = AssetManager.getInstance();
 		TextureAtlas tex;
 		try {
-			tex = assetManager.get("textures/pack.atlas", TextureAtlas.class);
+			tex = assetManager.get(BackendHelper.getAssetDirPath()
+					+ "textures/pack.atlas", TextureAtlas.class);
 		} catch (GdxRuntimeException ex) {
 			throw new IllegalStateException(
 					"Could not access atlas containing necessary textures. Make sure it is loaded before instantiating BoardObjectActors.");

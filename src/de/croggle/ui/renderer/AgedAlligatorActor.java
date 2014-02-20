@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import de.croggle.backends.BackendHelper;
 import de.croggle.data.AssetManager;
 import de.croggle.game.board.AgedAlligator;
 
@@ -14,7 +15,7 @@ import de.croggle.game.board.AgedAlligator;
  */
 public class AgedAlligatorActor extends BoardObjectActor {
 
-	private TextureRegion foreground;
+	private final TextureRegion foreground;
 
 	/**
 	 * Creates a new actor.
@@ -28,7 +29,8 @@ public class AgedAlligatorActor extends BoardObjectActor {
 
 		TextureAtlas tex;
 		try {
-			tex = assetManager.get("textures/pack.atlas", TextureAtlas.class);
+			tex = assetManager.get(BackendHelper.getAssetDirPath()
+					+ "textures/pack.atlas", TextureAtlas.class);
 		} catch (GdxRuntimeException ex) {
 			throw new IllegalStateException(
 					"Could not access atlas containing necessary textures. Make sure it is loaded before instantiating BoardObjectActors.");
@@ -46,7 +48,8 @@ public class AgedAlligatorActor extends BoardObjectActor {
 		Color c = batch.getColor();
 		Color n = getColor();
 		batch.setColor(n.r, n.g, n.b, n.a * parentAlpha);
-		batch.draw(foreground, getX(), getY(), getWidth() * getScaleX(), getHeight() * getScaleY());
+		batch.draw(foreground, getX(), getY(), getWidth() * getScaleX(),
+				getHeight() * getScaleY());
 		batch.flush();
 		batch.setColor(c);
 	}

@@ -9,13 +9,14 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 import de.croggle.AlligatorApp;
+import de.croggle.backends.BackendHelper;
 
 /**
  * Controls the overview over the different level packages.
  */
 public class LevelPackagesController {
 
-	private AlligatorApp game;
+	private final AlligatorApp game;
 	private List<LevelPackage> levelPackages;
 
 	/**
@@ -56,7 +57,8 @@ public class LevelPackagesController {
 	 * 
 	 */
 	private void initialiseLevelPackages() {
-		FileHandle handle = Gdx.files.internal("json/levels");
+		FileHandle handle = Gdx.files.internal(BackendHelper.getAssetDirPath()
+				+ "json/levels");
 		FileHandle[] packageNames = handle.list();
 		int numberOfPackages = packageNames.length;
 		levelPackages = new ArrayList<LevelPackage>();
@@ -72,12 +74,14 @@ public class LevelPackagesController {
 	 * @return the Level Package belonging to the given index.
 	 */
 	private LevelPackage loadPackage(int packageIndex) {
-		FileHandle handle = Gdx.files.internal("json/levels/"
-				+ String.format("%02d", packageIndex) + "/package.json");
+		FileHandle handle = Gdx.files.internal(BackendHelper.getAssetDirPath()
+				+ "json/levels/" + String.format("%02d", packageIndex)
+				+ "/package.json");
 		JsonReader reader = new JsonReader();
 		JsonValue de_croggle = reader.parse(handle.readString());
 		JsonValue json = de_croggle.child().getChild("packages");
-		String animation = json.getString("animation");
+		String animation = BackendHelper.getAssetDirPath()
+				+ json.getString("animation");
 		Boolean hasAnimation = false;
 		if (!animation.equals("")) {
 			hasAnimation = true;
@@ -85,9 +89,9 @@ public class LevelPackagesController {
 
 		LevelPackage levelPackage = new LevelPackage(packageIndex,
 				json.getString("name"), json.getString("description"),
-				json.getString("banner"), hasAnimation,
-				json.getString("animation"),
-				json.getString("design"));
+				BackendHelper.getAssetDirPath() + json.getString("banner"),
+				hasAnimation, animation, BackendHelper.getAssetDirPath()
+						+ json.getString("design"));
 		return levelPackage;
 	}
 

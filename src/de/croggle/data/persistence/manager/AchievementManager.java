@@ -106,14 +106,17 @@ public class AchievementManager extends TableManager {
 				+ KEY_PROFILE_NAME + " = '" + profileName + "'";
 		Cursor cursor = database.rawQuery(selectQuery, null);
 		if (cursor.moveToFirst()) {
+			Integer unlockedFound;
 			do {
 				int achievementId = cursor.getInt(cursor
 						.getColumnIndex(KEY_ACHIEVEMENT_ID));
 				int index = cursor.getInt(cursor
 						.getColumnIndex(KEY_ACHIEVEMENT_INDEX));
-				if (unlockedAchievements.put(achievementId, index) != null) {
+				if ((unlockedFound = unlockedAchievements.put(achievementId,
+						index)) != null) {
 					throw new IllegalStateException(
-							"Database contains multiple lines with same achievement id");
+							"Database contains multiple lines with same achievement id: "
+									+ unlockedFound);
 				}
 			} while (cursor.moveToNext());
 		}

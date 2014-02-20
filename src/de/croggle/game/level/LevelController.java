@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import de.croggle.AlligatorApp;
+import de.croggle.backends.BackendHelper;
 
 /**
  * Controls the content of a level package.
@@ -73,12 +74,15 @@ public class LevelController {
 	private void getLevelFromPackage() {
 		FileHandle dirHandle;
 		if (Gdx.app.getType() == ApplicationType.Android) {
-			dirHandle = Gdx.files.internal("json/levels/"
-					+ String.format("%02d", this.packageIndex));
+			dirHandle = Gdx.files
+					.internal(BackendHelper.getAssetDirPath() + "json/levels/"
+							+ String.format("%02d", this.packageIndex));
 		} else {
-			// ApplicationType.Desktop ..
-			dirHandle = Gdx.files.internal("./assets/json/levels/"
-					+ String.format("%02d", this.packageIndex));
+			// ApplicationType.Desktop ...
+			// TODO not necessary any more, it seems
+			dirHandle = Gdx.files
+					.internal(BackendHelper.getAssetDirPath() + "json/levels/"
+							+ String.format("%02d", this.packageIndex));
 		}
 		FileHandle[] files = dirHandle.list();
 		String[] levelNames = new String[files.length];

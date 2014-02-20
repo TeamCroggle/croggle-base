@@ -59,8 +59,9 @@ public class LevelPackagesScreen extends AbstractScreen {
 				levelImage = new MaskedImage(pack.getDesign(),
 						getAssetDirPath() + "textures/package-mask.png");
 			} catch (GdxRuntimeException ex) {
-				levelImage = new MaskedImage("textures/swamp.png",
-						getAssetDirPath() + "textures/package-mask.png");
+				levelImage = new MaskedImage(getAssetDirPath()
+						+ "textures/swamp.png", getAssetDirPath()
+						+ "textures/package-mask.png");
 			}
 
 			levelImage.addListener(new OpenPackageListener(pack

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 import de.croggle.AlligatorApp;
+import de.croggle.backends.BackendHelper;
 import de.croggle.game.Color;
 import de.croggle.game.board.Board;
 import de.croggle.util.convert.JsonToAlligator;
@@ -69,8 +70,8 @@ class LevelLoadHelper {
 	 */
 	private static JsonValue getJson(int packageIndex, int levelIndex) {
 
-		FileHandle handle = Gdx.files.internal("json/levels/"
-				+ String.format("%02d", packageIndex)
+		FileHandle handle = Gdx.files.internal(BackendHelper.getAssetDirPath()
+				+ "json/levels/" + String.format("%02d", packageIndex)
 				+ String.format("/%02d", levelIndex) + ".json");
 		JsonReader reader = new JsonReader();
 		JsonValue de_croggle = reader.parse(handle.readString());
@@ -112,8 +113,8 @@ class LevelLoadHelper {
 			level = new ColorEditLevel(levelIndex, packageIndex,
 					JsonToAlligator.convertBoard(initialBoard),
 					JsonToAlligator.convertBoard(goalBoard),
-					getAnimation(json), userColors, blockedColors,
-					json.get("hints").getString(0),
+					getAnimation(json), userColors, blockedColors, json.get(
+							"hints").getString(0),
 					json.getString("description"),
 					json.getInt("abort simulation after"));
 		} else if (leveltype.equals("term edit")) {
@@ -129,8 +130,8 @@ class LevelLoadHelper {
 			level = new TermEditLevel(levelIndex, packageIndex,
 					JsonToAlligator.convertBoard(initialBoard),
 					JsonToAlligator.convertBoard(goalBoard),
-					getAnimation(json), userColors, blockedColors,
-					json.get("hints").getString(0),
+					getAnimation(json), userColors, blockedColors, json.get(
+							"hints").getString(0),
 					json.getString("description"),
 					json.getInt("abort simulation after"));
 
@@ -161,7 +162,8 @@ class LevelLoadHelper {
 		Board[] answers = getAnswersfromJson(data.get("answers"));
 		Level level = new MultipleChoiceLevel(levelIndex, packageIndex,
 				JsonToAlligator.convertBoard(initialBoard),
-				answers[correctAnswer], getAnimation(json), json.get("hints").getString(0), json.getString("description"),
+				answers[correctAnswer], getAnimation(json), json.get("hints")
+						.getString(0), json.getString("description"),
 				json.getInt("abort simulation after"), answers, correctAnswer);
 		return level;
 	}
@@ -225,16 +227,17 @@ class LevelLoadHelper {
 		return color;
 
 	}
-	
-	private static List<String> getAnimation(JsonValue json){
+
+	private static List<String> getAnimation(JsonValue json) {
 		List<String> animations = new LinkedList<String>();
-		
-		for(int i = 0; i < json.get("animation").size; i++ ){
-			animations.add(json.get("animation").getString(i));
+
+		for (int i = 0; i < json.get("animation").size; i++) {
+			animations.add(BackendHelper.getAssetDirPath()
+					+ json.get("animation").getString(i));
 		}
-		
+
 		return animations;
-		
+
 	}
 
 }
