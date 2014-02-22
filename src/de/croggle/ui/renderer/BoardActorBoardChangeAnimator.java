@@ -48,7 +48,8 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		BoardObjectActor actor = b.getLayout().getActor(recoloredObject);
 		if (actor != null) {
 			/*
-			 * TODO unnecessary if recolor events were fired at the right moment
+			 * TODO unnecessary "if" if recolor events were fired at the right
+			 * moment
 			 */
 			ColoredBoardObjectActor cboa = (ColoredBoardObjectActor) actor;
 			cboa.invalidate();
@@ -103,10 +104,9 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 				BoardObjectActor eatenActor;
 				for (InternalBoardObject eaten : eatenLst) {
 					eatenActor = b.getLayout().getActor(eaten);
-					b.getLayout().removeActor(eatenActor);
-					b.removeFromWorld(eatenActor);
+					removeActor(eatenActor);
 				}
-				applyDeltasAnimated(b.getLayout().getDeltasToFix());
+				fixLayout();
 			}
 		});
 	}
@@ -138,8 +138,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			@Override
 			protected void end() {
 				BoardObjectActor actor = b.getLayout().getActor(object);
-				b.getLayout().removeActor(actor);
-				b.removeFromWorld(actor);
+				removeActor(actor);
 				applyDeltasAnimated(b.getLayout().getDeltasToFix());
 			}
 		});
@@ -169,14 +168,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		if (firstRebuild) {
 			firstRebuild = false;
 		} else {
-			// dirrrty flash implementation
-			Image flash = new Image(AssetManager.getInstance().getColorTexture(
-					Color.uncolored()));
-			flash.setFillParent(true);
-			b.addToActor(flash);
-			flash.validate();
-			flash.addAction(Actions.alpha(0.f, 0.4f));
-			flash.addAction(Actions.delay(0.4f, Actions.removeActor()));
+			flash();
 		}
 
 		b.clearWorld();
@@ -185,6 +177,16 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			b.addToWorld(actor);
 		}
 		b.updateListeners();
+	}
+
+	private void flash() {
+		Image flash = new Image(AssetManager.getInstance().getColorTexture(
+				Color.uncolored()));
+		flash.setFillParent(true);
+		b.addToActor(flash);
+		flash.validate();
+		flash.addAction(Actions.alpha(0.f, 0.4f));
+		flash.addAction(Actions.delay(0.4f, Actions.removeActor()));
 	}
 
 	/**
@@ -316,25 +318,30 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	@Override
 	public void onObjectPlaced(InternalBoardObject placed) {
-		applyDeltasAnimated(b.getLayout().getDeltasToFix());
-		b.boardSizeChanged();
+		fixLayout();
 	}
 
 	@Override
 	public void onObjectRemoved(InternalBoardObject removed) {
 		BoardObjectActor removedActor = b.getLayout().getActor(removed);
 		if (removedActor != null) {
-			b.removeFromWorld(removedActor);
-			b.getLayout().removeActor(removedActor);
-			applyDeltasAnimated(b.getLayout().getDeltasToFix());
-			b.boardSizeChanged();
+			removeActor(removedActor);
+			fixLayout();
 		}
 	}
 
 	@Override
 	public void onObjectMoved(InternalBoardObject moved) {
+		fixLayout();
+	}
+
+	void fixLayout() {
 		applyDeltasAnimated(b.getLayout().getDeltasToFix());
 		b.boardSizeChanged();
 	}
 
+	void removeActor(BoardObjectActor a) {
+		b.removeFromWorld(a);
+		b.getLayout().removeActor(a);
+	}
 }

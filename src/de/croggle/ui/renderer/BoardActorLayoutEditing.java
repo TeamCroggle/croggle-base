@@ -373,7 +373,7 @@ class BoardActorLayoutEditing {
 				parent.removeChild(target);
 				target.setParent(null);
 			}
-			messenger.notifyObjectRemoved(target);
+			b.fixLayout();
 		}
 
 		public boolean isDraggedOver() {
@@ -461,7 +461,6 @@ class BoardActorLayoutEditing {
 						placeHolderActor.setHeight(targetActor.getHeight());
 						InternalBoardObject placeholder = placeHolderActor
 								.getBoardObject();
-						boolean moved = placeholder.getParent() != null;
 						extractBoardObject(placeholder);
 
 						if (x < left) {
@@ -479,11 +478,7 @@ class BoardActorLayoutEditing {
 							placeholderIsLeft = false;
 						}
 
-						if (moved) {
-							messenger.notifyObjectMoved(placeholder);
-						} else {
-							messenger.notifyObjectPlaced(placeholder);
-						}
+						b.fixLayout();
 						placeholderAlreadyVisible = true;
 					}
 				} else {
@@ -505,7 +500,7 @@ class BoardActorLayoutEditing {
 					placeholder.getParent().removeChild(placeholder);
 					placeholder.setParent(null);
 				}
-				messenger.notifyObjectRemoved(placeholder);
+				b.fixLayout();
 			}
 			placeholderAlreadyVisible = false;
 		}

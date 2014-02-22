@@ -217,6 +217,10 @@ public class BoardActor extends Group implements SettingChangeListener {
 		}
 	}
 
+	void fixLayout() {
+		boardAnimator.fixLayout();
+	}
+
 	public Vector2 boardActorToWorldCoordinates(Vector2 coords) {
 		return world.parentToLocalCoordinates(coords);
 	}
