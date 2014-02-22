@@ -17,6 +17,7 @@ import de.croggle.game.ColorController;
 import de.croggle.game.board.ColoredBoardObject;
 import de.croggle.game.event.BoardEventMessenger;
 import de.croggle.ui.StyleHelper;
+import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
 
 /**
  * An actor displaying a set of colors that can be tapped to set a BoardObject's

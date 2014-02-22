@@ -17,6 +17,9 @@ import de.croggle.game.ColorController;
 import de.croggle.game.board.Board;
 import de.croggle.game.event.BoardEventListener;
 import de.croggle.game.event.BoardEventMessenger;
+import de.croggle.ui.renderer.layout.ActorLayout;
+import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
+import de.croggle.ui.renderer.layout.ActorLayoutStatistics;
 import de.croggle.ui.renderer.objectactors.ColoredBoardObjectActor;
 
 /**

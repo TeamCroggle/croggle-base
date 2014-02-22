@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 import de.croggle.game.board.Board;
 import de.croggle.game.board.BoardObject;
+import de.croggle.ui.renderer.layout.ActorLayout;
+import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
 
 class BoardActorZoomAndPan extends ActorGestureListener {
 	private final BoardActor b;

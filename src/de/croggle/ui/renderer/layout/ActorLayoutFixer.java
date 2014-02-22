@@ -1,4 +1,4 @@
-package de.croggle.ui.renderer;
+package de.croggle.ui.renderer.layout;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -28,8 +28,8 @@ import de.croggle.game.level.LevelPackage;
 import de.croggle.game.level.LevelPackagesController;
 import de.croggle.ui.StyleHelper;
 import de.croggle.ui.actors.IngameMenuDialog;
-import de.croggle.ui.renderer.ActorLayoutConfiguration;
 import de.croggle.ui.renderer.BoardActor;
+import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
 
 /**
  * Screen which is shown during the evaluation-phase of a level. For reference

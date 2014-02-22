@@ -21,6 +21,8 @@ import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.operations.FlattenTree;
 import de.croggle.game.event.BoardEventListener;
+import de.croggle.ui.renderer.layout.ActorDelta;
+import de.croggle.ui.renderer.layout.ActorLayout;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
@@ -178,7 +180,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		}
 
 		b.clearWorld();
-		b.setLayout(ActorLayoutBuilder.build(board, b.getLayoutConfiguration()));
+		b.setLayout(ActorLayout.create(board, b.getLayoutConfiguration()));
 		for (BoardObjectActor actor : b.getLayout()) {
 			b.addToWorld(actor);
 		}

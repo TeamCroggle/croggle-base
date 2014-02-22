@@ -1,4 +1,4 @@
-package de.croggle.ui.renderer;
+package de.croggle.ui.renderer.layout;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -7,6 +7,7 @@ import java.util.Map;
 
 import de.croggle.game.board.Board;
 import de.croggle.game.board.InternalBoardObject;
+import de.croggle.ui.renderer.BoardActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 
 /**
@@ -29,14 +30,18 @@ public class ActorLayout implements Iterable<BoardObjectActor> {
 	private final ActorLayoutStatistics statistics;
 	private final ActorLayoutConfiguration config;
 
+	public static ActorLayout create(Board b, ActorLayoutConfiguration config) {
+		return ActorLayoutBuilder.build(b, config);
+	}
+
 	/**
 	 * 
 	 * @param layout
 	 * @param config
 	 * @param statistics
 	 */
-	public ActorLayout(Map<InternalBoardObject, BoardObjectActor> layout,
-			Board b, ActorLayoutConfiguration config) {
+	ActorLayout(Map<InternalBoardObject, BoardObjectActor> layout, Board b,
+			ActorLayoutConfiguration config) {
 		this.layout = layout;
 		this.b = b;
 		this.config = config;

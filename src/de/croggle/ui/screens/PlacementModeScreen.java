@@ -31,9 +31,9 @@ import de.croggle.ui.StyleHelper;
 import de.croggle.ui.actors.HintDialog;
 import de.croggle.ui.actors.IngameMenuDialog;
 import de.croggle.ui.actors.NotificationDialog;
-import de.croggle.ui.renderer.ActorLayoutConfiguration;
 import de.croggle.ui.renderer.BoardActor;
 import de.croggle.ui.renderer.ObjectBar;
+import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
 
 /**
  * Screen within which the player can manipulate the board by moving alligators

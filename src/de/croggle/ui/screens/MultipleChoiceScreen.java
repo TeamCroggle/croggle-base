@@ -35,8 +35,8 @@ import de.croggle.ui.StyleHelper;
 import de.croggle.ui.actors.IngameMenuDialog;
 import de.croggle.ui.actors.NotificationDialog;
 import de.croggle.ui.actors.PagedScrollPane;
-import de.croggle.ui.renderer.ActorLayoutConfiguration;
 import de.croggle.ui.renderer.BoardActor;
+import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
 
 /**
  * Screen which the player sees when entering Multiple choice levels.

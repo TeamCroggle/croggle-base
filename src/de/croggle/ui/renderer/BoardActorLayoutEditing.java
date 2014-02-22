@@ -23,6 +23,7 @@ import de.croggle.game.board.ColoredBoardObject;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.game.event.BoardEventMessenger;
+import de.croggle.ui.renderer.layout.ActorLayout;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 
 /**

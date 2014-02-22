@@ -1,4 +1,4 @@
-package de.croggle.ui.renderer;
+package de.croggle.ui.renderer.layout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,7 @@ import de.croggle.game.board.ColoredAlligator;
 import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.operations.CreateHeightMap;
+import de.croggle.ui.renderer.BoardActor;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
@@ -37,7 +38,7 @@ class ActorLayoutBuilder extends ActorLayouter {
 	/**
 	 * The hashmap to store the result in
 	 */
-	private Map<InternalBoardObject, BoardObjectActor> actors;
+	private final Map<InternalBoardObject, BoardObjectActor> actors;
 
 	public ActorLayoutBuilder(Board b, ActorLayoutConfiguration config) {
 		super(b, config);
@@ -93,15 +94,18 @@ class ActorLayoutBuilder extends ActorLayouter {
 	}
 
 	@Override
-	protected AgedAlligatorActor provideAgedAlligatorActor(AgedAlligator alligator) {
+	protected AgedAlligatorActor provideAgedAlligatorActor(
+			AgedAlligator alligator) {
 		AgedAlligatorActor actor = new AgedAlligatorActor(alligator);
 		actors.put(alligator, actor);
 		return actor;
 	}
 
 	@Override
-	protected ColoredAlligatorActor provideColoredAlligatorActor(ColoredAlligator alligator) {
-		ColoredAlligatorActor actor = new ColoredAlligatorActor(alligator, getConfig().isColorBlindEnabled());
+	protected ColoredAlligatorActor provideColoredAlligatorActor(
+			ColoredAlligator alligator) {
+		ColoredAlligatorActor actor = new ColoredAlligatorActor(alligator,
+				getConfig().isColorBlindEnabled());
 		actors.put(alligator, actor);
 		return actor;
 	}

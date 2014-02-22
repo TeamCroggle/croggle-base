@@ -1,4 +1,4 @@
-package de.croggle.ui.renderer;
+package de.croggle.ui.renderer.layout;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -14,6 +14,7 @@ import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.game.board.operations.BoardObjectVisitor;
 import de.croggle.game.board.operations.CreateWidthMap;
+import de.croggle.ui.renderer.TreeGrowth;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
