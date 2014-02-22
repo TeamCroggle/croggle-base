@@ -3,21 +3,23 @@ package de.croggle.util;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class SparseArray<T> {
-	private final Tuple2<Integer, T> finder;
-	private final Comparator<Tuple2<Integer, T>> comp;
-	private final LinkedList<Tuple2<Integer, T>> l;
+	private final MapEntry<Integer, T> finder;
+	private final Comparator<Map.Entry<Integer, T>> comp;
+	private final LinkedList<Map.Entry<Integer, T>> l;
 
 	public SparseArray() {
-		comp = new Comparator<Tuple2<Integer, T>>() {
+		comp = new Comparator<Map.Entry<Integer, T>>() {
 			@Override
-			public int compare(Tuple2<Integer, T> lhs, Tuple2<Integer, T> rhs) {
-				return lhs.el1 - rhs.el1;
+			public int compare(Map.Entry<Integer, T> lhs,
+					Map.Entry<Integer, T> rhs) {
+				return lhs.getKey() - rhs.getKey();
 			}
 		};
-		l = new LinkedList<Tuple2<Integer, T>>();
-		finder = new Tuple2<Integer, T>();
+		l = new LinkedList<Map.Entry<Integer, T>>();
+		finder = new MapEntry<Integer, T>();
 	}
 
 	public T put(int key, T val) {
@@ -25,13 +27,13 @@ public class SparseArray<T> {
 		if (pos < 0) {
 			// insert
 			pos = -pos - 1;
-			l.add(pos, new Tuple2<Integer, T>(key, val));
+			l.add(pos, new MapEntry<Integer, T>(key, val));
 			return null;
 		} else {
 			// replace
-			Tuple2<Integer, T> elm = l.get(pos);
-			T previous = elm.el2;
-			elm.el2 = val;
+			Map.Entry<Integer, T> elm = l.get(pos);
+			T previous = elm.getValue();
+			elm.setValue(val);
 			return previous;
 		}
 	}
@@ -41,15 +43,15 @@ public class SparseArray<T> {
 		if (pos < 0) {
 			return null;
 		}
-		return l.get(pos).el2;
+		return l.get(pos).getValue();
 	}
 
 	public int keyAt(int i) {
-		return l.get(i).el1;
+		return l.get(i).getKey();
 	}
 
 	public T valueAt(int i) {
-		return l.get(i).el2;
+		return l.get(i).getValue();
 	}
 
 	public int size() {
@@ -57,7 +59,7 @@ public class SparseArray<T> {
 	}
 
 	private int find(int key) {
-		finder.el1 = key;
+		finder.setKey(key);
 		int result = Collections.binarySearch(l, finder, comp);
 		return result;
 	}
