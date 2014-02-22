@@ -27,4 +27,9 @@ public class EggActor extends ColoredBoardObjectActor {
 	public void enterHatchingState() {
 
 	}
+
+	@Override
+	public Egg getBoardObject() {
+		return (Egg) super.getBoardObject();
+	}
 }

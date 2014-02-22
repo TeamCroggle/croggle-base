@@ -41,4 +41,9 @@ public class ColoredAlligatorActor extends ColoredBoardObjectActor {
 	public void enterDyingState() {
 
 	}
+
+	@Override
+	public ColoredAlligator getBoardObject() {
+		return (ColoredAlligator) super.getBoardObject();
+	}
 }

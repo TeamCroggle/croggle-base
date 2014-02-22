@@ -19,7 +19,7 @@ public class ColoredBoardObjectActor extends BoardObjectActor {
 	private final TextureRegion foreground;
 	private Texture background;
 	private boolean valid = false;
-	private boolean colorBlind = false;
+	boolean colorBlindEnabled = false;
 
 	public ColoredBoardObjectActor(ColoredBoardObject object,
 			boolean colorBlindEnabled, String foregroundPath, String maskPath) {
@@ -36,7 +36,7 @@ public class ColoredBoardObjectActor extends BoardObjectActor {
 		}
 		mask = tex.findRegion(maskPath);
 		foreground = tex.findRegion(foregroundPath);
-		this.colorBlind = colorBlindEnabled;
+		this.colorBlindEnabled = colorBlindEnabled;
 		this.setWidth(foreground.getRegionWidth());
 		this.setHeight(foreground.getRegionHeight());
 
@@ -48,7 +48,7 @@ public class ColoredBoardObjectActor extends BoardObjectActor {
 	 * Actor is automatically validated next time it is rendered.
 	 */
 	public void validate() {
-		if (colorBlind) {
+		if (colorBlindEnabled) {
 			background = AssetManager.getInstance().getPatternTexture(
 					((ColoredBoardObject) getBoardObject()).getColor());
 		} else {
@@ -67,16 +67,16 @@ public class ColoredBoardObjectActor extends BoardObjectActor {
 	}
 
 	public void setColorBlindEnabled(boolean enabled) {
-		if (enabled == colorBlind) {
+		if (enabled == colorBlindEnabled) {
 			return;
 		} else {
-			colorBlind = enabled;
+			colorBlindEnabled = enabled;
 			invalidate();
 		}
 	}
 
 	public boolean getColorBlindEnabled() {
-		return colorBlind;
+		return colorBlindEnabled;
 	}
 
 	private void drawAlphaMask(SpriteBatch batch) {

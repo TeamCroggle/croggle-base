@@ -6,12 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import de.croggle.game.Color;
 import de.croggle.game.board.AgedAlligator;
-import de.croggle.game.board.Board;
 import de.croggle.game.board.ColoredAlligator;
 import de.croggle.game.board.Egg;
-import de.croggle.game.board.operations.BoardObjectVisitor;
 
 class BoardObjectActorDragging {
+
+	private final com.badlogic.gdx.graphics.Color validColor = new com.badlogic.gdx.graphics.Color(
+			0, 1, 0, 1);
+	private final com.badlogic.gdx.graphics.Color invalidColor = new com.badlogic.gdx.graphics.Color(
+			1, 0, 0, 1);
 
 	private final float autoPanBorderWidth;
 	private final float autoPanBorderHeight;
@@ -44,9 +47,11 @@ class BoardObjectActorDragging {
 			coloredDragActor = new ColoredAlligatorActor(new ColoredAlligator(
 					false, false, Color.uncolored(), false), colorBlind);
 			coloredDragActor.addAction(new AutoPanAction());
+
 			eggDragActor = new EggActor(new Egg(false, false,
 					Color.uncolored(), false), colorBlind);
 			eggDragActor.addAction(new AutoPanAction());
+
 			agedDragActor = new AgedAlligatorActor(new AgedAlligator(false,
 					false));
 			agedDragActor.addAction(new AutoPanAction());
@@ -54,33 +59,35 @@ class BoardObjectActorDragging {
 
 		{
 			coloredValidDragActor = new ColoredAlligatorActor(
-					new ColoredAlligator(false, false, Color.uncolored(), false),
-					colorBlind);
-			coloredValidDragActor.setColor(0.f, 1.f, 0.f, 1.f);
+					coloredDragActor.getBoardObject(), colorBlind);
+			coloredValidDragActor.setColor(validColor);
 			coloredValidDragActor.addAction(new AutoPanAction());
-			eggValidDragActor = new EggActor(new Egg(false, false,
-					Color.uncolored(), false), colorBlind);
-			eggValidDragActor.setColor(0.f, 1.f, 0.f, 1.f);
+
+			eggValidDragActor = new EggActor(eggDragActor.getBoardObject(),
+					colorBlind);
+			eggValidDragActor.setColor(validColor);
 			eggValidDragActor.addAction(new AutoPanAction());
-			agedValidDragActor = new AgedAlligatorActor(new AgedAlligator(
-					false, false));
-			agedValidDragActor.setColor(0.f, 1.f, 0.f, 1.f);
+
+			agedValidDragActor = new AgedAlligatorActor(
+					agedDragActor.getBoardObject());
+			agedValidDragActor.setColor(validColor);
 			agedValidDragActor.addAction(new AutoPanAction());
 		}
 
 		{
 			coloredInvalidDragActor = new ColoredAlligatorActor(
-					new ColoredAlligator(false, false, Color.uncolored(), false),
-					colorBlind);
-			coloredInvalidDragActor.setColor(1.f, 0.f, 0.f, 1.f);
+					coloredDragActor.getBoardObject(), colorBlind);
+			coloredInvalidDragActor.setColor(invalidColor);
 			coloredInvalidDragActor.addAction(new AutoPanAction());
-			eggInvalidDragActor = new EggActor(new Egg(false, false,
-					Color.uncolored(), false), colorBlind);
-			eggInvalidDragActor.setColor(1.f, 0.f, 0.f, 1.f);
+
+			eggInvalidDragActor = new EggActor(eggDragActor.getBoardObject(),
+					colorBlind);
+			eggInvalidDragActor.setColor(invalidColor);
 			eggInvalidDragActor.addAction(new AutoPanAction());
-			agedInvalidDragActor = new AgedAlligatorActor(new AgedAlligator(
-					false, false));
-			agedInvalidDragActor.setColor(1.f, 0.f, 0.f, 1.f);
+
+			agedInvalidDragActor = new AgedAlligatorActor(
+					agedDragActor.getBoardObject());
+			agedInvalidDragActor.setColor(invalidColor);
 			agedInvalidDragActor.addAction(new AutoPanAction());
 		}
 	}
@@ -134,124 +141,77 @@ class BoardObjectActorDragging {
 	}
 
 	public BoardObjectActor getDragActor(final BoardObjectActor a) {
-		final BoardObjectActor result[] = new BoardObjectActor[1];
-		BoardObjectVisitor visitor = new BoardObjectVisitor() {
-			@Override
-			public void visitEgg(Egg egg) {
-				((Egg) eggDragActor.getBoardObject()).setColor(egg.getColor());
-				eggDragActor.validate();
-				eggDragActor.setSize(a.getWidth() * b.getZoom(), a.getHeight()
-						* b.getZoom());
-				result[0] = eggDragActor;
-			}
+		BoardObjectActor result;
+		switch (BoardObjectActorFactory.getType(a)) {
+		case AGED_ALLIGATOR: {
+			result = agedDragActor;
+			break;
+		}
+		case COLORED_ALLIGATOR: {
+			result = coloredDragActor;
+			break;
+		}
+		case EGG: {
+			result = eggDragActor;
+			break;
+		}
+		default:
+			throw new IllegalStateException("This should never happen");
 
-			@Override
-			public void visitColoredAlligator(ColoredAlligator alligator) {
-				((ColoredAlligator) coloredDragActor.getBoardObject())
-						.setColor(alligator.getColor());
-				coloredDragActor.validate();
-				coloredDragActor.setSize(a.getWidth() * b.getZoom(),
-						a.getHeight() * b.getZoom());
-				result[0] = coloredDragActor;
-			}
+		}
+		result.setSize(a.getWidth(), a.getHeight());
+		result.setScale(b.getZoom());
 
-			@Override
-			public void visitBoard(Board board) {
-				// Just ignore
-			}
-
-			@Override
-			public void visitAgedAlligator(AgedAlligator alligator) {
-				result[0] = agedDragActor;
-			}
-		};
-		a.getBoardObject().accept(visitor);
-
-		result[0].setSize(a.getWidth(), a.getHeight());
-		result[0].setScale(b.getZoom());
-
-		return result[0];
+		return result;
 	}
 
 	public BoardObjectActor getValidDragActor(final BoardObjectActor a) {
-		final BoardObjectActor result[] = new BoardObjectActor[1];
-		BoardObjectVisitor visitor = new BoardObjectVisitor() {
-			@Override
-			public void visitEgg(Egg egg) {
-				((Egg) eggValidDragActor.getBoardObject()).setColor(egg
-						.getColor());
-				eggValidDragActor.validate();
-				eggValidDragActor.setSize(a.getWidth() * b.getZoom(),
-						a.getHeight() * b.getZoom());
-				result[0] = eggValidDragActor;
-			}
+		BoardObjectActor result;
+		switch (BoardObjectActorFactory.getType(a)) {
+		case AGED_ALLIGATOR: {
+			result = agedValidDragActor;
+			break;
+		}
+		case COLORED_ALLIGATOR: {
+			result = coloredValidDragActor;
+			break;
+		}
+		case EGG: {
+			result = eggValidDragActor;
+			break;
+		}
+		default:
+			throw new IllegalStateException("This should never happen");
 
-			@Override
-			public void visitColoredAlligator(ColoredAlligator alligator) {
-				((ColoredAlligator) coloredValidDragActor.getBoardObject())
-						.setColor(alligator.getColor());
-				coloredValidDragActor.validate();
-				coloredValidDragActor.setSize(a.getWidth() * b.getZoom(),
-						a.getHeight() * b.getZoom());
-				result[0] = coloredValidDragActor;
-			}
+		}
+		result.setSize(a.getWidth(), a.getHeight());
+		result.setScale(b.getZoom());
 
-			@Override
-			public void visitBoard(Board board) {
-				// Just ignore
-			}
-
-			@Override
-			public void visitAgedAlligator(AgedAlligator alligator) {
-				result[0] = agedValidDragActor;
-			}
-		};
-		a.getBoardObject().accept(visitor);
-
-		result[0].setSize(a.getWidth(), a.getHeight());
-		result[0].setScale(b.getZoom());
-
-		return result[0];
+		return result;
 	}
 
 	public BoardObjectActor getInvalidDragActor(final BoardObjectActor a) {
-		final BoardObjectActor result[] = new BoardObjectActor[1];
-		BoardObjectVisitor visitor = new BoardObjectVisitor() {
-			@Override
-			public void visitEgg(Egg egg) {
-				((Egg) eggInvalidDragActor.getBoardObject()).setColor(egg
-						.getColor());
-				eggInvalidDragActor.validate();
-				eggInvalidDragActor.setSize(a.getWidth() * b.getZoom(),
-						a.getHeight() * b.getZoom());
-				result[0] = eggInvalidDragActor;
-			}
+		BoardObjectActor result;
+		switch (BoardObjectActorFactory.getType(a)) {
+		case AGED_ALLIGATOR: {
+			result = agedInvalidDragActor;
+			break;
+		}
+		case COLORED_ALLIGATOR: {
+			result = coloredInvalidDragActor;
+			break;
+		}
+		case EGG: {
+			result = eggInvalidDragActor;
+			break;
+		}
+		default:
+			throw new IllegalStateException("This should never happen");
 
-			@Override
-			public void visitColoredAlligator(ColoredAlligator alligator) {
-				((ColoredAlligator) coloredInvalidDragActor.getBoardObject())
-						.setColor(alligator.getColor());
-				coloredInvalidDragActor.validate();
-				coloredInvalidDragActor.setSize(a.getWidth() * b.getZoom(),
-						a.getHeight() * b.getZoom());
-				result[0] = coloredInvalidDragActor;
-			}
+		}
+		result.setSize(a.getWidth(), a.getHeight());
+		result.setScale(b.getZoom());
 
-			@Override
-			public void visitBoard(Board board) {
-				// Just ignore
-			}
-
-			@Override
-			public void visitAgedAlligator(AgedAlligator alligator) {
-				result[0] = agedInvalidDragActor;
-			}
-		};
-		a.getBoardObject().accept(visitor);
-
-		result[0].setSize(a.getWidth(), a.getHeight());
-		result[0].setScale(b.getZoom());
-
-		return result[0];
+		return result;
 	}
 }

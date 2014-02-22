@@ -61,4 +61,9 @@ public class AgedAlligatorActor extends BoardObjectActor {
 	public void act(float delta) {
 		super.act(delta);
 	}
+
+	@Override
+	public AgedAlligator getBoardObject() {
+		return (AgedAlligator) super.getBoardObject();
+	}
 }
