@@ -1,4 +1,4 @@
-package de.croggle.ui.renderer;
+package de.croggle.ui.renderer.objectactors;
 
 import de.croggle.game.board.Egg;
 

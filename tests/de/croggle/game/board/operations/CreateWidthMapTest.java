@@ -11,7 +11,7 @@ import de.croggle.game.board.BoardObject;
 import de.croggle.game.board.ColoredAlligator;
 import de.croggle.game.board.Egg;
 import de.croggle.ui.renderer.ActorLayoutConfiguration;
-import de.croggle.ui.renderer.AgedAlligatorActor;
+import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.TreeGrowth;
 import de.croggle.util.convert.LambdaToAlligator;
 import junit.framework.TestCase;

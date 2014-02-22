@@ -2,8 +2,8 @@ package de.croggle.game.event;
 
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.ColoredAlligator;
-import de.croggle.ui.renderer.AgedAlligatorActor;
-import de.croggle.ui.renderer.ColoredAlligatorActor;
+import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
+import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
 
 /**
  * 

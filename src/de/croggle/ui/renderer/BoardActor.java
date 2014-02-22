@@ -17,6 +17,7 @@ import de.croggle.game.ColorController;
 import de.croggle.game.board.Board;
 import de.croggle.game.event.BoardEventListener;
 import de.croggle.game.event.BoardEventMessenger;
+import de.croggle.ui.renderer.objectactors.ColoredBoardObjectActor;
 
 /**
  * An actor used for representing a whole board, i.e. an alligator

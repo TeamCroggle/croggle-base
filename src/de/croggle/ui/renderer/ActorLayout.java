@@ -7,6 +7,7 @@ import java.util.Map;
 
 import de.croggle.game.board.Board;
 import de.croggle.game.board.InternalBoardObject;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 
 /**
  * A class encapsulating all information that is involved in layouting actors to

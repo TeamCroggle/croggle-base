@@ -1,4 +1,4 @@
-package de.croggle.ui.renderer;
+package de.croggle.ui.renderer.objectactors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 

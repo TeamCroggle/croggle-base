@@ -13,6 +13,10 @@ import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.ui.StyleHelper;
+import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
+import de.croggle.ui.renderer.objectactors.EggActor;
 
 /**
  * The bar to drag alligators and eggs from onto the screen.

@@ -9,6 +9,11 @@ import de.croggle.game.Color;
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.ColoredAlligator;
 import de.croggle.game.board.Egg;
+import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActorFactory;
+import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
+import de.croggle.ui.renderer.objectactors.EggActor;
 
 /**
  * This is a helper class for all classes who want to take part in the

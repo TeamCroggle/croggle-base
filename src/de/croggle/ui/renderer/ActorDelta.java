@@ -3,6 +3,8 @@ package de.croggle.ui.renderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+
 /**
  * A class representing a set of changes made or to be made to an {@link Actor}.
  * Used for example for just finding changes to be made to an

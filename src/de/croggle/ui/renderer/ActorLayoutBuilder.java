@@ -12,6 +12,10 @@ import de.croggle.game.board.ColoredAlligator;
 import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.operations.CreateHeightMap;
+import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
+import de.croggle.ui.renderer.objectactors.EggActor;
 
 /**
  * Helper class to create and layout a {@link Board}'s representation of

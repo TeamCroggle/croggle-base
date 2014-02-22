@@ -21,6 +21,11 @@ import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.operations.FlattenTree;
 import de.croggle.game.event.BoardEventListener;
+import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
+import de.croggle.ui.renderer.objectactors.ColoredBoardObjectActor;
+import de.croggle.ui.renderer.objectactors.EggActor;
 
 class BoardActorBoardChangeAnimator implements BoardEventListener {
 	private final BoardActor b;

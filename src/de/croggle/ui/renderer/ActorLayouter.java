@@ -14,6 +14,10 @@ import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.game.board.operations.BoardObjectVisitor;
 import de.croggle.game.board.operations.CreateWidthMap;
+import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
+import de.croggle.ui.renderer.objectactors.EggActor;
 
 abstract class ActorLayouter implements BoardObjectVisitor {
 	protected abstract AgedAlligatorActor provideAgedAlligatorActor(AgedAlligator alligator);

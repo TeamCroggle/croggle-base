@@ -1,6 +1,7 @@
 package de.croggle.ui.renderer;
 
 import de.croggle.game.board.InternalBoardObject;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 
 class PlaceHolderActor extends BoardObjectActor {
 

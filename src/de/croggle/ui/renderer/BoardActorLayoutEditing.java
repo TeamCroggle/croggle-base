@@ -23,6 +23,7 @@ import de.croggle.game.board.ColoredBoardObject;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.game.event.BoardEventMessenger;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 
 /**
  * Class containing different input listeners adding functionality to the

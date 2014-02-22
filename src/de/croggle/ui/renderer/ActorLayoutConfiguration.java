@@ -3,6 +3,10 @@ package de.croggle.ui.renderer;
 import com.badlogic.gdx.math.Vector2;
 
 import de.croggle.game.ColorController;
+import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
+import de.croggle.ui.renderer.objectactors.EggActor;
 
 /**
  * A class to accumulate all different properties to be taken into consideration
