@@ -3,12 +3,23 @@ package de.croggle.ui.renderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
 import de.croggle.game.Color;
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.ColoredAlligator;
 import de.croggle.game.board.Egg;
 
+/**
+ * This is a helper class for all classes who want to take part in the
+ * {@link DragAndDrop dragging and dropping} of {@link BoardObjectActor}s.
+ * Therefore it instantiates and offers the caller three Actors (normal
+ * dragging, valid drag target, invalid drag target) that are necessary to
+ * register drag sources. The class also takes care of convenience features like
+ * the automatic panning of the BoardActor's world when the user drags to the
+ * edge of the {@link BoardActor}.
+ * 
+ */
 class BoardObjectActorDragging {
 
 	private final com.badlogic.gdx.graphics.Color validColor = new com.badlogic.gdx.graphics.Color(
@@ -92,7 +103,12 @@ class BoardObjectActorDragging {
 		}
 	}
 
-	public class AutoPanAction extends Action {
+	/**
+	 * This action gets automatically added to all drag actors, so when the user
+	 * moves them to the edge of the BoardActor, the BoardActor will pan to show
+	 * the parts of the world beyond the edge.
+	 */
+	private class AutoPanAction extends Action {
 
 		// only act once in %divider% milliseconds
 		private final float divider = 0.01f;
