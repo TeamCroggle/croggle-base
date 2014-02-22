@@ -3,6 +3,7 @@
 *.apk
 
 bin/
+tests/bin
 gen/
 proguard/
 
