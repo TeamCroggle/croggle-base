@@ -194,7 +194,9 @@ class BoardActorLayoutEditing {
 
 			Gdx.input.vibrate(100);
 
+			dnd.setTapSquareSize(-1);
 			dnd.addSource(new ExistingActorSource((BoardObjectActor) actor));
+			dnd.setTapSquareSize(8);
 			final float zoomAmount = 8f;
 			final float zoomDelay = .2f;
 			b.zoomOut(zoomAmount);
@@ -282,7 +284,6 @@ class BoardActorLayoutEditing {
 
 		public void onDragStop(InputEvent event, float x, float y, int pointer,
 				Target target) {
-
 		}
 
 		abstract Payload onDragStart(InputEvent event, float x, float y,
