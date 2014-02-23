@@ -104,7 +104,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 				BoardObjectActor eatenActor;
 				for (InternalBoardObject eaten : eatenLst) {
 					eatenActor = b.getLayout().getActor(eaten);
-					removeActor(eatenActor);
+					b.removeLayoutActor(eatenActor);
 				}
 				fixLayout();
 			}
@@ -138,7 +138,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			@Override
 			protected void end() {
 				BoardObjectActor actor = b.getLayout().getActor(object);
-				removeActor(actor);
+				b.removeLayoutActor(actor);
 				applyDeltasAnimated(b.getLayout().getDeltasToFix());
 			}
 		});
@@ -205,7 +205,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		List<ActorDelta> deltas = b.getLayout().getDeltasToFix();
 		applyCreationDeltas(filterCreated(deltas, true));
 		removeObjectAnimated(replacedEgg);
-		b.boardSizeChanged();
+		b.layoutSizeChanged();
 	}
 
 	private void applyDeltasAnimated(List<ActorDelta> deltas) {
@@ -267,8 +267,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			}
 
 			actor.setScale(0.f);
-			b.getLayout().addActor(actor);
-			b.addToWorld(actor);
+			b.addLayoutActor(actor);
 			ScaleToAction scaleAction = Actions.scaleTo(1, 1, animDuration);
 			actor.addAction(scaleAction);
 		}
@@ -311,8 +310,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		agedActor.setPosition(coloredActor.getX(), coloredActor.getY());
 		agedActor.setColor(1.f, 1.f, 1.f, 0.f);
 		agedActor.addAction(Actions.alpha(1.f, animationDuration));
-		b.getLayout().addActor(agedActor);
-		b.addToWorld(agedActor);
+		b.addLayoutActor(agedActor);
 		removeObjectAnimated(colored);
 	}
 
@@ -325,7 +323,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	public void onObjectRemoved(InternalBoardObject removed) {
 		BoardObjectActor removedActor = b.getLayout().getActor(removed);
 		if (removedActor != null) {
-			removeActor(removedActor);
+			b.removeLayoutActor(removedActor);
 			fixLayout();
 		}
 	}
@@ -337,11 +335,6 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	void fixLayout() {
 		applyDeltasAnimated(b.getLayout().getDeltasToFix());
-		b.boardSizeChanged();
-	}
-
-	void removeActor(BoardObjectActor a) {
-		b.removeFromWorld(a);
-		b.getLayout().removeActor(a);
+		b.layoutSizeChanged();
 	}
 }

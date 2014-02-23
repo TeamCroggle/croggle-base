@@ -207,7 +207,7 @@ public class ObjectBar extends Table {
 				}
 			}
 			editing.getMessenger().notifyObjectRemoved(payloadObject);
-			editing.getBoardActor().boardSizeChanged();
+			editing.getBoardActor().layoutSizeChanged();
 		}
 	}
 }

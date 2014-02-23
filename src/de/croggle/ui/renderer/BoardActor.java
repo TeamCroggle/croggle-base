@@ -1,5 +1,7 @@
 package de.croggle.ui.renderer;
 
+import java.util.List;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,6 +22,7 @@ import de.croggle.game.event.BoardEventMessenger;
 import de.croggle.ui.renderer.layout.ActorLayout;
 import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
 import de.croggle.ui.renderer.layout.ActorLayoutStatistics;
+import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 import de.croggle.ui.renderer.objectactors.ColoredBoardObjectActor;
 
 /**
@@ -211,14 +214,10 @@ public class BoardActor extends Group implements SettingChangeListener {
 		initializePosition();
 	}
 
-	void boardSizeChanged() {
+	void layoutSizeChanged() {
 		if (zoomAndPan != null) {
 			zoomAndPan.validate();
 		}
-	}
-
-	void fixLayout() {
-		boardAnimator.fixLayout();
 	}
 
 	public Vector2 boardActorToWorldCoordinates(Vector2 coords) {
@@ -466,6 +465,22 @@ public class BoardActor extends Group implements SettingChangeListener {
 		}
 	}
 
+	void fixLayout() {
+		List<BoardObjectActor> added = layout.fix();
+		for (BoardObjectActor actor : added) {
+			world.addActor(actor);
+		}
+		layoutSizeChanged();
+	}
+
+	void fixLayoutAnimated() {
+		if (boardAnimator != null) {
+			boardAnimator.fixLayout();
+		} else {
+			fixLayout();
+		}
+	}
+
 	ActorLayoutConfiguration getLayoutConfiguration() {
 		return config;
 	}
@@ -484,6 +499,16 @@ public class BoardActor extends Group implements SettingChangeListener {
 
 	void setWorldY(float y) {
 		posY = y;
+	}
+
+	void addLayoutActor(BoardObjectActor a) {
+		layout.addActor(a);
+		world.addActor(a);
+	}
+
+	void removeLayoutActor(BoardObjectActor a) {
+		layout.removeActor(a);
+		world.removeActor(a);
 	}
 
 	// stuff inherited from Group that should not be used as originally intended

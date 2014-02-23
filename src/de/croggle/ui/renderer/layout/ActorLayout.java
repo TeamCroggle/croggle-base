@@ -1,5 +1,6 @@
 package de.croggle.ui.renderer.layout;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -155,6 +156,48 @@ public class ActorLayout implements Iterable<BoardObjectActor> {
 					"Cannot calculate height without statistics");
 		}
 		return statistics.getHeightMap().get(getBoard());
+	}
+
+	/**
+	 * Fixes the layout by instantly applying all necessary
+	 * {@link ActorLayout#getDeltasToFix() deltas} and returns the newly added
+	 * {@link BoardObjectActor}s.
+	 * 
+	 * TODO also take care of removed objects. But don't know how to return them
+	 * 
+	 * @return
+	 */
+	public List<BoardObjectActor> fix() {
+		List<BoardObjectActor> added = new ArrayList<BoardObjectActor>();
+		List<ActorDelta> deltas = getDeltasToFix();
+		for (ActorDelta delta : deltas) {
+			BoardObjectActor actor = delta.getActor();
+			if (delta.isCreated()) {
+				added.add(actor);
+				addActor(actor);
+			} else {
+				if (delta.isxChanged()) {
+					if (delta.isyChanged()) {
+						actor.setPosition(delta.getNewX(), delta.getNewY());
+					} else {
+						actor.setPosition(delta.getNewX(), actor.getY());
+					}
+				} else if (delta.isyChanged()) {
+					actor.setPosition(actor.getX(), delta.getNewY());
+				}
+
+				if (delta.isWidthChanged()) {
+					if (delta.isHeightChanged()) {
+						actor.setSize(delta.getNewWidth(), delta.getNewHeight());
+					} else {
+						actor.setSize(delta.getNewWidth(), actor.getHeight());
+					}
+				} else if (delta.isyChanged()) {
+					actor.setSize(actor.getWidth(), delta.getNewHeight());
+				}
+			}
+		}
+		return added;
 	}
 
 	public int getHeightInActors() {

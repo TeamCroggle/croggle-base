@@ -249,7 +249,7 @@ class BoardActorLayoutEditing {
 		}
 
 		@Override
-		final public Payload dragStart(InputEvent event, float x, float y,
+		public final Payload dragStart(InputEvent event, float x, float y,
 				int pointer) {
 			reenableZoom = layoutEditing.b.isZoomAndPanEnabled();
 			layoutEditing.b.setZoomAndPanEnabled(false);
@@ -357,7 +357,6 @@ class BoardActorLayoutEditing {
 		@Override
 		public boolean drag(Source source, Payload payload, float x, float y,
 				int pointer) {
-			// TODO Auto-generated method stub
 			isDragging = true;
 			return true;
 		}
@@ -366,14 +365,12 @@ class BoardActorLayoutEditing {
 		public void reset(Source s, Payload l) {
 			isDragging = false;
 
-			BoardObjectActor targetActor = (BoardObjectActor) getActor();
-			InternalBoardObject target = targetActor.getBoardObject();
-			if (target.getParent() != null) {
-				Parent parent = target.getParent();
-				parent.removeChild(target);
-				target.setParent(null);
-			}
-			b.fixLayout();
+			// BoardObjectActor placeHolderActor = (BoardObjectActor)
+			// getActor();
+			InternalBoardObject placeholder = placeHolderActor.getBoardObject();
+			b.removeLayoutActor(placeHolderActor);
+			extractBoardObject(placeholder);
+			b.fixLayoutAnimated();
 		}
 
 		public boolean isDraggedOver() {
@@ -383,9 +380,10 @@ class BoardActorLayoutEditing {
 		@Override
 		public void drop(Source source, Payload payload, float x, float y,
 				int pointer) {
-			BoardObjectActor targetActor = (BoardObjectActor) getActor();
-			InternalBoardObject target = targetActor.getBoardObject();
-			Parent parent = target.getParent();
+			// BoardObjectActor placeHolderActor = (BoardObjectActor)
+			// getActor();
+			InternalBoardObject placeholder = placeHolderActor.getBoardObject();
+			Parent parent = placeholder.getParent();
 
 			BoardObjectActor payloadActor = (BoardObjectActor) payload
 					.getObject();
@@ -395,10 +393,9 @@ class BoardActorLayoutEditing {
 				registerLayoutListeners(payloadActor);
 			}
 			extractBoardObject(payloadObject);
-			parent.replaceChild(target, payloadObject);
-			target.setParent(null);
-			b.addToWorld(payloadActor);
-			b.getLayout().addActor(payloadActor);
+			parent.replaceChild(placeholder, payloadObject);
+			placeholder.setParent(null);
+			b.addLayoutActor(payloadActor);
 		}
 
 	}
@@ -466,19 +463,17 @@ class BoardActorLayoutEditing {
 						if (x < left) {
 							placeHolderActor.setActualX(targetActor.getX());
 							parent.insertChild(placeholder, targetChildPos);
-							b.getLayout().addActor(placeHolderActor);
-							b.addToWorld(placeHolderActor);
+							b.addLayoutActor(placeHolderActor);
 							placeholderIsLeft = true;
 						} else if (x > right) {
 							placeHolderActor.setActualX(targetActor.getX()
 									+ targetActor.getWidth());
 							parent.insertChild(placeholder, targetChildPos + 1);
-							b.getLayout().addActor(placeHolderActor);
-							b.addToWorld(placeHolderActor);
+							b.addLayoutActor(placeHolderActor);
 							placeholderIsLeft = false;
 						}
 
-						b.fixLayout();
+						b.fixLayoutAnimated();
 						placeholderAlreadyVisible = true;
 					}
 				} else {
@@ -496,13 +491,11 @@ class BoardActorLayoutEditing {
 			if (!placeholderTarget.isDraggedOver()) {
 				InternalBoardObject placeholder = placeHolderActor
 						.getBoardObject();
-				if (placeholder.getParent() != null) {
-					placeholder.getParent().removeChild(placeholder);
-					placeholder.setParent(null);
-				}
-				b.fixLayout();
+				b.removeLayoutActor(placeHolderActor);
+				extractBoardObject(placeholder);
+				b.fixLayoutAnimated();
+				placeholderAlreadyVisible = false;
 			}
-			placeholderAlreadyVisible = false;
 		}
 
 		@Override
@@ -517,8 +510,7 @@ class BoardActorLayoutEditing {
 			extractBoardObject(payloadObject);
 			p.addChild(payloadObject);
 			if (!b.getLayout().hasActor(payloadActor)) {
-				b.getLayout().addActor(payloadActor);
-				b.addToWorld(payloadActor);
+				b.addLayoutActor(payloadActor);
 				registerLayoutListeners(payloadActor);
 
 				messenger.notifyObjectPlaced(payloadObject);
@@ -565,8 +557,7 @@ class BoardActorLayoutEditing {
 				p.addChild(payloadObject);
 			}
 			if (!b.getLayout().hasActor(payloadActor)) {
-				b.getLayout().addActor(payloadActor);
-				b.addToWorld(payloadActor);
+				b.addLayoutActor(payloadActor);
 				registerLayoutListeners(payloadActor);
 
 				messenger.notifyObjectPlaced(payloadObject);
