@@ -53,8 +53,4 @@ public abstract class BackendHelper {
 	public void set() {
 		BackendHelper.initialize(this);
 	}
-
-	public static boolean isInitialized() {
-		return backend != null;
-	}
 }
