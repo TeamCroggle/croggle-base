@@ -34,7 +34,7 @@ public class ColoredAlligator extends Alligator implements ColoredBoardObject {
 	private ColoredAlligator(Parent parent, boolean movable, boolean removable,
 			Color c, boolean recolorable) {
 		super(parent, movable, removable);
-		this.color = c;
+		color = c;
 		this.recolorable = recolorable;
 	}
 
@@ -58,14 +58,14 @@ public class ColoredAlligator extends Alligator implements ColoredBoardObject {
 	public ColoredAlligator(boolean movable, boolean removable, Color c,
 			boolean recolorable) {
 		super(movable, removable);
-		this.color = c;
+		color = c;
 		this.recolorable = recolorable;
 	}
 
 	private ColoredAlligator(ColoredAlligator coloredAlligator) {
 		super(coloredAlligator);
-		this.color = coloredAlligator.color;
-		this.recolorable = coloredAlligator.recolorable;
+		color = coloredAlligator.color;
+		recolorable = coloredAlligator.recolorable;
 	}
 
 	/**
@@ -119,9 +119,10 @@ public class ColoredAlligator extends Alligator implements ColoredBoardObject {
 	 */
 	@Override
 	public void setColor(Color c) {
-		this.color = c;
+		color = c;
 	}
 
+	@Override
 	public boolean match(BoardObject o) {
 		if (o == null)
 			return false;
@@ -129,11 +130,11 @@ public class ColoredAlligator extends Alligator implements ColoredBoardObject {
 			return false;
 
 		ColoredAlligator oAllig = (ColoredAlligator) o;
-		return this.color.equals(oAllig.color) && super.match(oAllig); // use
-																		// Parent.match
-																		// for
-																		// child
-																		// comparison
+		return color.equals(oAllig.color) && super.match(oAllig); // use
+																	// Parent.match
+																	// for
+																	// child
+																	// comparison
 	}
 
 	@Override
@@ -150,10 +151,10 @@ public class ColoredAlligator extends Alligator implements ColoredBoardObject {
 		if (recoloring.containsValue(otherAlligator.color)) {
 			return false;
 		} else {
-			if (this.color.equals(otherAlligator.color)) {
+			if (color.equals(otherAlligator.color)) {
 				return super.matchWithRecoloring(otherAlligator, recoloring);
 			} else {
-				recoloring.put(otherAlligator.color, this.color);
+				recoloring.put(otherAlligator.color, color);
 				final boolean equal = super.matchWithRecoloring(otherAlligator,
 						recoloring);
 				recoloring.remove(otherAlligator.color);

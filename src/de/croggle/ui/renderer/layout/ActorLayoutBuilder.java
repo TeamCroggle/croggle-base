@@ -42,7 +42,7 @@ class ActorLayoutBuilder extends ActorLayouter {
 
 	public ActorLayoutBuilder(Board b, ActorLayoutConfiguration config) {
 		super(b, config);
-		this.actors = new HashMap<InternalBoardObject, BoardObjectActor>();
+		actors = new HashMap<InternalBoardObject, BoardObjectActor>();
 	}
 
 	/**

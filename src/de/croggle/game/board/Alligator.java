@@ -12,8 +12,8 @@ package de.croggle.game.board;
 public abstract class Alligator extends Parent implements InternalBoardObject {
 
 	private Parent parent;
-	private boolean movable;
-	private boolean removable;
+	private final boolean movable;
+	private final boolean removable;
 
 	/**
 	 * Superconstructor for all alligators.
@@ -40,7 +40,7 @@ public abstract class Alligator extends Parent implements InternalBoardObject {
 	 *            whether the board object is removable or not
 	 */
 	protected Alligator(boolean movable, boolean removable) {
-		this.parent = null;
+		parent = null;
 		this.movable = movable;
 		this.removable = removable;
 	}
@@ -53,9 +53,9 @@ public abstract class Alligator extends Parent implements InternalBoardObject {
 	 */
 	protected Alligator(Alligator alligator) {
 		super(alligator);
-		this.parent = alligator.parent;
-		this.movable = alligator.movable;
-		this.removable = alligator.removable;
+		parent = alligator.parent;
+		movable = alligator.movable;
+		removable = alligator.removable;
 	}
 
 	/**
@@ -81,10 +81,12 @@ public abstract class Alligator extends Parent implements InternalBoardObject {
 		this.parent = parent;
 	}
 
+	@Override
 	public boolean isMovable() {
 		return movable;
 	}
 
+	@Override
 	public boolean isRemovable() {
 		return removable;
 	}

@@ -55,8 +55,8 @@ public abstract class Level {
 		this.hint = hint;
 		this.description = description;
 		this.abortSimulationAfter = abortSimulationAfter;
-		this.solved = false;
-		this.unlocked = false;
+		solved = false;
+		unlocked = false;
 		this.showObjectBar = showObjectBar;
 	}
 
@@ -149,7 +149,7 @@ public abstract class Level {
 	 * @return whether this level is unlocked or not
 	 */
 	public boolean getUnlocked() {
-		return this.unlocked;
+		return unlocked;
 	}
 
 	/**
@@ -186,8 +186,8 @@ public abstract class Level {
 	 */
 	public boolean isSolveable(int steps) {
 		boolean solvable = true;
-		if (this.abortSimulationAfter < 0
-				&& Math.abs(this.abortSimulationAfter) <= steps) {
+		if (abortSimulationAfter < 0
+				&& Math.abs(abortSimulationAfter) <= steps) {
 			solvable = false;
 		}
 		return solvable;
@@ -206,7 +206,7 @@ public abstract class Level {
 	 * Sets the attribute solved to true.
 	 */
 	protected void setSolvedTrue() {
-		this.solved = true;
+		solved = true;
 	}
 
 	public GameController createGameController(AlligatorApp app) {
@@ -226,7 +226,7 @@ public abstract class Level {
 	}
 
 	public boolean getShowObjectBar() {
-		return this.showObjectBar;
+		return showObjectBar;
 	}
 
 }

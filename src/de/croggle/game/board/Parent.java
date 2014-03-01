@@ -62,7 +62,7 @@ public abstract class Parent implements Iterable<InternalBoardObject>,
 	public boolean insertChild(InternalBoardObject child, int pos) {
 		child.setParent(this);
 		if (!children.contains(child)) {
-			this.children.add(pos, child);
+			children.add(pos, child);
 			return true;
 		} else {
 			return false;
@@ -80,7 +80,7 @@ public abstract class Parent implements Iterable<InternalBoardObject>,
 	 *         child
 	 */
 	public int getChildPosition(InternalBoardObject child) {
-		return this.children.indexOf(child);
+		return children.indexOf(child);
 	}
 
 	/**
@@ -104,11 +104,11 @@ public abstract class Parent implements Iterable<InternalBoardObject>,
 	 *             if this parent has no children
 	 */
 	public InternalBoardObject getFirstChild() {
-		if (this.children.isEmpty()) {
+		if (children.isEmpty()) {
 			throw new NoSuchChildException();
 		}
 
-		return this.children.get(0);
+		return children.get(0);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public abstract class Parent implements Iterable<InternalBoardObject>,
 	 * @return the number of children this parent has
 	 */
 	public int getChildCount() {
-		return this.children.size();
+		return children.size();
 	}
 
 	/**
@@ -233,12 +233,12 @@ public abstract class Parent implements Iterable<InternalBoardObject>,
 			return false;
 
 		Parent oParent = (Parent) o;
-		if (this.children.size() != oParent.children.size())
+		if (children.size() != oParent.children.size())
 			return false;
 
 		boolean equal = true;
-		for (int i = 0; i < this.children.size(); i++) {
-			equal &= this.children.get(i).match(oParent.children.get(i));
+		for (int i = 0; i < children.size(); i++) {
+			equal &= children.get(i).match(oParent.children.get(i));
 		}
 		return equal;
 	}
@@ -254,12 +254,12 @@ public abstract class Parent implements Iterable<InternalBoardObject>,
 		}
 
 		final Parent otherParent = (Parent) other;
-		if (this.children.size() != otherParent.children.size()) {
+		if (children.size() != otherParent.children.size()) {
 			return false;
 		}
 
-		for (int i = 0; i < this.children.size(); i++) {
-			if (!this.children.get(i).matchWithRecoloring(
+		for (int i = 0; i < children.size(); i++) {
+			if (!children.get(i).matchWithRecoloring(
 					otherParent.children.get(i), recoloring)) {
 				return false;
 			}

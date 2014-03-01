@@ -280,7 +280,7 @@ public class BoardActor extends Group implements SettingChangeListener {
 	}
 
 	public void setBackground(Texture bg) {
-		this.background = bg;
+		background = bg;
 	}
 
 	public boolean getColorBlindEnabled() {

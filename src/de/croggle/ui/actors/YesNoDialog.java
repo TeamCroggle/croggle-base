@@ -19,7 +19,7 @@ public class YesNoDialog extends Dialog {
 	public YesNoDialog(String msg, ConfirmInterface confirm) {
 
 		super("", StyleHelper.getInstance().getDialogStyle());
-		this.ci = confirm;
+		ci = confirm;
 		StyleHelper helper = StyleHelper.getInstance();
 
 		Label message = new Label(msg, helper.getBlackLabelStyle());

@@ -98,7 +98,7 @@ public class LevelPackage {
 	 */
 	public String getAnimation() {
 		if (this.hasAnimation()) {
-			return this.animation;
+			return animation;
 		} else {
 			return null;
 		}
@@ -110,6 +110,6 @@ public class LevelPackage {
 	 * @return the design of this level
 	 */
 	public String getDesign() {
-		return this.design;
+		return design;
 	}
 }

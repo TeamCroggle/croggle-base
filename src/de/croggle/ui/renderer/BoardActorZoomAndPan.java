@@ -105,19 +105,19 @@ class BoardActorZoomAndPan extends ActorGestureListener {
 		float wx = b.getWorldX();
 		float wy = b.getWorldY();
 		if (wx > maxX) {
-			this.b.setWorldX(maxX);
+			b.setWorldX(maxX);
 		} else if (wx < minX) {
-			this.b.setWorldX(minX);
+			b.setWorldX(minX);
 		}
 		if (wy > maxY) {
-			this.b.setWorldY(maxY);
+			b.setWorldY(maxY);
 		} else if (wy < minY) {
-			this.b.setWorldY(minY);
+			b.setWorldY(minY);
 		}
 	}
 
 	private void calculateZoomLimits() {
-		ActorLayout layout = this.b.getLayout();
+		ActorLayout layout = b.getLayout();
 		ActorLayoutConfiguration config = layout.getLayoutConfiguration();
 
 		Board b = layout.getBoard();
@@ -136,7 +136,7 @@ class BoardActorZoomAndPan extends ActorGestureListener {
 	}
 
 	private void calculatePanLimits(float zoom) {
-		ActorLayout layout = this.b.getLayout();
+		ActorLayout layout = b.getLayout();
 		ActorLayoutConfiguration config = layout.getLayoutConfiguration();
 
 		Board b = layout.getBoard();

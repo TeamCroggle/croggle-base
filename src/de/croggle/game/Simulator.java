@@ -49,12 +49,12 @@ public class Simulator {
 	 */
 	public Simulator(Board entranceBoard, ColorController colorController,
 			BoardEventMessenger boardMessenger) throws IllegalBoardException {
-		this.history = new RingBuffer<Board>(30);
+		history = new RingBuffer<Board>(30);
 		this.entranceBoard = entranceBoard;
-		this.currentBoard = entranceBoard.copy();
+		currentBoard = entranceBoard.copy();
 		this.colorController = colorController;
 		this.boardMessenger = boardMessenger;
-		this.steps = 0;
+		steps = 0;
 
 		final List<BoardError> errors = FindBoardErrors.find(entranceBoard);
 		if (!errors.isEmpty() && !AlligatorApp.DEBUG) {

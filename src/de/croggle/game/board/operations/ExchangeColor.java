@@ -26,7 +26,7 @@ public class ExchangeColor implements BoardObjectVisitor {
 	}
 
 	private ExchangeColor(Color oldColor, Color newColor) {
-		this.boardMessenger = null;
+		boardMessenger = null;
 		this.newColor = newColor;
 		this.oldColor = oldColor;
 	}
@@ -74,10 +74,10 @@ public class ExchangeColor implements BoardObjectVisitor {
 	 */
 	@Override
 	public void visitEgg(Egg egg) {
-		if (egg.getColor().equals(this.oldColor)) {
-			egg.setColor(this.newColor);
-			if (this.boardMessenger != null) {
-				this.boardMessenger.notifyObjectRecolored(egg);
+		if (egg.getColor().equals(oldColor)) {
+			egg.setColor(newColor);
+			if (boardMessenger != null) {
+				boardMessenger.notifyObjectRecolored(egg);
 			}
 		}
 	}
@@ -87,10 +87,10 @@ public class ExchangeColor implements BoardObjectVisitor {
 	 */
 	@Override
 	public void visitColoredAlligator(ColoredAlligator alligator) {
-		if (alligator.getColor().equals(this.oldColor)) {
-			alligator.setColor(this.newColor);
-			if (this.boardMessenger != null) {
-				this.boardMessenger.notifyObjectRecolored(alligator);
+		if (alligator.getColor().equals(oldColor)) {
+			alligator.setColor(newColor);
+			if (boardMessenger != null) {
+				boardMessenger.notifyObjectRecolored(alligator);
 			}
 		}
 		alligator.acceptOnChildren(this);

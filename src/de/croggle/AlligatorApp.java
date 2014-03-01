@@ -167,7 +167,7 @@ public class AlligatorApp extends Game {
 		SoundHelper.initialize();
 
 		if (!HEADLESS) {
-			this.batch = new SpriteBatch();
+			batch = new SpriteBatch();
 		}
 
 		// catch android back key

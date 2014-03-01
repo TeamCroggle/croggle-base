@@ -16,7 +16,7 @@ public class CreateDepthMap implements BoardObjectVisitor {
 	private int depth = 0;
 
 	private CreateDepthMap() {
-		this.depthMap = new HashMap<BoardObject, Integer>();
+		depthMap = new HashMap<BoardObject, Integer>();
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class CreateDepthMap implements BoardObjectVisitor {
 
 	@Override
 	public void visitEgg(Egg egg) {
-		this.depthMap.put(egg, depth);
+		depthMap.put(egg, depth);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class CreateDepthMap implements BoardObjectVisitor {
 	}
 
 	private void visitParent(Parent p) {
-		this.depthMap.put(p, depth);
+		depthMap.put(p, depth);
 		depth++;
 		p.acceptOnChildren(this);
 		depth--;

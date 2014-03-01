@@ -25,19 +25,19 @@ public abstract class AbstractBoardValidator {
 		for (BoardErrorType t : errorTypes) {
 			switch (t) {
 			case AGEDALLIGATOR_CHILDLESS: {
-				this.validateAgedAlligatorChildless = true;
+				validateAgedAlligatorChildless = true;
 				break;
 			}
 			case COLOREDALLIGATOR_CHILDLESS: {
-				this.validateColoredAlligatorChildless = true;
+				validateColoredAlligatorChildless = true;
 				break;
 			}
 			case OBJECT_UNCOLORED: {
-				this.validateObjectUncolored = true;
+				validateObjectUncolored = true;
 				break;
 			}
 			case EMPTY_BOARD: {
-				this.validateEmptyBoard = true;
+				validateEmptyBoard = true;
 				break;
 			}
 			default: {

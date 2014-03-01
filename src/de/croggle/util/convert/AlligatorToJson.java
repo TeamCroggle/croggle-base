@@ -154,7 +154,7 @@ public class AlligatorToJson implements BoardObjectVisitor {
 	private String indent() {
 		String result = "";
 		for (int i = 0; i < depth; i++)
-			result += (char) '\t';
+			result += '\t';
 		return result;
 	}
 }

@@ -94,7 +94,7 @@ class WorldPane extends Group {
 			}
 		}
 		localToParentCoordinates(point.set(x, y));
-		if (point.x <= this.b.getWidth() && point.y <= this.b.getHeight()) {
+		if (point.x <= b.getWidth() && point.y <= b.getHeight()) {
 			return this;
 		}
 		return null;

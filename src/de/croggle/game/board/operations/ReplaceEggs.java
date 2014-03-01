@@ -53,7 +53,7 @@ public class ReplaceEggs implements BoardObjectVisitor {
 			ColorController colorController) {
 		this.constellation = constellation;
 		this.eggColor = eggColor;
-		this.bornFamilyPrototype = bornFamily;
+		bornFamilyPrototype = bornFamily;
 		this.boardMessenger = boardMessenger;
 		this.colorController = colorController;
 
@@ -186,10 +186,10 @@ public class ReplaceEggs implements BoardObjectVisitor {
 		if (colorOverflowException != null) {
 			return;
 		}
-		if (egg.getColor().equals(this.eggColor)) {
+		if (egg.getColor().equals(eggColor)) {
 			InternalBoardObject replacement;
-			if (this.colorController != null) {
-				replacement = this.bornFamilyPrototype.copy();
+			if (colorController != null) {
+				replacement = bornFamilyPrototype.copy();
 				final Color[] locallyBoundColors = findLocallyBoundColors(egg);
 				final Color[] globallyBoundColors = findGloballyBoundColors(egg);
 
@@ -236,13 +236,13 @@ public class ReplaceEggs implements BoardObjectVisitor {
 
 				}
 			} else {
-				replacement = this.bornFamilyPrototype.copy();
+				replacement = bornFamilyPrototype.copy();
 			}
 
 			egg.getParent().replaceChild(egg, replacement);
 
-			if (this.boardMessenger != null) {
-				this.boardMessenger.notifyHatched(egg, replacement);
+			if (boardMessenger != null) {
+				boardMessenger.notifyHatched(egg, replacement);
 			}
 		}
 	}

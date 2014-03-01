@@ -67,7 +67,7 @@ public class Color implements Comparable<Color> {
 	 * @return the color id that this object is an instance of.
 	 */
 	public int getId() {
-		return this.id;
+		return id;
 	}
 
 	public static com.badlogic.gdx.graphics.Color[] getRepresentations() {
@@ -86,18 +86,18 @@ public class Color implements Comparable<Color> {
 			return false;
 
 		Color oColor = (Color) o;
-		return oColor.id == this.id;
+		return oColor.id == id;
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 5;
-		hash = 17 * hash + this.id;
+		hash = 17 * hash + id;
 		return hash;
 	}
 
 	public int compareTo(Color c) {
-		return this.id - c.id;
+		return id - c.id;
 	}
 
 	private static class UncoloredColor extends Color {

@@ -19,8 +19,8 @@ public class MapEntry<K, V> implements java.util.Map.Entry<K, V> {
 	 * @param value
 	 */
 	public MapEntry(final K key, final V value) {
-		this.k = key;
-		this.v = value;
+		k = key;
+		v = value;
 	}
 
 	@Override

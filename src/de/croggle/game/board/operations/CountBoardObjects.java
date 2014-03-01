@@ -21,7 +21,7 @@ public class CountBoardObjects implements BoardObjectVisitor {
 	 */
 	private CountBoardObjects(boolean countBoard, boolean countEgg,
 			boolean countAgedAlligator, boolean countColoredAlligator) {
-		this.count = 0;
+		count = 0;
 		this.countBoard = countBoard;
 		this.countEgg = countEgg;
 		this.countAgedAlligator = countAgedAlligator;

@@ -50,7 +50,7 @@ public class AlligatorToLambda implements BoardObjectVisitor {
 				// TODO this will result in crap
 				name = "" + (char) ('α' + n - 26);
 			}
-			this.names.put(c, name);
+			names.put(c, name);
 			return name;
 		}
 	}

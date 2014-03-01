@@ -20,7 +20,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	private List<T> flattened;
 
 	private FlattenTree() {
-		this.flattened = new LinkedList<T>();
+		flattened = new LinkedList<T>();
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void visitEgg(Egg egg) {
-		this.flattened.add((T) egg);
+		flattened.add((T) egg);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void visitColoredAlligator(ColoredAlligator alligator) {
-		this.flattened.add((T) alligator);
+		flattened.add((T) alligator);
 		alligator.acceptOnChildren(this);
 	}
 
@@ -110,7 +110,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void visitAgedAlligator(AgedAlligator alligator) {
-		this.flattened.add((T) alligator);
+		flattened.add((T) alligator);
 		alligator.acceptOnChildren(this);
 	}
 
@@ -121,7 +121,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	@Override
 	public void visitBoard(Board board) {
 		// Trust me, this will work :P
-		this.flattened.add((T) board);
+		flattened.add((T) board);
 		board.acceptOnChildren(this);
 	}
 }

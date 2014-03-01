@@ -21,7 +21,7 @@ public class GetParentHierarchy implements BoardObjectVisitor {
 	private List<Parent> parents;
 
 	private GetParentHierarchy() {
-		this.parents = new ArrayList<Parent>();
+		parents = new ArrayList<Parent>();
 	}
 
 	/**

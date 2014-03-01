@@ -48,10 +48,10 @@ public class ObjectBar extends Table {
 	 */
 	ObjectBar(BoardActorLayoutEditing editing) {
 		this.editing = editing;
-		this.colorBlind = editing.getBoardActor().getLayoutConfiguration()
+		colorBlind = editing.getBoardActor().getLayoutConfiguration()
 				.isColorBlindEnabled();
 
-		this.dragging = new BoardObjectActorDragging(editing);
+		dragging = new BoardObjectActorDragging(editing);
 
 		agedAlligator = new AgedAlligatorActor(new AgedAlligator(false, false));
 		coloredAlligator = new ColoredAlligatorActor(new ColoredAlligator(

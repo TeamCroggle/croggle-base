@@ -37,7 +37,7 @@ public class Egg implements InternalBoardObject, ColoredBoardObject {
 		this.parent = parent;
 		this.movable = movable;
 		this.removable = removable;
-		this.color = c;
+		color = c;
 		this.recolorable = recolorable;
 	}
 
@@ -59,7 +59,7 @@ public class Egg implements InternalBoardObject, ColoredBoardObject {
 	public Egg(boolean movable, boolean removable, Color c, boolean recolorable) {
 		this.movable = movable;
 		this.removable = removable;
-		this.color = c;
+		color = c;
 		this.recolorable = recolorable;
 	}
 
@@ -86,7 +86,7 @@ public class Egg implements InternalBoardObject, ColoredBoardObject {
 	 */
 	@Override
 	public Parent getParent() {
-		return this.parent;
+		return parent;
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class Egg implements InternalBoardObject, ColoredBoardObject {
 	 */
 	@Override
 	public void setColor(Color c) {
-		this.color = c;
+		color = c;
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class Egg implements InternalBoardObject, ColoredBoardObject {
 			return false;
 
 		Egg oEgg = (Egg) o;
-		return oEgg.color.equals(this.color);
+		return oEgg.color.equals(color);
 	}
 
 	@Override
@@ -187,9 +187,9 @@ public class Egg implements InternalBoardObject, ColoredBoardObject {
 		final Egg otherEgg = (Egg) other;
 		if (recoloring.containsKey(otherEgg.color)) {
 			final Color recoloredColor = recoloring.get(otherEgg.color);
-			return recoloredColor.equals(this.color);
+			return recoloredColor.equals(color);
 		} else {
-			return otherEgg.color.equals(this.color);
+			return otherEgg.color.equals(color);
 		}
 	}
 }

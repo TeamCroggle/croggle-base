@@ -50,7 +50,7 @@ class BoardObjectActorDragging {
 	protected final AgedAlligatorActor agedInvalidDragActor;
 
 	public BoardObjectActorDragging(BoardActorLayoutEditing editing) {
-		this.b = editing.getBoardActor();
+		b = editing.getBoardActor();
 
 		// TODO maybe bind the value somehow to BoardActor size changes
 		autoPanBorderWidth = Math.min(b.getWidth() / 2, 150);

@@ -44,8 +44,8 @@ public class Profile {
 	public Profile(String name, String picturePath) {
 		this.name = name;
 		this.picturePath = picturePath;
-		this.setting = new Setting();
-		this.statistic = new Statistic();
+		setting = new Setting();
+		statistic = new Statistic();
 
 	}
 

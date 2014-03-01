@@ -76,13 +76,13 @@ public class LevelController {
 		if (Gdx.app.getType() == ApplicationType.Android) {
 			dirHandle = Gdx.files
 					.internal(BackendHelper.getAssetDirPath() + "json/levels/"
-							+ String.format("%02d", this.packageIndex));
+							+ String.format("%02d", packageIndex));
 		} else {
 			// ApplicationType.Desktop ...
 			// TODO not necessary any more, it seems
 			dirHandle = Gdx.files
 					.internal(BackendHelper.getAssetDirPath() + "json/levels/"
-							+ String.format("%02d", this.packageIndex));
+							+ String.format("%02d", packageIndex));
 		}
 		FileHandle[] files = dirHandle.list();
 		String[] levelNames = new String[files.length];
@@ -92,8 +92,8 @@ public class LevelController {
 		int numberOfLevel = levelNames.length - 1;
 		levels = new ArrayList<Level>();
 		for (int i = 0; i < numberOfLevel; i++) {
-			levels.add(LevelLoadHelper.instantiate(this.packageIndex, i,
-					this.game));
+			levels.add(LevelLoadHelper.instantiate(packageIndex, i,
+					game));
 		}
 
 		for (int i = 0; i < levels.size(); i++) {

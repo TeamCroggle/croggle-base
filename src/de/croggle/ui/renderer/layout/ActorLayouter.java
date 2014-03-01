@@ -72,10 +72,10 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 	ActorLayouter(Board b, ActorLayoutConfiguration config) {
 		this.config = config;
 		this.b = b;
-		this.widthMap = CreateWidthMap.create(b,
+		widthMap = CreateWidthMap.create(b,
 				config.getUniformObjectWidth(),
 				config.getVerticalScaleFactor(), config.getHorizontalPadding());
-		this.currentPosition = config.getTreeOrigin().cpy();
+		currentPosition = config.getTreeOrigin().cpy();
 	}
 	
 	protected ActorLayoutConfiguration getConfig() {
@@ -271,13 +271,13 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 	 * Enter the next level inside the syntax tree
 	 */
 	private void goDeeper() {
-		this.scaling *= config.getVerticalScaleFactor();
+		scaling *= config.getVerticalScaleFactor();
 	}
 
 	/**
 	 * Leave the current level inside the syntax tree
 	 */
 	private void goHigher() {
-		this.scaling /= config.getVerticalScaleFactor();
+		scaling /= config.getVerticalScaleFactor();
 	}
 }

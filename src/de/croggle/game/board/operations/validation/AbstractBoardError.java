@@ -16,6 +16,6 @@ public abstract class AbstractBoardError implements BoardError {
 
 	@Override
 	public BoardObject getCause() {
-		return this.cause;
+		return cause;
 	}
 }

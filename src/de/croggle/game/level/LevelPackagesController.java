@@ -49,7 +49,7 @@ public class LevelPackagesController {
 	 * @return a List of levelPackages
 	 */
 	public List<LevelPackage> getLevelPackages() {
-		return this.levelPackages;
+		return levelPackages;
 	}
 
 	/**

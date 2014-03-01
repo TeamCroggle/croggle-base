@@ -65,16 +65,16 @@ public class GameController implements BoardEventListener {
 	public GameController(AlligatorApp app, Level level) {
 		this.app = app;
 		this.level = level;
-		this.elapsedTime = 0;
-		this.timeStamp = TimeUtils.millis();
+		elapsedTime = 0;
+		timeStamp = TimeUtils.millis();
 		setupColorController();
-		this.shownBoard = level.getInitialBoard().copy();
-		this.userBoard = shownBoard;
-		this.statisticsDelta = new Statistic();
-		this.simulationMessenger = new BoardEventMessenger();
-		this.placementMessenger = new BoardEventMessenger();
-		this.statisticsDeltaProcessors = new ArrayList<StatisticsDeltaProcessor>();
-		this.simulationPaused = false;
+		shownBoard = level.getInitialBoard().copy();
+		userBoard = shownBoard;
+		statisticsDelta = new Statistic();
+		simulationMessenger = new BoardEventMessenger();
+		placementMessenger = new BoardEventMessenger();
+		statisticsDeltaProcessors = new ArrayList<StatisticsDeltaProcessor>();
+		simulationPaused = false;
 
 		simulationMessenger.register(this);
 		placementMessenger.register(this);
@@ -95,7 +95,7 @@ public class GameController implements BoardEventListener {
 	 * @return the game's current ColorController
 	 */
 	public ColorController getColorController() {
-		return this.colorController;
+		return colorController;
 	}
 
 	/**
@@ -391,7 +391,7 @@ public class GameController implements BoardEventListener {
 	}
 
 	public void setTimeStamp() {
-		this.timeStamp = TimeUtils.millis();
+		timeStamp = TimeUtils.millis();
 	}
 
 	public Level getLevel() {

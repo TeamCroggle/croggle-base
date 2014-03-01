@@ -16,7 +16,7 @@ public class FindEating implements BoardObjectVisitor {
 	 * Creates a new visitor with no found alligator.
 	 */
 	private FindEating() {
-		this.eater = null;
+		eater = null;
 	}
 
 	/**
@@ -50,12 +50,12 @@ public class FindEating implements BoardObjectVisitor {
 	@Override
 	public void visitColoredAlligator(ColoredAlligator alligator) {
 		if (canEat(alligator)) {
-			this.eater = alligator;
+			eater = alligator;
 			return;
 		} else {
 			for (InternalBoardObject child : alligator) {
 				child.accept(this);
-				if (this.eater != null) {
+				if (eater != null) {
 					break;
 				}
 			}
@@ -69,7 +69,7 @@ public class FindEating implements BoardObjectVisitor {
 	public void visitAgedAlligator(AgedAlligator alligator) {
 		for (InternalBoardObject child : alligator) {
 			child.accept(this);
-			if (this.eater != null) {
+			if (eater != null) {
 				break;
 			}
 		}
@@ -82,7 +82,7 @@ public class FindEating implements BoardObjectVisitor {
 	public void visitBoard(Board board) {
 		for (InternalBoardObject child : board) {
 			child.accept(this);
-			if (this.eater != null) {
+			if (eater != null) {
 				break;
 			}
 		}

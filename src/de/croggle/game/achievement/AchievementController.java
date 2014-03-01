@@ -37,8 +37,8 @@ public class AchievementController {
 	 *            the backreference to the central game object
 	 */
 	public AchievementController(AlligatorApp game) {
-		this.availableAchievements = new ArrayList<Achievement>();
-		this.latestUnlockedAchievements = new ArrayList<Achievement>();
+		availableAchievements = new ArrayList<Achievement>();
+		latestUnlockedAchievements = new ArrayList<Achievement>();
 		this.game = game;
 		initiateAvailableAchievements();
 

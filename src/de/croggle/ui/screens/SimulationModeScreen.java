@@ -71,7 +71,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 	public SimulationModeScreen(AlligatorApp game, GameController controller)
 			throws IllegalBoardException {
 		super(game);
-		this.gameController = controller;
+		gameController = controller;
 		gameController.enterSimulation();
 
 		// load the texture atlas

@@ -52,12 +52,12 @@ public class ColorSelectorPopup extends Table {
 					"ColorSelectPopup can only work on ColoredBoardObjects which allow  recoloring.");
 		}
 
-		this.boardObject = c;
-		this.messenger = editing.getMessenger();
+		boardObject = c;
+		messenger = editing.getMessenger();
 		ActorLayoutConfiguration config = editing.getLayout()
 				.getLayoutConfiguration();
-		this.cctrl = config.getColorController();
-		this.colorBlindEnabled = config.isColorBlindEnabled();
+		cctrl = config.getColorController();
+		colorBlindEnabled = config.isColorBlindEnabled();
 
 		this.setBackground(StyleHelper.getInstance().getDrawable(
 				"widgets/button"));
@@ -72,10 +72,10 @@ public class ColorSelectorPopup extends Table {
 		public void clicked(InputEvent event, float x, float y) {
 			Vector2 point = new Vector2(x, y);
 			Group g = (Group) event.getListenerActor();
-			if(g.isAscendantOf(ColorSelectorPopup.this)){
+			if (g.isAscendantOf(ColorSelectorPopup.this)) {
 				point = g.localToDescendantCoordinates(ColorSelectorPopup.this,
 						point);
-	
+
 				if (ColorSelectorPopup.this.getParent() != null
 						&& ColorSelectorPopup.this.hit(point.x, point.y, true) == null) {
 					((BoardActor) (ColorSelectorPopup.this.getParent()))

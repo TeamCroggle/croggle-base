@@ -31,7 +31,8 @@ public abstract class Achievement {
 	}
 
 	/**
-	 * Returns the path to the picture that represents the achievement in its achieved state.
+	 * Returns the path to the picture that represents the achievement in its
+	 * achieved state.
 	 * 
 	 * @param index
 	 *            the stage index for which the emblem path should be returned
@@ -40,9 +41,10 @@ public abstract class Achievement {
 	public String getEmblemPathAchieved(int index) {
 		return emblemPathAchieved[index];
 	}
-	
+
 	/**
-	 * Returns the path to the picture that represents the achievement in its unachieved state.
+	 * Returns the path to the picture that represents the achievement in its
+	 * unachieved state.
 	 * 
 	 * @param index
 	 *            the stage index for which the emblem path should be returned
@@ -115,12 +117,13 @@ public abstract class Achievement {
 	}
 
 	public void setEmblemPathachieved(String[] emblemPath) {
-		this.emblemPathAchieved = emblemPath;
+		emblemPathAchieved = emblemPath;
 	}
 
 	public void setEmblemPathnotachieved(String[] emblemPath) {
-		this.emblemPathNotAchieved = emblemPath;
+		emblemPathNotAchieved = emblemPath;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}

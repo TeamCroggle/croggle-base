@@ -44,19 +44,19 @@ public class ActorLayoutConfiguration {
 	 * 
 	 */
 	public ActorLayoutConfiguration() {
-		this.treeOrigin = new Vector2(0, 0);
-		this.colorController = null;
-		this.verticalScaleFactor = .75f;
-		this.colorBlindEnabled = false;
+		treeOrigin = new Vector2(0, 0);
+		colorController = null;
+		verticalScaleFactor = .75f;
+		colorBlindEnabled = false;
 
-		this.horizontalGrowth = TreeGrowth.NEG_POS;
-		this.verticalGrowth = TreeGrowth.POS_NEG;
+		horizontalGrowth = TreeGrowth.NEG_POS;
+		verticalGrowth = TreeGrowth.POS_NEG;
 
-		this.renderDirectionX = TreeGrowth.NEG_POS;
-		this.renderDirectionY = TreeGrowth.NEG_POS;
+		renderDirectionX = TreeGrowth.NEG_POS;
+		renderDirectionY = TreeGrowth.NEG_POS;
 
-		this.horizontalPadding = 0;
-		this.verticalPadding = 0;
+		horizontalPadding = 0;
+		verticalPadding = 0;
 
 		eggWidth = 100;
 		eggHeight = 70;
@@ -67,8 +67,8 @@ public class ActorLayoutConfiguration {
 		coloredAlligatorWidth = agedAlligatorWidth;
 		coloredAlligatorHeight = 80;
 
-		this.uniformObjectWidth = 150;
-		this.uniformObjectHeight = 80;
+		uniformObjectWidth = 150;
+		uniformObjectHeight = 80;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class ActorLayoutConfiguration {
 			float agedAlligatorWidth, float agedAlligatorHeight,
 			float coloredAlligatorWidth, float coloredAlligatorHeight) {
 		this.treeOrigin = treeOrigin;
-		this.colorController = controller;
+		colorController = controller;
 		this.verticalScaleFactor = verticalScaleFactor;
 		this.colorBlindEnabled = colorBlindEnabled;
 
@@ -151,9 +151,9 @@ public class ActorLayoutConfiguration {
 		this.coloredAlligatorWidth = coloredAlligatorWidth;
 		this.coloredAlligatorHeight = coloredAlligatorHeight;
 
-		this.uniformObjectWidth = Math.max(
+		uniformObjectWidth = Math.max(
 				Math.max(eggWidth, coloredAlligatorWidth), agedAlligatorWidth);
-		this.uniformObjectHeight = Math.max(
+		uniformObjectHeight = Math.max(
 				Math.max(eggHeight, coloredAlligatorHeight),
 				agedAlligatorHeight);
 	}
@@ -244,7 +244,7 @@ public class ActorLayoutConfiguration {
 	 */
 	public ActorLayoutConfiguration setVerticalScaleFactor(
 			float verticaleScaleFactor) {
-		this.verticalScaleFactor = verticaleScaleFactor;
+		verticalScaleFactor = verticaleScaleFactor;
 		return this;
 	}
 
@@ -347,11 +347,11 @@ public class ActorLayoutConfiguration {
 	}
 
 	private void newWidth(float width) {
-		this.uniformObjectWidth = Math.max(width, uniformObjectWidth);
+		uniformObjectWidth = Math.max(width, uniformObjectWidth);
 	}
 
 	private void newHeight(float height) {
-		this.uniformObjectHeight = Math.max(height, uniformObjectHeight);
+		uniformObjectHeight = Math.max(height, uniformObjectHeight);
 	}
 
 	/**

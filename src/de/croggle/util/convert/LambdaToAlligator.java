@@ -87,7 +87,7 @@ public class LambdaToAlligator {
 		expr = expr.replaceAll("\\s+", " ").trim();
 
 		UnparsedObject unp = new UnparsedObject(expr);
-		this.unparsedDeque.add(unp);
+		unparsedDeque.add(unp);
 		b.addChild(unp);
 
 		// stage one parsing
@@ -437,13 +437,13 @@ public class LambdaToAlligator {
 		String rest = e.substring(end);
 		if (!rest.trim().equals("")) {
 			UnparsedObject restObj = new UnparsedObject(rest);
-			this.unparsedDeque.addFirst(restObj);
+			unparsedDeque.addFirst(restObj);
 			p.insertChild(restObj, p.getChildPosition(o) + 1);
 		}
 
 		p.replaceChild(o, varObj);
-		this.unparsedDeque.remove(o);
-		this.unparsedDeque.addLast(varObj);
+		unparsedDeque.remove(o);
+		unparsedDeque.addLast(varObj);
 	}
 
 	/**
@@ -465,8 +465,8 @@ public class LambdaToAlligator {
 		}
 
 		public UnparsedObject(UnparsedObject o) {
-			this.parent = o.parent;
-			this.expr = o.expr;
+			parent = o.parent;
+			expr = o.expr;
 		}
 
 		/**
@@ -485,7 +485,7 @@ public class LambdaToAlligator {
 
 		@Override
 		public Parent getParent() {
-			return this.parent;
+			return parent;
 		}
 
 		@Override

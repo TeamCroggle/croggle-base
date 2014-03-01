@@ -19,7 +19,7 @@ public class RingBuffer<T> {
 	@SuppressWarnings("unchecked")
 	public RingBuffer(int size) {
 		assert size > 0 : "Cannot initialize RingBuffer with size smaller 0.";
-		this.buffer = (T[]) new Object[size];
+		buffer = (T[]) new Object[size];
 	}
 
 	/**

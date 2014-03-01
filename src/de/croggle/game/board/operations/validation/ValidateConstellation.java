@@ -112,8 +112,8 @@ public class ValidateConstellation extends AbstractBoardValidator implements
 	 *            the ColoredBoardObject to be validated
 	 */
 	private void validateColoredObject(ColoredBoardObject cbo) {
-		if (this.validateObjectUncolored) {
-			this.isValid &= !cbo.getColor().equals(Color.uncolored());
+		if (validateObjectUncolored) {
+			isValid &= !cbo.getColor().equals(Color.uncolored());
 		}
 	}
 
@@ -129,7 +129,7 @@ public class ValidateConstellation extends AbstractBoardValidator implements
 	 */
 	private void validateParent(Parent p, boolean validationEnabled) {
 		if (validationEnabled && p.getChildCount() == 0) {
-			this.isValid = false;
+			isValid = false;
 		} else {
 			for (InternalBoardObject child : p) {
 				child.accept(this);

@@ -58,16 +58,16 @@ class BoardActorLayoutEditing {
 	public BoardActorLayoutEditing(BoardActor b, BoardEventMessenger messenger,
 			boolean objectBar) {
 		this.b = b;
-		this.dragging = new BoardObjectActorDragging(this);
+		dragging = new BoardObjectActorDragging(this);
 		this.messenger = messenger;
-		this.temporaryTargets = new ArrayList<Target>();
+		temporaryTargets = new ArrayList<Target>();
 
-		this.dnd = new DragAndDrop();
+		dnd = new DragAndDrop();
 
 		if (objectBar) {
-			this.obar = new ObjectBar(this);
+			obar = new ObjectBar(this);
 		} else {
-			this.obar = null;
+			obar = null;
 		}
 
 		// TODO not really elegant

@@ -29,7 +29,7 @@ public class RemoveAgedAlligators implements BoardObjectVisitor {
 	 * 
 	 */
 	private RemoveAgedAlligators() {
-		this.boardMessenger = null;
+		boardMessenger = null;
 	}
 
 	/**

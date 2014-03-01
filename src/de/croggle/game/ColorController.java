@@ -75,7 +75,7 @@ public class ColorController {
 	}
 
 	public de.croggle.game.Color getUncolored() {
-		return this.uncolored;
+		return uncolored;
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class ColorController {
 	 *            a color to be marked as usable
 	 */
 	public void addUsableColor(de.croggle.game.Color color) {
-		this.usableColors.add(color);
+		usableColors.add(color);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class ColorController {
 	 *            a color to be blocked
 	 */
 	public void addBlockedColor(de.croggle.game.Color color) {
-		this.bannedColors.add(color);
+		bannedColors.add(color);
 	}
 
 	/**
@@ -163,8 +163,8 @@ public class ColorController {
 	 * @return an array of all currently usable colors
 	 */
 	public de.croggle.game.Color[] getUsableColors() {
-		return this.usableColors
-				.toArray(new de.croggle.game.Color[this.usableColors.size()]);
+		return usableColors
+				.toArray(new de.croggle.game.Color[usableColors.size()]);
 	}
 
 	/**
@@ -175,7 +175,7 @@ public class ColorController {
 	 * @return whether the given color is blocked or not
 	 */
 	public boolean isBlocked(de.croggle.game.Color color) {
-		return this.bannedColors.contains(color);
+		return bannedColors.contains(color);
 	}
 
 	/**
@@ -186,6 +186,6 @@ public class ColorController {
 	 * @return whether the given color is usable or not
 	 */
 	public boolean isUsable(de.croggle.game.Color color) {
-		return this.usableColors.contains(color);
+		return usableColors.contains(color);
 	}
 }

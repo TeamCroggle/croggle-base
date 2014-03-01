@@ -32,7 +32,7 @@ public abstract class EditLevel extends Level {
 	 * @return the user colors of this level
 	 */
 	public Color[] getUserColor() {
-		return this.userColors;
+		return userColors;
 	}
 
 	/**
@@ -41,7 +41,7 @@ public abstract class EditLevel extends Level {
 	 * @return the blocked colors of this level
 	 */
 	public Color[] getBlockedColor() {
-		return this.blockedColors;
+		return blockedColors;
 	}
 
 	@Override

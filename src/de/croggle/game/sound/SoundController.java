@@ -119,8 +119,8 @@ public class SoundController implements SettingChangeListener {
 
 	@Override
 	public void onSettingChange(Setting setting) {
-		this.volumeEffects = setting.getVolumeEffects();
-		this.volumeMusic = setting.getVolumeMusic();
+		volumeEffects = setting.getVolumeEffects();
+		volumeMusic = setting.getVolumeMusic();
 		if (mMusic != null) {
 			mMusic.setVolume(volumeMusic);
 		}
