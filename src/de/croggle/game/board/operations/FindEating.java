@@ -41,7 +41,6 @@ public class FindEating implements BoardObjectVisitor {
 	 */
 	@Override
 	public void visitEgg(Egg egg) {
-		return;
 	}
 
 	/**

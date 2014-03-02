@@ -63,7 +63,6 @@ public class RemoveAgedAlligators implements BoardObjectVisitor {
 	 */
 	@Override
 	public void visitEgg(Egg egg) {
-		return;
 	}
 
 	/**
@@ -94,11 +93,13 @@ public class RemoveAgedAlligators implements BoardObjectVisitor {
 	}
 
 	private void checkChildren(Parent p) {
+		InternalBoardObject child;
+		AgedAlligator aged;
 		for (int i = 0; i < p.getChildCount();) {
-			InternalBoardObject child = p.getChildAtPosition(i);
+			child = p.getChildAtPosition(i);
 			if (child.getClass() == AgedAlligator.class
 					&& ((AgedAlligator) child).getChildCount() <= 1) {
-				AgedAlligator aged = (AgedAlligator) child;
+				aged = (AgedAlligator) child;
 				if (aged.getChildCount() == 0) {
 					p.removeChild(child);
 					if (boardMessenger != null) {

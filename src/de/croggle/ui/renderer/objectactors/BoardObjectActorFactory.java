@@ -79,7 +79,6 @@ public class BoardObjectActorFactory {
 			break;
 		}
 		case AGED_ALLIGATOR: {
-			AgedAlligatorActor aa = (AgedAlligatorActor) a;
 			AgedAlligatorActor res = new AgedAlligatorActor((AgedAlligator) ibo);
 			result = res;
 			break;

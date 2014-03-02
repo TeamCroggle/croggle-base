@@ -126,11 +126,12 @@ public class ProfileManager extends TableManager {
 		String selectQuery = "SELECT  * FROM " + TABLE_NAME;
 		Cursor cursor = database.rawQuery(selectQuery, null);
 		if (cursor.moveToFirst()) {
+			String name;
+			String path;
 			do {
-				String name = cursor.getString(cursor
-						.getColumnIndex(KEY_PROFILE_NAME));
-				String path = cursor.getString(cursor
-						.getColumnIndex(KEY_PICTUREPATH));
+				name = cursor
+						.getString(cursor.getColumnIndex(KEY_PROFILE_NAME));
+				path = cursor.getString(cursor.getColumnIndex(KEY_PICTUREPATH));
 				profileList.add(new Profile(name, path));
 			} while (cursor.moveToNext());
 		}

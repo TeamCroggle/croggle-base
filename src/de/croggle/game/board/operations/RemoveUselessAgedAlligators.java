@@ -51,8 +51,8 @@ public class RemoveUselessAgedAlligators implements BoardObjectVisitor {
 		// traverse all children
 		while (firstNotEggPosition < p.getChildCount()) {
 			// children must be eggs
-			if ((currentChild = p.getChildAtPosition(firstNotEggPosition))
-					.getClass() != Egg.class) {
+			currentChild = p.getChildAtPosition(firstNotEggPosition);
+			if (currentChild.getClass() != Egg.class) {
 				break;
 			}
 			// and free

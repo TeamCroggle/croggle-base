@@ -81,7 +81,7 @@ public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 	}
 
 	@Override
-	public void dispose() {
+	public synchronized void dispose() {
 		super.dispose();
 		uncoloredColor.dispose();
 		uncoloredPattern.dispose();

@@ -55,9 +55,11 @@ public class AchievementController {
 			SparseArray<Integer> tupels) {
 		// TODO is this method necessary? Does not seem to be used anywhere
 		List<Achievement> converted = new ArrayList<Achievement>();
+		int id;
+		Achievement achievement;
 		for (int i = 0; i < tupels.size(); i++) {
-			int id = tupels.keyAt(i);
-			Achievement achievement = AchievementFactory.createAchievement(id);
+			id = tupels.keyAt(i);
+			achievement = AchievementFactory.createAchievement(id);
 			achievement.setIndex(tupels.valueAt(i));
 			converted.add(achievement);
 		}

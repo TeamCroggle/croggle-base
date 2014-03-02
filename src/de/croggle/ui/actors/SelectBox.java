@@ -30,16 +30,18 @@ public class SelectBox extends com.badlogic.gdx.scenes.scene2d.ui.SelectBox {
 		SelectBoxStyle style = getStyle();
 		String[] items = getItems();
 		int selectedIndex = getSelectionIndex();
-		if (disabled)
+		if (disabled) {
 			background = style.backgroundDisabled;
+		}
 		// TODO not elegant
 		// else if (list != null && list.getParent() != null
 		// && style.backgroundOpen != null)
 		// background = style.backgroundOpen;
 		// else if (clickListener.isOver() && style.backgroundOver != null)
 		// background = style.backgroundOver;
-		else
+		else {
 			background = style.background;
+		}
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
 				: style.fontColor;

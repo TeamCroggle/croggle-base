@@ -18,7 +18,7 @@ import de.croggle.game.board.Parent;
  */
 public class GetParentHierarchy implements BoardObjectVisitor {
 
-	private List<Parent> parents;
+	private final List<Parent> parents;
 
 	private GetParentHierarchy() {
 		parents = new ArrayList<Parent>();
@@ -79,7 +79,6 @@ public class GetParentHierarchy implements BoardObjectVisitor {
 	@Override
 	public void visitBoard(Board board) {
 		// has no parents
-		return;
 	}
 
 }

@@ -25,7 +25,6 @@ public class PatternBuilder {
 		} else {
 			pattern.setColor(0, 0, 0, alpha);
 		}
-		final int center = width / 2;
 		pattern.fillCircle(width / 2, width / 2, (int) (.35 * width));
 		return pattern;
 	}

@@ -215,8 +215,9 @@ class LevelLoadHelper {
 			color[i] = new Color(json.getInt(i));
 		}
 
+		int id;
 		for (int i = 0; i < size; i++) {
-			int id = color[i].getId();
+			id = color[i].getId();
 			for (int k = 0; k < i; k++) {
 				if (id == color[k].getId()) {
 					throw new InvalidJsonException(

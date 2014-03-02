@@ -2,6 +2,7 @@ package de.croggle.util.convert;
 
 import java.util.Iterator;
 
+import de.croggle.backends.BackendHelper;
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.Board;
 import de.croggle.game.board.BoardObject;
@@ -115,23 +116,26 @@ public class AlligatorToJson implements BoardObjectVisitor {
 	private void printChildren(Parent p, boolean indentBefore,
 			boolean breakAfter) {
 		if (p.getChildCount() < 1) {
-			if (indentBefore)
+			if (indentBefore) {
 				print(indent() + "[]");
-			else
+			} else {
 				print("[]");
-			if (breakAfter)
-				print("\n");
+			}
+			if (breakAfter) {
+				print(BackendHelper.lineSeparator);
+			}
 		} else {
-			if (indentBefore)
+			if (indentBefore) {
 				println("[");
-			else
-				print("[\n");
+			} else {
+				print("[" + BackendHelper.lineSeparator);
+			}
 			depth++;
 			Iterator<InternalBoardObject> i = p.iterator();
 			while (i.hasNext()) {
 				i.next().accept(this);
 				if (i.hasNext()) {
-					print(",\n");
+					print("," + BackendHelper.lineSeparator);
 				}
 			}
 			depth--;
@@ -144,7 +148,7 @@ public class AlligatorToJson implements BoardObjectVisitor {
 	}
 
 	private void println(String line) {
-		result += indent() + line + "\n";
+		result += indent() + line + BackendHelper.lineSeparator;
 	}
 
 	private void print(String s) {

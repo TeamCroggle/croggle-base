@@ -14,7 +14,7 @@ import de.croggle.game.board.Parent;
 
 public class CreateWidthMap implements BoardObjectVisitor {
 
-	private Map<BoardObject, Float> widthMap;
+	private final Map<BoardObject, Float> widthMap;
 
 	private final float objectWidth;
 	private final float scaleFactor;
@@ -99,8 +99,9 @@ public class CreateWidthMap implements BoardObjectVisitor {
 		float childWidth = 0;
 		goDeeper();
 		Iterator<InternalBoardObject> it = p.iterator();
+		InternalBoardObject child;
 		while (it.hasNext()) {
-			InternalBoardObject child = it.next();
+			child = it.next();
 			child.accept(this);
 			childWidth += widthMap.get(child);
 			if (it.hasNext()) {

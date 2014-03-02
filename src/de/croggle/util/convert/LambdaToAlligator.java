@@ -241,10 +241,11 @@ public class LambdaToAlligator {
 		InternalBoardObject current = null;
 		int open = 0;
 		while (!((current = i.next()).getClass() == ClosingBrace.class && open == 0)) {
-			if (current.getClass() == OpeningBrace.class)
+			if (current.getClass() == OpeningBrace.class) {
 				open++;
-			else if (current.getClass() == ClosingBrace.class)
+			} else if (current.getClass() == ClosingBrace.class) {
 				open--;
+			}
 
 			if (!i.hasNext()) {
 				throw new IllegalArgumentException("Brace not closed");
@@ -368,10 +369,11 @@ public class LambdaToAlligator {
 		int open = 0;
 		int i;
 		for (i = 1; !(e.charAt(i) == ')' && open == 0); i++) {
-			if (e.charAt(i) == '(')
+			if (e.charAt(i) == '(') {
 				open++;
-			else if (e.charAt(i) == ')')
+			} else if (e.charAt(i) == ')') {
 				open--;
+			}
 			if (i == e.length() - 1) {
 				throw new IllegalArgumentException("Brace not closed");
 			}
