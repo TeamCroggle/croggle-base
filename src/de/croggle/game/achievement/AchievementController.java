@@ -37,8 +37,8 @@ public class AchievementController {
 	 *            the backreference to the central game object
 	 */
 	public AchievementController(AlligatorApp game) {
-		availableAchievements = new ArrayList<Achievement>();
-		latestUnlockedAchievements = new ArrayList<Achievement>();
+		this.availableAchievements = new ArrayList<Achievement>();
+		this.latestUnlockedAchievements = new ArrayList<Achievement>();
 		this.game = game;
 		initiateAvailableAchievements();
 
@@ -55,11 +55,9 @@ public class AchievementController {
 			SparseArray<Integer> tupels) {
 		// TODO is this method necessary? Does not seem to be used anywhere
 		List<Achievement> converted = new ArrayList<Achievement>();
-		int id;
-		Achievement achievement;
 		for (int i = 0; i < tupels.size(); i++) {
-			id = tupels.keyAt(i);
-			achievement = AchievementFactory.createAchievement(id);
+			int id = tupels.keyAt(i);
+			Achievement achievement = AchievementFactory.createAchievement(id);
 			achievement.setIndex(tupels.valueAt(i));
 			converted.add(achievement);
 		}
@@ -93,11 +91,14 @@ public class AchievementController {
 		PersistenceManager pm = game.getPersistenceManager();
 		SparseArray<Integer> unlockedAchievements = pm
 				.getAllUnlockedAchievements(profileName);
-
-		for (Achievement achievement : availableAchievements) {
-			achievement.setIndex(unlockedAchievements.get(achievement.getId()));
+		if (unlockedAchievements != null) {
+			for (Achievement achievement : availableAchievements) {
+				achievement.setIndex(unlockedAchievements.get(achievement.getId()));
+			}
+		} else {
+			initiateAvailableAchievements();
 		}
-
+		
 	}
 
 	/**

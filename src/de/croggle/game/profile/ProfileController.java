@@ -101,7 +101,7 @@ public class ProfileController {
 			throws IllegalArgumentException, ProfileOverflowException {
 		if (!isValidUserName(name)) {
 			throw new IllegalArgumentException();
-		} else if (game.getPersistenceManager().getAllProfiles().size() > MAX_PROFILE_NUMBER) {
+		} else if (game.getPersistenceManager().getAllProfiles().size() >= MAX_PROFILE_NUMBER) {
 			throw new ProfileOverflowException();
 		} else {
 			Profile newProfile = new Profile(name, picturePath);
@@ -111,8 +111,8 @@ public class ProfileController {
 	}
 
 	/**
-	 * Replaces the active profile entirely by the given new one. There must be
-	 * an active profile set (not null).
+	 * Replaces the name and the picture path of the active profile with the new
+	 * ones. There must be an active profile set (not null).
 	 * 
 	 * @param name
 	 *            the new unique name of the owner of the profile
@@ -120,24 +120,23 @@ public class ProfileController {
 	 *            the new picture path to the picture associated with the
 	 *            profile
 	 * @throws IllegalArgumentException
-	 *             when the given profile is null or its name already identifies
-	 *             another profile
+	 *             when the name already identifies another profile
 	 */
 	public void editCurrentProfile(String name, String picturePath)
 			throws IllegalArgumentException {
-		if (!name.equals(getCurrentProfileName())
-				&& game.getPersistenceManager().isNameUsed(name)) {
-			throw new IllegalArgumentException();
-		} else if (!name.equals(getCurrentProfileName())
-				|| !(currentProfile != null && picturePath
-						.equals(currentProfile.getPicturePath()))) {
-			Profile profile = new Profile(name, picturePath);
-			game.getPersistenceManager().editProfile(currentProfile.getName(),
-					profile);
-			changeCurrentProfile(name);
+		if (currentProfile != null) {
+			if (!name.equals(getCurrentProfileName())
+					&& game.getPersistenceManager().isNameUsed(name)) {
+				throw new IllegalArgumentException();
+			} else if (!name.equals(getCurrentProfileName())
+					|| !picturePath.equals(currentProfile.getPicturePath())) {
+				Profile profile = new Profile(name, picturePath);
+				game.getPersistenceManager().editProfile(
+						currentProfile.getName(), profile);
+				changeCurrentProfile(name);
 
+			}
 		}
-
 	}
 
 	/**
@@ -218,6 +217,8 @@ public class ProfileController {
 		Preferences prefs = Gdx.app.getPreferences("Profile Preferences");
 		prefs.remove("activeProfile");
 		prefs.flush();
+		currentProfile = null;
+		updateControllers("");
 	}
 
 	/**

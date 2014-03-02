@@ -100,12 +100,11 @@ public class AchievementManager extends TableManager {
 	 */
 	SparseArray<Integer> getUnlockedAchievements(String profileName) {
 
-		SparseArray<Integer> unlockedAchievements = new SparseArray<Integer>();
-
 		String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
 				+ KEY_PROFILE_NAME + " = '" + profileName + "'";
 		Cursor cursor = database.rawQuery(selectQuery, null);
 		if (cursor.moveToFirst()) {
+			SparseArray<Integer> unlockedAchievements = new SparseArray<Integer>();
 			Integer unlockedFound;
 			int achievementId;
 			int index;
@@ -121,8 +120,9 @@ public class AchievementManager extends TableManager {
 									+ unlockedFound);
 				}
 			} while (cursor.moveToNext());
+			return unlockedAchievements;
 		}
-		return unlockedAchievements;
+		return null;
 	}
 
 	@Override
