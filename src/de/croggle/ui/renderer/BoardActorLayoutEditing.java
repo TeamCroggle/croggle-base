@@ -459,7 +459,12 @@ class BoardActorLayoutEditing {
 						placeHolderActor.setHeight(targetActor.getHeight());
 						InternalBoardObject placeholder = placeHolderActor
 								.getBoardObject();
-						extractBoardObject(placeholder);
+						if (placeholder.getParent() == parent) {
+							extractBoardObject(placeholder);
+							targetChildPos = parent.getChildPosition(target);
+						} else {
+							extractBoardObject(placeholder);
+						}
 
 						if (x < left) {
 							placeHolderActor.setActualX(targetActor.getX());
