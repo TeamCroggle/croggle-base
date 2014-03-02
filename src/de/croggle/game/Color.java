@@ -80,10 +80,15 @@ public class Color implements Comparable<Color> {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == null)
+		if (o == null) {
 			return false;
-		if (o.getClass() != Color.class)
+		}
+		if (o == this) {
+			return true;
+		}
+		if (o.getClass() != Color.class) {
 			return false;
+		}
 
 		Color oColor = (Color) o;
 		return oColor.id == id;
@@ -96,6 +101,7 @@ public class Color implements Comparable<Color> {
 		return hash;
 	}
 
+	@Override
 	public int compareTo(Color c) {
 		return id - c.id;
 	}

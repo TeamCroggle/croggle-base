@@ -409,7 +409,7 @@ public class LambdaToAlligator {
 	}
 
 	/**
-	 * Extracts the first occuring variable (starting at the beginning of the
+	 * Extracts the first occurring variable (starting at the beginning of the
 	 * unparsed term) from the given UnparsedObject and replaces it with it and
 	 * the remaining unparsed term.
 	 * 
@@ -420,18 +420,33 @@ public class LambdaToAlligator {
 	private void splitVariable(UnparsedObject o) {
 		Parent p = o.getParent();
 		String e = o.getExpr();
-		int end = e.length();
-		int elen = e.length();
-		int i = e.indexOf('(');
-		end = Math.min(end, i < 0 ? elen : i);
-		i = e.indexOf(')');
-		end = Math.min(end, i < 0 ? elen : i);
-		i = e.indexOf(bindPrfx);
-		end = Math.min(end, i < 0 ? elen : i);
-		i = e.indexOf(bindPstfx);
-		end = Math.min(end, i < 0 ? elen : i);
-		i = e.indexOf(' ');
-		end = Math.min(end, i < 0 ? elen : i);
+		final int elen = e.length();
+		int i = 0;
+		final char prfxId = bindPrfx.charAt(0);
+		final char pstfxId = bindPstfx.charAt(0);
+		loop: for (; i < elen; i++) {
+			switch (e.charAt(i)) {
+			case '(':
+			case ')':
+			case ' ': {
+				break loop;
+			}
+			default: {
+				if (e.charAt(i) == prfxId) {
+					if (e.substring(i, i + bindPrfx.length()).equals(bindPrfx)) {
+						break loop;
+					}
+				} else if (e.charAt(i) == pstfxId) {
+					if (e.substring(i, i + bindPstfx.length())
+							.equals(bindPstfx)) {
+						break loop;
+					}
+				}
+			}
+				break;
+			}
+		}
+		final int end = i;
 
 		String var = e.substring(0, end);
 		Variable varObj = new Variable(var);
