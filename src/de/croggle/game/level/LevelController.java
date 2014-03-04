@@ -3,7 +3,6 @@ package de.croggle.game.level;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -73,17 +72,8 @@ public class LevelController {
 	 */
 	private void getLevelFromPackage() {
 		FileHandle dirHandle;
-		if (Gdx.app.getType() == ApplicationType.Android) {
-			dirHandle = Gdx.files
-					.internal(BackendHelper.getAssetDirPath() + "json/levels/"
-							+ String.format("%02d", packageIndex));
-		} else {
-			// ApplicationType.Desktop ...
-			// TODO not necessary any more, it seems
-			dirHandle = Gdx.files
-					.internal(BackendHelper.getAssetDirPath() + "json/levels/"
-							+ String.format("%02d", packageIndex));
-		}
+		dirHandle = Gdx.files.internal(BackendHelper.getAssetDirPath()
+				+ "json/levels/" + String.format("%02d", packageIndex));
 		FileHandle[] files = dirHandle.list();
 		String[] levelNames = new String[files.length];
 		for (int i = 0; i < files.length; i++) {
@@ -92,8 +82,7 @@ public class LevelController {
 		int numberOfLevel = levelNames.length - 1;
 		levels = new ArrayList<Level>();
 		for (int i = 0; i < numberOfLevel; i++) {
-			levels.add(LevelLoadHelper.instantiate(packageIndex, i,
-					game));
+			levels.add(LevelLoadHelper.instantiate(packageIndex, i, game));
 		}
 
 		for (int i = 0; i < levels.size(); i++) {
@@ -112,7 +101,7 @@ public class LevelController {
 				}
 			}
 		}
-
+		return;
 	}
 
 }

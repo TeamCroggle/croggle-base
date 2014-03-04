@@ -5,7 +5,7 @@ import de.croggle.backends.sqlite.DatabaseHelper;
 
 public abstract class BackendHelper {
 
-	private static BackendHelper backend;
+	protected static BackendHelper backend;
 
 	private static void initialize(BackendHelper backend) {
 		if (BackendHelper.backend != null) {
