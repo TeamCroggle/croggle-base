@@ -81,6 +81,9 @@ public class SettingController {
 	 * @param listener the listener that receives the updated setting 
 	 */
 	public void addSettingChangeListener(SettingChangeListener listener) {
+		if (listener == null) {
+			throw new IllegalArgumentException("Listener must not be null");
+		}
 		listeners.add(listener);
 	}
 	
