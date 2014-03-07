@@ -153,7 +153,6 @@ public class StatisticManager extends TableManager {
 	 */
 	void editStatistic(String profileName, Statistic statistic) {
 
-		System.err.println("editStatistic" + statistic.getPlaytime());
 		ContentValues values = BackendHelper.getNewContentValues();
 
 		values.put(KEY_PROFILE_NAME, profileName);
