@@ -97,6 +97,9 @@ public class StatisticController implements StatisticsDeltaProcessor {
 	@Override
 	public void processDelta(Statistic statisticsDelta) {
 
+		currentStatistic = game.getPersistenceManager().getStatistic(
+				game.getProfileController().getCurrentProfileName());
+
 		currentStatistic.setAlligatorsEaten(currentStatistic
 				.getAlligatorsEaten() + statisticsDelta.getAlligatorsEaten());
 		currentStatistic.setAlligatorsPlaced(currentStatistic
@@ -115,8 +118,6 @@ public class StatisticController implements StatisticsDeltaProcessor {
 				+ statisticsDelta.getPlaytime());
 		currentStatistic.setLevelsComplete(currentStatistic.getLevelsComplete()
 				+ statisticsDelta.getLevelsComplete());
-		currentStatistic.setPackagesComplete(currentStatistic
-				.getPackagesComplete() + statisticsDelta.getPackagesComplete());
 
 		game.getAchievementController().processStatisticChange(statisticsDelta,
 				currentStatistic);

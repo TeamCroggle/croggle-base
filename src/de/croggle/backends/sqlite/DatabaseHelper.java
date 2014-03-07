@@ -15,7 +15,7 @@ public abstract class DatabaseHelper {
 	/**
 	 * The version number of the database.
 	 */
-	public static final int DATABASE_Version = 2;
+	public static final int DATABASE_Version = 3;
 
 	/**
 	 * The name of the database.

@@ -1,5 +1,8 @@
 package de.croggle.data.persistence.manager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.croggle.backends.BackendHelper;
 import de.croggle.backends.sqlite.ContentValues;
 import de.croggle.backends.sqlite.Cursor;
@@ -108,6 +111,25 @@ public class LevelProgressManager extends TableManager {
 		}
 
 		return null;
+	}
+	
+	/**
+	 * Returns the ids of levels that were solved by the user identified with the name profileName.
+	 * @param profileName the name of the profile
+	 * @return the ids of the solved levels
+	 */
+	List<Integer> getSolvedLevels (String profileName) {
+		List<Integer> levelsSolved = new ArrayList<Integer>();
+		String selectQuery = "select * from " + TABLE_NAME + " where "
+				+ KEY_PROFILE_NAME + " = " + "'" + profileName + "' and "
+						+ KEY_SOLVED + " = " + 1;
+		Cursor cursor = database.rawQuery(selectQuery, null);
+		if (cursor.moveToFirst()) {
+			do {
+				levelsSolved.add(cursor.getInt(cursor.getColumnIndex(KEY_LEVEL_ID)));
+			} while (cursor.moveToNext());
+		}
+		return levelsSolved;
 	}
 
 	/**

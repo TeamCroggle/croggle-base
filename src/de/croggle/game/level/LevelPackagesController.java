@@ -69,6 +69,21 @@ public class LevelPackagesController {
 	}
 
 	/**
+	 * Returns the number of levels contained in the package.
+	 * 
+	 * @param packageIndex
+	 *            of the Level Package
+	 * @return the number of levels contained in the package.
+	 */
+	public int getPackageSize(int packageIndex) {
+		FileHandle dirHandle = Gdx.files.internal(BackendHelper
+				.getAssetDirPath()
+				+ "json/levels/"
+				+ String.format("%02d", packageIndex));
+		return dirHandle.list().length - 1;
+	}
+
+	/**
 	 * @param PackageIndex
 	 *            of the Level Package which should be loaded.
 	 * @return the Level Package belonging to the given index.

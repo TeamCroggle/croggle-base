@@ -19,7 +19,7 @@ public class StatisticManager extends TableManager {
 	static final String KEY_PROFILE_NAME = "profileName";
 
 	/**
-	 * Name of the column that stores the playtimes.
+	 * Name of the column that stores the playtime.
 	 */
 	static final String KEY_PLAYTIME = "playtime";
 
@@ -37,16 +37,6 @@ public class StatisticManager extends TableManager {
 	 * Name of the column that stores the number of recoloring actions.
 	 */
 	static final String KEY_RECOLORINGS = "recolorings";
-
-	/**
-	 * Name of the column that stores the number of completed levels.
-	 */
-	static final String KEY_LEVELS_COMPLETE = "levelsComplete";
-
-	/**
-	 * Name of the column that stores the number of completed packages.
-	 */
-	static final String KEY_PACKAGES_COMPLETE = "packagesComplete";
 
 	/**
 	 * Name of the column that stores the number of eaten alligators.
@@ -79,12 +69,11 @@ public class StatisticManager extends TableManager {
 	public static final String CREATE_TABLE = "create table " + TABLE_NAME
 			+ "(" + KEY_PROFILE_NAME + " text not null, " + KEY_PLAYTIME
 			+ " int, " + KEY_USED_HINTS + " int, " + KEY_USED_RESETS + " int, "
-			+ KEY_RECOLORINGS + " int, " + KEY_LEVELS_COMPLETE + " int, "
-			+ KEY_PACKAGES_COMPLETE + " int, " + KEY_ALLIGATORS_EATEN
-			+ " int, " + KEY_ALLIGATORS_PLACED + " int, " + KEY_EGGS_HATCHED
-			+ " int, " + KEY_EGGS_PLACED + " int, " + "FOREIGN KEY("
-			+ KEY_PROFILE_NAME + ") REFERENCES " + ProfileManager.TABLE_NAME
-			+ "(" + ProfileManager.KEY_PROFILE_NAME
+			+ KEY_RECOLORINGS + " int, " + KEY_ALLIGATORS_EATEN + " int, "
+			+ KEY_ALLIGATORS_PLACED + " int, " + KEY_EGGS_HATCHED + " int, "
+			+ KEY_EGGS_PLACED + " int, " + "FOREIGN KEY(" + KEY_PROFILE_NAME
+			+ ") REFERENCES " + ProfileManager.TABLE_NAME + "("
+			+ ProfileManager.KEY_PROFILE_NAME
 			+ ") ON UPDATE CASCADE ON DELETE CASCADE )";
 
 	/**
@@ -104,8 +93,6 @@ public class StatisticManager extends TableManager {
 		values.put(KEY_USED_HINTS, statistic.getUsedHints());
 		values.put(KEY_USED_RESETS, statistic.getResetsUsed());
 		values.put(KEY_RECOLORINGS, statistic.getRecolorings());
-		values.put(KEY_LEVELS_COMPLETE, statistic.getLevelsComplete());
-		values.put(KEY_PACKAGES_COMPLETE, statistic.getPackagesComplete());
 		values.put(KEY_ALLIGATORS_EATEN, statistic.getAlligatorsEaten());
 		values.put(KEY_ALLIGATORS_PLACED, statistic.getAlligatorsPlaced());
 		values.put(KEY_EGGS_HATCHED, statistic.getEggsHatched());
@@ -138,10 +125,6 @@ public class StatisticManager extends TableManager {
 					.getColumnIndex(KEY_USED_RESETS));
 			int recolorings = cursor.getInt(cursor
 					.getColumnIndex(KEY_RECOLORINGS));
-			int levelsComplete = cursor.getInt(cursor
-					.getColumnIndex(KEY_LEVELS_COMPLETE));
-			int packagesComplete = cursor.getInt(cursor
-					.getColumnIndex(KEY_PACKAGES_COMPLETE));
 			int alligatorsEaten = cursor.getInt(cursor
 					.getColumnIndex(KEY_ALLIGATORS_EATEN));
 			int alligatorsPlaced = cursor.getInt(cursor
@@ -151,8 +134,7 @@ public class StatisticManager extends TableManager {
 			int eggsPlaced = cursor.getInt(cursor
 					.getColumnIndex(KEY_EGGS_PLACED));
 			return new Statistic(playtime, usedHints, resetsUsed, recolorings,
-					levelsComplete, packagesComplete, alligatorsEaten,
-					alligatorsPlaced, eggsHatched, eggsPlaced);
+					alligatorsEaten, alligatorsPlaced, eggsHatched, eggsPlaced);
 		}
 
 		return null;
@@ -171,6 +153,7 @@ public class StatisticManager extends TableManager {
 	 */
 	void editStatistic(String profileName, Statistic statistic) {
 
+		System.err.println("editStatistic" + statistic.getPlaytime());
 		ContentValues values = BackendHelper.getNewContentValues();
 
 		values.put(KEY_PROFILE_NAME, profileName);
@@ -178,8 +161,6 @@ public class StatisticManager extends TableManager {
 		values.put(KEY_USED_HINTS, statistic.getUsedHints());
 		values.put(KEY_USED_RESETS, statistic.getResetsUsed());
 		values.put(KEY_RECOLORINGS, statistic.getRecolorings());
-		values.put(KEY_LEVELS_COMPLETE, statistic.getLevelsComplete());
-		values.put(KEY_PACKAGES_COMPLETE, statistic.getPackagesComplete());
 		values.put(KEY_ALLIGATORS_EATEN, statistic.getAlligatorsEaten());
 		values.put(KEY_ALLIGATORS_PLACED, statistic.getAlligatorsPlaced());
 		values.put(KEY_EGGS_HATCHED, statistic.getEggsHatched());

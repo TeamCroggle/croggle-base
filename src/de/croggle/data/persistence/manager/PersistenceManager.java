@@ -1,5 +1,6 @@
 package de.croggle.data.persistence.manager;
 
+import java.util.Collections;
 import java.util.List;
 
 import de.croggle.AlligatorApp;
@@ -7,6 +8,9 @@ import de.croggle.data.persistence.LevelProgress;
 import de.croggle.data.persistence.Setting;
 import de.croggle.data.persistence.Statistic;
 import de.croggle.game.achievement.Achievement;
+import de.croggle.game.level.LevelController;
+import de.croggle.game.level.LevelPackage;
+import de.croggle.game.level.LevelPackagesController;
 import de.croggle.game.profile.Profile;
 import de.croggle.util.SparseArray;
 
@@ -197,7 +201,7 @@ public class PersistenceManager {
 	}
 
 	/**
-	 * Returns the statistic of the profile with the givne name.
+	 * Returns the statistic of the profile with the given name.
 	 * 
 	 * @param profileName
 	 *            the name of the profile to which the statistic belongs
@@ -207,6 +211,39 @@ public class PersistenceManager {
 		statisticManager.open();
 		Statistic statistic = statisticManager.getStatistic(profileName);
 		statisticManager.close();
+
+		if (statistic != null) {
+			levelProgressManager.open();
+			List<Integer> levelsSolved = levelProgressManager
+					.getSolvedLevels(profileName);
+			levelProgressManager.close();
+
+			statistic.setLevelsComplete(levelsSolved.size());
+
+			LevelPackagesController levelPackagesController = game
+					.getLevelPackagesController();
+
+			int packageIndex = -1;
+			int levelIndex = 0;
+			int packagesCompleted = 0;
+			int packageSize = 0;
+
+			Collections.sort(levelsSolved);
+
+			for (Integer levelId : levelsSolved) {
+				int temp = (int) levelId / 100;
+				if (packageIndex != temp) {
+					packageIndex = temp;
+					packageSize = levelPackagesController
+							.getPackageSize(packageIndex);
+				}
+				levelIndex = levelId % 100;
+				if (packageSize - 1 == levelIndex) {
+					packagesCompleted++;
+				}
+			}
+			statistic.setPackagesComplete(packagesCompleted);
+		}
 		return statistic;
 	}
 
@@ -269,7 +306,6 @@ public class PersistenceManager {
 		levelProgressManager.close();
 		return levelProgress;
 	}
-	
 
 	/**
 	 * Updates unlocked achievements for a specific profile identified by the
@@ -280,10 +316,12 @@ public class PersistenceManager {
 	 * @param achievements
 	 *            a list containing the values used to update old achievements
 	 */
-	public void updateUnlockedAchievements(String profileName, List<Achievement> achievements) {
+	public void updateUnlockedAchievements(String profileName,
+			List<Achievement> achievements) {
 		achievementManager.open();
 		for (Achievement achievement : achievements) {
-			achievementManager.updateUnlockedAchievement(profileName, achievement);
+			achievementManager.updateUnlockedAchievement(profileName,
+					achievement);
 		}
 		achievementManager.close();
 	}

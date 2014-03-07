@@ -65,28 +65,28 @@ public class Statistic {
 	}
 
 	/**
-	 *  Constructs a new Statistic based on its properties.
+	 * Constructs a new Statistic based on its properties.
 	 * 
 	 * @param playtime
-	 * 				the amount of time a user has played the game
+	 *            the amount of time a user has played the game
 	 * @param usedHints
-	 * 				the number of used hints.
+	 *            the number of used hints.
 	 * @param resetsUsed
-	 * 				the number of used resets.
+	 *            the number of used resets.
 	 * @param recolorings
-	 * 				the number of recoloring actions performed
+	 *            the number of recoloring actions performed
 	 * @param levelsComplete
-	 * 				the number of completed levels
+	 *            the number of completed levels
 	 * @param packagesComplete
-	 * 				the number of completed packages
+	 *            the number of completed packages
 	 * @param alligatorsEaten
-	 * 				the number of alligators eaten during beta reductions
+	 *            the number of alligators eaten during beta reductions
 	 * @param alligatorsPlaced
-	 * 				the number of alligators placed in the placement mode
+	 *            the number of alligators placed in the placement mode
 	 * @param eggsHatched
-	 * 				the number of eggs hatched during beta reductions
+	 *            the number of eggs hatched during beta reductions
 	 * @param eggsPlaced
-	 * 				the number of eggs placed in the placement mode
+	 *            the number of eggs placed in the placement mode
 	 */
 	public Statistic(int playtime, int usedHints, int resetsUsed,
 			int recolorings, int levelsComplete, int packagesComplete,
@@ -98,6 +98,42 @@ public class Statistic {
 		this.recolorings = recolorings;
 		this.levelsComplete = levelsComplete;
 		this.packagesComplete = packagesComplete;
+		this.alligatorsEaten = alligatorsEaten;
+		this.alligatorsPlaced = alligatorsPlaced;
+		this.eggsHatched = eggsHatched;
+		this.eggsPlaced = eggsPlaced;
+
+	}
+
+	/**
+	 * Constructs a new Statistic based on its properties.
+	 * 
+	 * @param playtime
+	 *            the amount of time a user has played the game
+	 * @param usedHints
+	 *            the number of used hints.
+	 * @param resetsUsed
+	 *            the number of used resets.
+	 * @param recolorings
+	 *            the number of recoloring actions performed
+	 * @param levelsComplete
+	 *            the number of completed levels
+	 * @param alligatorsEaten
+	 *            the number of alligators eaten during beta reductions
+	 * @param alligatorsPlaced
+	 *            the number of alligators placed in the placement mode
+	 * @param eggsHatched
+	 *            the number of eggs hatched during beta reductions
+	 * @param eggsPlaced
+	 *            the number of eggs placed in the placement mode
+	 */
+	public Statistic(int playtime, int usedHints, int resetsUsed,
+			int recolorings, int alligatorsEaten, int alligatorsPlaced,
+			int eggsHatched, int eggsPlaced) {
+		this.playtime = playtime;
+		this.usedHints = usedHints;
+		this.resetsUsed = resetsUsed;
+		this.recolorings = recolorings;
 		this.alligatorsEaten = alligatorsEaten;
 		this.alligatorsPlaced = alligatorsPlaced;
 		this.eggsHatched = eggsHatched;
