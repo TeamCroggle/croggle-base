@@ -20,6 +20,7 @@ import de.croggle.game.board.ColoredBoardObject;
 import de.croggle.game.board.Egg;
 import de.croggle.game.board.IllegalBoardException;
 import de.croggle.game.board.InternalBoardObject;
+import de.croggle.game.board.Parent;
 import de.croggle.game.board.operations.CountBoardObjects;
 import de.croggle.game.event.BoardEventListener;
 import de.croggle.game.event.BoardEventMessenger;
@@ -273,6 +274,11 @@ public class GameController implements BoardEventListener {
 
 	@Override
 	public void onObjectPlaced(InternalBoardObject placed) {
+		if (placed instanceof Parent) {
+			statisticsDelta.setAlligatorsPlaced(statisticsDelta.getAlligatorsPlaced() + 1);
+		} else if (placed instanceof Egg) {
+			statisticsDelta.setEggsPlaced(statisticsDelta.getEggsPlaced() + 1);
+		}
 		saveProgress();
 	}
 
