@@ -90,16 +90,15 @@ public class MainMenuScreen extends AbstractScreen implements
 
 		leftTable.pad(30);
 		leftTable.defaults().size(100);
-		// leftTable.add(credits).left();
 		leftTable.add(title).colspan(3).size(700, 150);
 		leftTable.row();
 		leftTable.add(play).expandY().colspan(3).size(200);
 		leftTable.row();
-		leftTable.add(settings).bottom().space(20);
-		leftTable.add(stats).bottom().space(20);
+		leftTable.add(settings).bottom().padLeft(20);
+		leftTable.add(stats).bottom();
 		leftTable.add(achievements).right().bottom().expandX().size(150);
 
-		profileButtonTable.add(profileButton).padRight(30).width(300)
+		profileButtonTable.add(profileButton).padRight(30).padLeft(30).width(300)
 				.height(400);
 
 		table.add(leftTable).expand().fill();
