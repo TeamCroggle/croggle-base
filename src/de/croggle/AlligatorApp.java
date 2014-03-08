@@ -210,7 +210,9 @@ public class AlligatorApp extends Game {
 			if (profileController.getAllProfiles().isEmpty()) {
 				profileSetNameScreen.showBackButton(false);
 				setScreen(new LoadingScreen(this, profileSetNameScreen));
-			} else {
+			} else if (!profileController.isActiveProfileStored()) {
+				setScreen(new LoadingScreen(this, selectProfileScreen));
+			} else  {
 				setScreen(new LoadingScreen(this, mainMenuScreen));
 			}
 		}
@@ -225,7 +227,7 @@ public class AlligatorApp extends Game {
 		soundController.addToPlaylist("music1.mp3");
 		soundController.startPlaylist();
 
-		profileController.loadLastActiveProfile();
+		profileController.loadActiveProfile();
 
 	}
 

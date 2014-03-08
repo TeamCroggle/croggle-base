@@ -48,13 +48,22 @@ public class ProfileController {
 	 * Loads the name of the last active profile and initializes all controllers
 	 * that depend on that name.
 	 */
-	public void loadLastActiveProfile() {
+	public void loadActiveProfile() {
 		Preferences prefs = Gdx.app.getPreferences("Profile Preferences");
 		String profileName = prefs.getString("activeProfile", null);
 		if (profileName != null
 				&& game.getPersistenceManager().isNameUsed(profileName)) {
 			changeCurrentProfile(profileName);
 		}
+	}
+	
+	/**
+	 * Returns whether there is a profile name stored for the last active profile or not
+	 * @return true if there is a stored profile name, false otherwise
+	 */
+	public boolean isActiveProfileStored() {
+		Preferences prefs = Gdx.app.getPreferences("Profile Preferences");
+		return prefs.getString("activeProfile", null) != null;
 	}
 
 	/**
@@ -169,7 +178,7 @@ public class ProfileController {
 	 * 
 	 * @param profileName
 	 *            The string to be tested
-	 * @return true, if new username is a valid profile name, false otherwise
+	 * @return true, if the new name is a valid profile name, false otherwise
 	 */
 	public boolean isValidUserName(String profileName) {
 		return (profileName.length() > 0)
