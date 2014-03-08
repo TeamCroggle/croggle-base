@@ -80,6 +80,7 @@ public class ProfileSetNameScreen extends AbstractScreen {
 							profileController.editCurrentProfile(name,
 									profileController.getCurrentProfile()
 											.getPicturePath());
+							showBackButton = true;
 							game.showSettingsScreen(false);
 						} else {
 							Dialog notification = new NotificationDialog(
@@ -88,6 +89,7 @@ public class ProfileSetNameScreen extends AbstractScreen {
 						}
 					} else {
 						if (profileController.isValidUserName(name)) {
+							showBackButton = true;
 							game.showProfileSetAvatarScreen(name, false);
 						} else {
 							Dialog notification = new NotificationDialog(
@@ -121,7 +123,6 @@ public class ProfileSetNameScreen extends AbstractScreen {
 	
 	@Override
 	public void hide() {
-		showBackButton = true;
 		isInEditMode = false;
 		super.hide();
 	}
