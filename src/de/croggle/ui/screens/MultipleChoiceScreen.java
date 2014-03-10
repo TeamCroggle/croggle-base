@@ -264,7 +264,6 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 					if (answer == -1) {
 						answer = i;
 					} else {
-						System.out.println("A");
 						Dialog dialog = new NotificationDialog(
 								_("multiple_choice_dialog"));
 						dialog.show(stage);
@@ -273,7 +272,6 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 				}
 			}
 			if (answer == -1) {
-				System.out.println("B");
 				Dialog dialog = new NotificationDialog(
 						_("multiple_choice_dialog"));
 				dialog.show(stage);
