@@ -220,8 +220,6 @@ public class PersistenceManager {
 
 			statistic.setLevelsComplete(levelsSolved.size());
 
-			LevelPackagesController levelPackagesController = game
-					.getLevelPackagesController();
 
 			int packageIndex = -1;
 			int levelIndex = 0;
@@ -234,7 +232,7 @@ public class PersistenceManager {
 				int temp = (int) levelId / 100;
 				if (packageIndex != temp) {
 					packageIndex = temp;
-					packageSize = levelPackagesController
+					packageSize = LevelPackagesController
 							.getPackageSize(packageIndex);
 				}
 				levelIndex = levelId % 100;

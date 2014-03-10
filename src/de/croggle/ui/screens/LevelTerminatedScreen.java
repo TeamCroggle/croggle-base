@@ -114,21 +114,21 @@ public class LevelTerminatedScreen extends AbstractScreen {
 	private class NextLevelClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			int currentLevelId = gameController.getLevel().getLevelIndex();
-			int currentPackageId = gameController.getLevel().getPackageIndex();
+			int currentLevelIndex = gameController.getLevel().getLevelIndex();
+			int currentPackageIndex = gameController.getLevel()
+					.getPackageIndex();
 
-			if (packagesController.getLevelPackages().size() < currentPackageId + 1
-					|| (packagesController.getLevelPackages().size() == currentPackageId + 1 && packagesController
-							.getLevelController(currentPackageId)
-							.getPackageSize() - 1 <= currentLevelId)) {
+			if (packagesController.getLevelPackages().size() < currentPackageIndex + 1
+					|| (packagesController.getLevelPackages().size() == currentPackageIndex + 1 && LevelPackagesController
+							.getPackageSize(currentPackageIndex) - 1 <= currentLevelIndex)) {
 				game.showMainMenuScreen(false);
-			} else if (packagesController.getLevelController(currentPackageId)
-					.getPackageSize() - 1 <= currentLevelId) {
+			} else if (LevelPackagesController
+					.getPackageSize(currentPackageIndex) - 1 <= currentLevelIndex) {
 				game.showLevelOverviewScreen(packagesController
-						.getLevelController(currentPackageId + 1));
+						.getLevelController(currentPackageIndex + 1));
 			} else {
 				final Level nextLevel = packagesController.getLevelController(
-						currentPackageId).getLevel(currentLevelId + 1);
+						currentPackageIndex).getLevel(currentLevelIndex + 1);
 				if (nextLevel.getUnlocked()) {
 					final GameController newGameController = nextLevel
 							.createGameController(game);
@@ -139,7 +139,6 @@ public class LevelTerminatedScreen extends AbstractScreen {
 					final GameController newGameController = currentLevel
 							.createGameController(game);
 					newGameController.register(game.getStatisticController());
-					newGameController.reset();
 					game.showPlacementModeScreen(newGameController);
 				}
 			}
@@ -153,7 +152,6 @@ public class LevelTerminatedScreen extends AbstractScreen {
 			final GameController newGameController = currentLevel
 					.createGameController(game);
 			newGameController.register(game.getStatisticController());
-			newGameController.reset();
 			game.showPlacementModeScreen(newGameController);
 		}
 	}
