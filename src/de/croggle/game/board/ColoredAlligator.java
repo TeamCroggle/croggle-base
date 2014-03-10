@@ -17,31 +17,6 @@ public class ColoredAlligator extends Alligator implements ColoredBoardObject {
 	 * Creates a new ColoredAlligator with the specified color and the
 	 * permission value if the object is recolorable or not. The color hereby
 	 * serves as the name of variables bound by this abstraction in the Lambda
-	 * Calculus.
-	 * 
-	 * @param parent
-	 *            the ColoredAlligator's parent
-	 * @param movable
-	 *            whether the BoardObject is movable or not
-	 * @param removable
-	 *            whether the BoardObject is removable or not
-	 * @param c
-	 *            the color this alligator has
-	 * @param recolorable
-	 *            whether the ColoredAlligator is recolorable (true) or not
-	 *            (false)
-	 */
-	private ColoredAlligator(Parent parent, boolean movable, boolean removable,
-			Color c, boolean recolorable) {
-		super(parent, movable, removable);
-		color = c;
-		this.recolorable = recolorable;
-	}
-
-	/**
-	 * Creates a new ColoredAlligator with the specified color and the
-	 * permission value if the object is recolorable or not. The color hereby
-	 * serves as the name of variables bound by this abstraction in the Lambda
 	 * Calculus. The parent of this InternalBoardObject will be initialized with
 	 * null.
 	 * 

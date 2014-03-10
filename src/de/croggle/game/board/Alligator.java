@@ -15,21 +15,7 @@ public abstract class Alligator extends Parent implements InternalBoardObject {
 	private final boolean movable;
 	private final boolean removable;
 
-	/**
-	 * Superconstructor for all alligators.
-	 * 
-	 * @param parent
-	 *            the parent of the alligator
-	 * @param movable
-	 *            whether the board object is movable or not
-	 * @param removable
-	 *            whether the board object is removable or not
-	 */
-	protected Alligator(Parent parent, boolean movable, boolean removable) {
-		this.parent = parent;
-		this.movable = movable;
-		this.removable = removable;
-	}
+
 
 	/**
 	 * Initializes an alligator without a parent and no children.

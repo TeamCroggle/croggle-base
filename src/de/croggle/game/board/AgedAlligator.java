@@ -10,20 +10,6 @@ import de.croggle.game.board.operations.BoardObjectVisitor;
 public class AgedAlligator extends Alligator {
 
 	/**
-	 * Creates an aged alligator with no children and the given parent.
-	 * 
-	 * @param parent
-	 *            the parent this alligator should have
-	 * @param movable
-	 *            whether the board object is movable or not
-	 * @param removable
-	 *            whether the board object is removable or not
-	 */
-	private AgedAlligator(Parent parent, boolean movable, boolean removable) {
-		super(parent, movable, removable);
-	}
-
-	/**
 	 * Creates an aged alligator with no children and without a parent.
 	 * 
 	 * @param movable
