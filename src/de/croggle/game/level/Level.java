@@ -44,7 +44,7 @@ public abstract class Level {
 	 *            number of evaluation steps the simulation is aborted after
 	 */
 
-	public Level(int levelIndex, int packageIndex, Board initialBoard,
+	protected Level(int levelIndex, int packageIndex, Board initialBoard,
 			Board goalBoard, List<String> animation, String hint,
 			String description, int abortSimulationAfter, boolean showObjectBar) {
 		this.levelIndex = levelIndex;
