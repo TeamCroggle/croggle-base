@@ -5,7 +5,7 @@
 			"type" : "multiple choice" ,
 			"description" : "" ,
 			"design" : "" ,
-			"animation" : [""
+			"animation" : ["tutorial/old-alligator.png", "tutorial/old-alligator2.png"
 			],
 			"abort simulation after" : 111 ,
 			"hints" : [ ""
