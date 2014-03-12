@@ -5,7 +5,7 @@
 			"type" : "multiple choice" ,
 			"description" : "" ,
 			"design" : "" ,
-			"animation" : [""
+			"animation" : ["tutorial/alpha.png", "tutorial/alpha2.png", "tutorial/alpha3.png"
 			],
 			"abort simulation after" : 111 ,
 			"hints" : [ ""

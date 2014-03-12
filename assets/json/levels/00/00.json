@@ -5,7 +5,8 @@
 			"type" : "color edit" ,
 			"description" : "Erstes Tutorial Level in dem das Einfärben von Spielelementen erklärt wird." ,
 			"design" : "" ,
-			"animation" : ["tutorial/coloring.png"
+			"animation" : ["tutorial/introduction.png", "tutorial/introduction2.png", 
+						"tutorial/introduction3.png", "tutorial/introduction4.png"
 			],
 			"abort simulation after" : 111 ,
 			"hints" : [ "hints/0000"
