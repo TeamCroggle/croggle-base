@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SizeToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Pool;
 
 import de.croggle.data.AssetManager;
 import de.croggle.game.Color;
@@ -139,7 +140,12 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			protected void end() {
 				BoardObjectActor actor = b.getLayout().getActor(object);
 				b.removeLayoutActor(actor);
-				applyDeltasAnimated(b.getLayout().getDeltasToFix());
+				List<ActorDelta> deltas = b.getLayout().getDeltasToFix();
+				applyDeltasAnimated(deltas);
+				Pool<ActorDelta> deltaPool = b.getLayout().getDeltaPool();
+				for (ActorDelta delta : deltas) {
+					deltaPool.free(delta);
+				}
 			}
 		});
 	}
@@ -203,7 +209,15 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		EggActor eggActor = (EggActor) b.getLayout().getActor(replacedEgg);
 		eggActor.enterHatchingState();
 		List<ActorDelta> deltas = b.getLayout().getDeltasToFix();
-		applyCreationDeltas(filterCreated(deltas, true));
+		List<ActorDelta> creation = filterCreated(deltas, true);
+		applyCreationDeltas(creation);
+		Pool<ActorDelta> deltaPool = b.getLayout().getDeltaPool();
+		for (ActorDelta delta : deltas) {
+			deltaPool.free(delta);
+		}
+		for (ActorDelta delta : creation) {
+			deltaPool.free(delta);
+		}
 		removeObjectAnimated(replacedEgg);
 		b.layoutSizeChanged();
 	}
@@ -334,7 +348,12 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	}
 
 	void fixLayout() {
-		applyDeltasAnimated(b.getLayout().getDeltasToFix());
+		List<ActorDelta> deltas = b.getLayout().getDeltasToFix();
+		applyDeltasAnimated(deltas);
+		Pool<ActorDelta> deltaPool = b.getLayout().getDeltaPool();
+		for (ActorDelta delta : deltas) {
+			deltaPool.free(delta);
+		}
 		b.layoutSizeChanged();
 	}
 }

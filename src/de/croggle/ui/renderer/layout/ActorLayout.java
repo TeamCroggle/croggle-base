@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.ReflectionPool;
+
 import de.croggle.game.board.Board;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.ui.renderer.BoardActor;
@@ -31,6 +34,8 @@ public class ActorLayout implements Iterable<BoardObjectActor> {
 	private final ActorLayoutStatistics statistics;
 	private final ActorLayoutConfiguration config;
 
+	private final Pool<ActorDelta> deltaPool;
+
 	public static ActorLayout create(Board b, ActorLayoutConfiguration config) {
 		return ActorLayoutBuilder.build(b, config);
 	}
@@ -46,6 +51,8 @@ public class ActorLayout implements Iterable<BoardObjectActor> {
 		this.layout = layout;
 		this.b = b;
 		this.config = config;
+		// TODO maybe tweak the initial capacity value (currently random)
+		deltaPool = new ReflectionPool<ActorDelta>(ActorDelta.class, 40);
 		statistics = new ActorLayoutStatistics(this);
 	}
 
@@ -196,6 +203,7 @@ public class ActorLayout implements Iterable<BoardObjectActor> {
 					actor.setSize(actor.getWidth(), delta.getNewHeight());
 				}
 			}
+			deltaPool.free(delta);
 		}
 		return added;
 	}
@@ -239,5 +247,9 @@ public class ActorLayout implements Iterable<BoardObjectActor> {
 		float result = h * (s - 1.f) / (u + p) + 1.f;
 		getHeightInActors();
 		return result;
+	}
+
+	public Pool<ActorDelta> getDeltaPool() {
+		return deltaPool;
 	}
 }

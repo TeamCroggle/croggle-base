@@ -1,7 +1,7 @@
 package de.croggle.ui.renderer.layout;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.ReflectionPool;
 
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 
@@ -15,7 +15,7 @@ import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 public class ActorDelta {
 
 	private BoardObjectActor actor;
-	
+
 	private float newWidth;
 	private float newHeight;
 	private float newX;
@@ -26,8 +26,11 @@ public class ActorDelta {
 	private boolean heightChanged;
 	private boolean created;
 
-	public ActorDelta() {
-		
+	/**
+	 * Private constructor since the deltas are suposed to be retrieved via a
+	 * {@link ReflectionPool}
+	 */
+	private ActorDelta() {
 	}
 
 	public BoardObjectActor getActor() {
@@ -153,7 +156,7 @@ public class ActorDelta {
 		heightChanged = false;
 		created = false;
 	}
-	
+
 	boolean anythingChanged() {
 		return xChanged || yChanged || widthChanged || heightChanged || created;
 	}
