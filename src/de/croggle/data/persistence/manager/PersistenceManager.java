@@ -222,10 +222,13 @@ public class PersistenceManager {
 		statisticManager.close();
 
 		if (statistic != null) {
-			levelProgressManager.open();
-			List<Integer> levelsSolved = levelProgressManager
-					.getSolvedLevels(profileName);
-			levelProgressManager.close();
+			List<Integer> levelsSolved;
+			synchronized (levelProgressManager) {
+				levelProgressManager.open();
+				levelsSolved = levelProgressManager
+						.getSolvedLevels(profileName);
+				levelProgressManager.close();
+			}
 
 			statistic.setLevelsComplete(levelsSolved.size());
 
@@ -418,7 +421,6 @@ public class PersistenceManager {
 		public void run() {
 			Map<MapEntry<String, Integer>, LevelProgress> swap;
 			while (!isInterrupted()) {
-				swap = localProgressBuffer;
 				// synchronize most of the method to levelProgressManager so it
 				// is not possible to read while persisting (and only the
 				// PeristenceManager's progressBuffer has to be looked into)
@@ -431,9 +433,10 @@ public class PersistenceManager {
 				}
 				synchronized (levelProgressManager) {
 					synchronized (progressBuffer) {
+						swap = progressBuffer;
 						progressBuffer = localProgressBuffer;
+						localProgressBuffer = swap;
 					}
-					localProgressBuffer = swap;
 
 					levelProgressManager.open();
 					for (Map.Entry<MapEntry<String, Integer>, LevelProgress> entry : localProgressBuffer
