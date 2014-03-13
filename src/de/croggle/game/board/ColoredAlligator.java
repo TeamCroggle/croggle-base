@@ -130,11 +130,10 @@ public class ColoredAlligator extends Alligator implements ColoredBoardObject {
 				return super.matchWithRecoloring(otherAlligator, recoloring);
 			} else {
 				recoloring.put(otherAlligator.color, color);
-				// final boolean equal =
-				// super.matchWithRecoloring(otherAlligator,
-				// recoloring);
+				final boolean equal = super.matchWithRecoloring(otherAlligator,
+						recoloring);
 				recoloring.remove(otherAlligator.color);
-				return false;
+				return equal;
 			}
 		}
 	}
