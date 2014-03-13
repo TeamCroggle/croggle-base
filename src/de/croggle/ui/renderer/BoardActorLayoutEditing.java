@@ -219,7 +219,7 @@ class BoardActorLayoutEditing {
 				InputEvent ev = new InputEvent();
 				ev.setListenerActor(actor);
 				ev.setStage(actor.getStage());
-				Vector2 point = new Vector2();
+				Vector2 point = new Vector2(x, y);
 				actor.localToStageCoordinates(point);
 				ev.setStageX(point.x);
 				ev.setStageY(point.y);
@@ -236,6 +236,10 @@ class BoardActorLayoutEditing {
 			return false;
 		}
 
+		/**
+		 * Visual effect to signal the user that hold and wait was successful on
+		 * devices that do not offer vibrate
+		 */
 		private void shakeBoardActor() {
 			final float zoomAmount = 8f;
 			final float zoomDelay = .2f;
@@ -289,10 +293,13 @@ class BoardActorLayoutEditing {
 			layoutEditing.dnd.addTarget(layoutEditing.boardActorTarget);
 
 			Payload p = onDragStart(event, x, y, pointer);
+			Actor dragActor = p.getDragActor();
 
-			layoutEditing.dnd.setDragActorPosition(
-					-p.getDragActor().getWidth() / 2, p.getDragActor()
-							.getHeight() / 2);
+			layoutEditing.dnd.setDragActorPosition(-dragActor.getWidth() / 2
+					* dragActor.getScaleX(),
+			// TODO this is f***ed up in libGdx' DragAndDrop
+					dragActor.getHeight() - dragActor.getHeight() / 2
+							* layoutEditing.b.getZoom());
 
 			return p;
 		}
