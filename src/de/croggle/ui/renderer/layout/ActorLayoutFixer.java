@@ -108,6 +108,7 @@ class ActorLayoutFixer extends ActorLayouter {
 			BoardObjectActor newActor) {
 		if (unused == null) {
 			unused = l.getDeltaPool().obtain();
+			unused.reset();
 		}
 		if (current == null) {
 			unused.setCreated(true);
