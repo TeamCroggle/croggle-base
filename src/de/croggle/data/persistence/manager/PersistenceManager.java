@@ -416,21 +416,23 @@ public class PersistenceManager {
 
 		@Override
 		public void run() {
+			Map<MapEntry<String, Integer>, LevelProgress> swap;
 			while (!isInterrupted()) {
-				Map<MapEntry<String, Integer>, LevelProgress> swap = localProgressBuffer;
+				swap = localProgressBuffer;
 				// synchronize most of the method to levelProgressManager so it
 				// is not possible to read while persisting (and only the
 				// PeristenceManager's progressBuffer has to be looked into)
-
 				synchronized (progressBuffer) {
 					try {
 						progressBuffer.wait();
 					} catch (InterruptedException e) {
 						interrupt();
 					}
-					progressBuffer = localProgressBuffer;
 				}
 				synchronized (levelProgressManager) {
+					synchronized (progressBuffer) {
+						progressBuffer = localProgressBuffer;
+					}
 					localProgressBuffer = swap;
 
 					levelProgressManager.open();
