@@ -17,8 +17,10 @@ public class RingBuffer<T> {
 	 *            case.
 	 */
 	@SuppressWarnings("unchecked")
-	public RingBuffer(int size) {
-		assert size > 0 : "Cannot initialize RingBuffer with size smaller 0.";
+	public RingBuffer(int size) throws IllegalArgumentException{
+		if (size < 1) {
+			throw new IllegalArgumentException("Can't create Ringbuffer with size zero or smaller");
+		}
 		buffer = (T[]) new Object[size];
 	}
 
