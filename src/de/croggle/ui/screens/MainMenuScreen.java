@@ -118,4 +118,9 @@ public class MainMenuScreen extends AbstractScreen implements
 			}
 		}
 	}
+
+	@Override
+	protected void showLogicalPredecessor() {
+		game.showQuitOverlay();
+	}
 }

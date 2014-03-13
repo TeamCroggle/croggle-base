@@ -165,4 +165,9 @@ public class AchievementScreen extends AbstractScreen {
 			dialog.show(stage);
 		}
 	}
+
+	@Override
+	protected void showLogicalPredecessor() {
+		game.showMainMenuScreen();
+	}
 }

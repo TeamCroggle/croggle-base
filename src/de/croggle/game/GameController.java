@@ -158,8 +158,6 @@ public class GameController implements BoardEventListener {
 			progress.setSolved(true);
 		}
 		saveProgress();
-		app.clearScreenStackAfterSimulation();
-
 	}
 
 	protected void onFinishedSimulation() {

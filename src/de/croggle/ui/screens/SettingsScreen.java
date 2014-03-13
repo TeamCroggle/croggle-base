@@ -197,7 +197,7 @@ public class SettingsScreen extends AbstractScreen implements
 				public void clicked(InputEvent event, float x, float y) {
 					game.getProfileSetNameScreen().setIsInEditMode(true);
 					EditProfileDialog.this.hide();
-					game.showProfileSetNameScreen(false);
+					game.showProfileSetNameScreen();
 				}
 			});
 
@@ -206,7 +206,7 @@ public class SettingsScreen extends AbstractScreen implements
 				public void clicked(InputEvent event, float x, float y) {
 					game.getProfileSetAvatarScreen().setInEditMode(true);
 					EditProfileDialog.this.hide();
-					game.showProfileSetAvatarScreen("", false);
+					game.showProfileSetAvatarScreen("");
 				};
 			});
 
@@ -257,4 +257,9 @@ public class SettingsScreen extends AbstractScreen implements
 
 	}
 
+	@Override
+	protected void showLogicalPredecessor() {
+		// TODO does not consider opening settings from ingame menu
+		game.showMainMenuScreen();
+	}
 }

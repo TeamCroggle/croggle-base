@@ -236,7 +236,6 @@ public abstract class AbstractScreen implements Screen {
 	 * previously shown screen is used.
 	 */
 	protected void showLogicalPredecessor() {
-		game.showPreviousScreen();
 	}
 
 	/**
@@ -247,7 +246,7 @@ public abstract class AbstractScreen implements Screen {
 		@Override
 		public boolean keyUp(int keycode) {
 			if (keycode == Keys.BACK) {
-				game.returnToPreviousScreen();
+				showLogicalPredecessor();
 				return true;
 			}
 			return false;
@@ -275,7 +274,7 @@ public abstract class AbstractScreen implements Screen {
 	protected class MainMenuClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			game.showMainMenuScreen(true);
+			game.showMainMenuScreen();
 		}
 	}
 
@@ -298,7 +297,7 @@ public abstract class AbstractScreen implements Screen {
 	protected class SettingsScreenClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			game.showSettingsScreen(true);
+			game.showSettingsScreen();
 		}
 	}
 
@@ -319,7 +318,7 @@ public abstract class AbstractScreen implements Screen {
 	protected class ProfileSetNameScreenClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			game.showProfileSetNameScreen(true);
+			game.showProfileSetNameScreen();
 		}
 	}
 

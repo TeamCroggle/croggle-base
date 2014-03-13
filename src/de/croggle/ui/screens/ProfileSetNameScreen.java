@@ -22,15 +22,13 @@ import de.croggle.ui.actors.NotificationDialog;
  */
 public class ProfileSetNameScreen extends AbstractScreen {
 
-	private ProfileController profileController;
-	
+	private final ProfileController profileController;
+
 	private TextField nameInput;
 	private ImageButton back;
-	
-	
+
 	private boolean showBackButton = true;
 	private boolean isInEditMode = false;
-	
 
 	/**
 	 * Creates the screen that is shown to the player while changing his player
@@ -60,7 +58,6 @@ public class ProfileSetNameScreen extends AbstractScreen {
 				helper.getImageButtonStyleRound("widgets/icon-next"));
 		back = new ImageButton(
 				helper.getImageButtonStyleRound("widgets/icon-back"));
-		
 
 		// any longer name won't fit on the profile button
 		nameInput.setMaxLength(20);
@@ -74,14 +71,15 @@ public class ProfileSetNameScreen extends AbstractScreen {
 
 				if (name.length() != 0) {
 					if (isInEditMode) {
-						if (name.equals(profileController.getCurrentProfileName())) {
-							game.showSettingsScreen(false);
+						if (name.equals(profileController
+								.getCurrentProfileName())) {
+							game.showSettingsScreen();
 						} else if (profileController.isValidUserName(name)) {
 							profileController.editCurrentProfile(name,
 									profileController.getCurrentProfile()
 											.getPicturePath());
 							showBackButton = true;
-							game.showSettingsScreen(false);
+							game.showSettingsScreen();
 						} else {
 							Dialog notification = new NotificationDialog(
 									"This name is already in use");
@@ -90,7 +88,7 @@ public class ProfileSetNameScreen extends AbstractScreen {
 					} else {
 						if (profileController.isValidUserName(name)) {
 							showBackButton = true;
-							game.showProfileSetAvatarScreen(name, false);
+							game.showProfileSetAvatarScreen(name);
 						} else {
 							Dialog notification = new NotificationDialog(
 									"This name is already in use");
@@ -102,7 +100,7 @@ public class ProfileSetNameScreen extends AbstractScreen {
 							"I guess your name isn't empty?");
 					notification.show(stage);
 				}
-					
+
 			}
 		});
 
@@ -113,14 +111,14 @@ public class ProfileSetNameScreen extends AbstractScreen {
 		innerTable.row();
 		innerTable.add(nameInput).width(500).height(50).space(30);
 		innerTable.row();
-	
+
 		innerTable.add(back).size(100).expand().left().bottom();
 		innerTable.add(next).size(100).expand().right().bottom();
 
 		table.add(innerTable).width(700).height(350);
 
 	}
-	
+
 	@Override
 	public void hide() {
 		isInEditMode = false;
@@ -140,13 +138,13 @@ public class ProfileSetNameScreen extends AbstractScreen {
 	public void setIsInEditMode(boolean isInEditMode) {
 		this.isInEditMode = isInEditMode;
 	}
-	
+
 	public void showBackButton(boolean showBackButton) {
 		this.showBackButton = showBackButton;
 	}
-	
 
-	
-	
-
+	@Override
+	protected void showLogicalPredecessor() {
+		game.showSettingsScreen();
+	}
 }

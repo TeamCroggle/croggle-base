@@ -293,4 +293,11 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 			dialog.show(stage);
 		}
 	}
+
+	@Override
+	protected void showLogicalPredecessor() {
+		game.showLevelOverviewScreen(game
+				.getLevelPackagesController()
+				.getLevelController(gameController.getLevel().getPackageIndex()));
+	}
 }

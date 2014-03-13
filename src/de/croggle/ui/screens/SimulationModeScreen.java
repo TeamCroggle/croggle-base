@@ -339,4 +339,9 @@ public class SimulationModeScreen extends AbstractScreen implements
 		}
 	}
 
+	@Override
+	protected void showLogicalPredecessor() {
+		game.showPlacementModeScreen(gameController);
+	}
+
 }

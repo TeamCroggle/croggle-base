@@ -311,4 +311,10 @@ public class PlacementModeScreen extends AbstractScreen implements
 		}
 	}
 
+	@Override
+	protected void showLogicalPredecessor() {
+		game.showLevelOverviewScreen(game
+				.getLevelPackagesController()
+				.getLevelController(gameController.getLevel().getPackageIndex()));
+	}
 }

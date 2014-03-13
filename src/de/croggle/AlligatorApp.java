@@ -1,10 +1,7 @@
 package de.croggle;
 
-import java.util.Stack;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -63,8 +60,7 @@ public class AlligatorApp extends Game {
 	private ProfileSetNameScreen profileSetNameScreen;
 	private ProfileSetAvatarScreen profileSetAvatarScreen;
 	private CreditsScreen creditsScreen;
-
-	private final Stack<Screen> screenStack;
+	private QuitGameOverlay quitOverlay;
 
 	public SpriteBatch batch;
 
@@ -76,7 +72,6 @@ public class AlligatorApp extends Game {
 	 *            the Android Activity's context
 	 */
 	public AlligatorApp() {
-		screenStack = new Stack<Screen>();
 	}
 
 	/**
@@ -199,6 +194,7 @@ public class AlligatorApp extends Game {
 			profileSetNameScreen = new ProfileSetNameScreen(this);
 			profileSetAvatarScreen = new ProfileSetAvatarScreen(this);
 			creditsScreen = new CreditsScreen(this);
+			quitOverlay = new QuitGameOverlay(this);
 
 			// add onProfileChangeListener
 			settingController.addSettingChangeListener(soundController);
@@ -285,95 +281,65 @@ public class AlligatorApp extends Game {
 		Gdx.input.setCatchBackKey(false);
 	}
 
-	public void returnToPreviousScreen() {
-		if (screenStack.isEmpty()) {
-			setScreen(new QuitGameOverlay(this, getScreen()));
-		} else {
-			setScreen(screenStack.pop());
-		}
-	}
-
-	public void showPreviousScreen() {
-		Screen previous = screenStack.peek();
-		switchScreen();
-		setScreen(previous);
-	}
-
-	public void showMainMenuScreen(boolean putOnStack) {
-		if (putOnStack) {
-			switchScreen();
-		}
+	public void showMainMenuScreen() {
 		setScreen(mainMenuScreen);
 	}
 
 	public void showLevelPackagesScreen() {
-		switchScreen();
 		setScreen(levelPackagesScreen);
 	}
 
 	public void showLevelOverviewScreen(LevelController levelController) {
-		switchScreen();
 		AbstractScreen newScreen = new LevelsOverviewScreen(this,
 				levelController);
 		setScreen(newScreen);
 	}
 
 	public void showAchievementScreen() {
-		switchScreen();
 		setScreen(achievementScreen);
 	}
 
-	public void showSettingsScreen(boolean putOnStack) {
-		if (putOnStack) {
-			switchScreen();
-		}
+	public void showSettingsScreen() {
 		setScreen(settingsScreen);
 	}
 
 	public void showStatisticScreen() {
-		switchScreen();
 		setScreen(statisticScreen);
 	}
 
 	public void showSelectProfileScreen() {
-		switchScreen();
 		setScreen(selectProfileScreen);
 	}
 
-	public void showProfileSetNameScreen(boolean putOnStack) {
-		if (putOnStack) {
-			switchScreen();
-		}
+	public void showProfileSetNameScreen() {
 		setScreen(profileSetNameScreen);
 	}
 
-	public void showProfileSetAvatarScreen(String name, boolean putOnStack) {
-		if (putOnStack) {
-			switchScreen();
-		}
+	public void showProfileSetAvatarScreen(String name) {
 		profileSetAvatarScreen.setProfileName(name);
 		setScreen(profileSetAvatarScreen);
 	}
 
 	public void showPlacementModeScreen(GameController gameController) {
-		switchScreen();
 		setScreen(gameController.createPlacementScreen(this));
 	}
 
 	public void showSimulationModeScreen(GameController gameController)
 			throws IllegalBoardException {
-		switchScreen();
 		setScreen(new SimulationModeScreen(this, gameController));
 	}
 
 	public void showCreditsScreen() {
-		switchScreen();
 		setScreen(creditsScreen);
 	}
 
 	public void showLevelTerminatedScreen(GameController gameController) {
-		switchScreen();
 		setScreen(new LevelTerminatedScreen(this, gameController));
+	}
+
+	public void showQuitOverlay() {
+		quitOverlay.setOverlayedScreen(getScreen());
+		setScreen(quitOverlay);
 	}
 
 	public MainMenuScreen getMainMenuScreen() {
@@ -392,23 +358,4 @@ public class AlligatorApp extends Game {
 		return levelPackagesScreen;
 	}
 
-	private void switchScreen() {
-		if (getScreen() != null) {
-			screenStack.push(getScreen());
-		}
-	}
-
-	/**
-	 * Clears the stack of screens used to offer "showPreviousScreen". Used, for
-	 * example, if a game was won and returning to any previous screens would be
-	 * inconsistent.
-	 */
-	public void clearScreenStack() {
-		screenStack.clear();
-	}
-
-	public void clearScreenStackAfterSimulation() {
-		screenStack.push(mainMenuScreen);
-		screenStack.push(getLevelPackagesScreen());
-	}
 }

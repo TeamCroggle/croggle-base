@@ -100,6 +100,6 @@ public class LevelPackagesScreen extends AbstractScreen {
 
 	@Override
 	protected void showLogicalPredecessor() {
-		game.showMainMenuScreen(true);
+		game.showMainMenuScreen();
 	}
 }

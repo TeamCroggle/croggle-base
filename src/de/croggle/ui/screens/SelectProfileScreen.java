@@ -24,7 +24,7 @@ import de.croggle.ui.actors.NotificationDialog;
 public class SelectProfileScreen extends AbstractScreen implements
 		ProfileChangeListener {
 
-	private ProfileController profileController;
+	private final ProfileController profileController;
 
 	/**
 	 * Creates the screen that is shown to the player while changing his
@@ -54,7 +54,7 @@ public class SelectProfileScreen extends AbstractScreen implements
 		newProfile.addListener(new NewProfileClickListener());
 
 		scrollTable.defaults().width(500).height(100).space(10);
-		
+
 		scrollTable.padTop(30);
 		for (Profile profile : profileController.getAllProfiles()) {
 			TextButton profileButton = new TextButton(profile.getName(),
@@ -64,7 +64,6 @@ public class SelectProfileScreen extends AbstractScreen implements
 			profileButton.addListener(new ChangeProfileClickListener());
 		}
 
-		
 		scrollTable.add(newProfile);
 
 		scrollTable.padBottom(15);
@@ -85,7 +84,7 @@ public class SelectProfileScreen extends AbstractScreen implements
 		public void clicked(InputEvent event, float x, float y) {
 			TextButton target = (TextButton) event.getListenerActor();
 			profileController.changeCurrentProfile(target.getText().toString());
-			game.showMainMenuScreen(true);
+			game.showMainMenuScreen();
 		}
 	}
 
@@ -98,9 +97,16 @@ public class SelectProfileScreen extends AbstractScreen implements
 						_("warning_max_profiles"));
 				infoDialog.show(stage);
 			} else {
-				game.showProfileSetNameScreen(true);
+				game.showProfileSetNameScreen();
 			}
 		}
 	}
 
+	@Override
+	protected void showLogicalPredecessor() {
+		if (profileController.getAllProfiles().size() != 0
+				&& profileController.getCurrentProfile() != null) {
+			game.showMainMenuScreen();
+		}
+	}
 }

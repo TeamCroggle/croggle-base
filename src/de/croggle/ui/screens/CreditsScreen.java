@@ -14,7 +14,7 @@ public class CreditsScreen extends AbstractScreen {
 
 	private static final String credits = LocalizationHelper
 			.getLocalizedString("app_credits");
-	private Table content = new Table();
+	private final Table content = new Table();
 
 	public CreditsScreen(AlligatorApp game) {
 		super(game);
@@ -47,7 +47,7 @@ public class CreditsScreen extends AbstractScreen {
 
 	@Override
 	protected void showLogicalPredecessor() {
-		game.showMainMenuScreen(true);
+		game.showMainMenuScreen();
 	}
 
 }

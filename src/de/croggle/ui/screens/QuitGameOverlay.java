@@ -23,31 +23,32 @@ import de.croggle.ui.actors.YesNoDialog;
 public class QuitGameOverlay implements Screen {
 	private ShapeRenderer shapes;
 	private final Color shade;
-	private final Screen screenBelow;
+	private Screen screenBelow;
 	private Stage stage;
 	private final Table table;
 	private final OrthographicCamera camera;
 	private final AlligatorApp game;
 	private InputMultiplexer inputMediator;
 
-	public QuitGameOverlay(AlligatorApp game, Screen screenBelow) {
-		if (screenBelow == null) {
-			throw new IllegalArgumentException("Cannot overlay no screen");
-		}
-
+	public QuitGameOverlay(AlligatorApp game) {
 		this.game = game;
-		this.screenBelow = screenBelow;
+		this.screenBelow = null;
 		shade = new Color(0, 0, 0, .5f);
 		table = new Table();
 		table.setFillParent(true);
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 1024, 600);
-		// make the screen as well as the stage an input processor
+	}
+
+	public void setOverlayedScreen(Screen s) {
+		this.screenBelow = s;
 	}
 
 	@Override
 	public void render(float delta) {
-		screenBelow.render(delta);
+		if (screenBelow != null) {
+			screenBelow.render(delta);
+		}
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -71,10 +72,9 @@ public class QuitGameOverlay implements Screen {
 		stage = new Stage(1024, 600, true, game.batch);
 		stage.addActor(table);
 		stage.setCamera(camera);
-		// TODO Auto-generated method stub
-		// stage = new Stage();
 		shapes = new ShapeRenderer();
 		inputMediator = new InputMultiplexer(stage, new BackButtonHandler());
+		// make the screen as well as the stage an input processor
 		Gdx.input.setInputProcessor(inputMediator);
 		camera.update();
 
@@ -91,7 +91,12 @@ public class QuitGameOverlay implements Screen {
 					@Override
 					public void no() {
 						hide();
-						game.setScreen(screenBelow);
+						if (screenBelow != null) {
+							game.setScreen(screenBelow);
+						} else {
+							throw new IllegalStateException(
+									"Don't know where to return to if no screen is set as OverlayedScreen");
+						}
 					}
 				});
 		quitDialog.show(stage);
@@ -125,12 +130,15 @@ public class QuitGameOverlay implements Screen {
 		@Override
 		public boolean keyUp(int keycode) {
 			if (keycode == Keys.BACK) {
-				game.setScreen(screenBelow);
-				return true;
+				if (screenBelow != null) {
+					game.setScreen(screenBelow);
+					return true;
+				} else {
+					throw new IllegalStateException(
+							"Don't know where to return to if no screen is set as OverlayedScreen");
+				}
 			}
 			return false;
 		}
-
 	}
-
 }

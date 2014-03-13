@@ -78,7 +78,7 @@ public class LevelTerminatedScreen extends AbstractScreen {
 		home.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.showMainMenuScreen(true);
+				game.showMainMenuScreen();
 			}
 		});
 
@@ -121,7 +121,7 @@ public class LevelTerminatedScreen extends AbstractScreen {
 			if (packagesController.getLevelPackages().size() < currentPackageIndex + 1
 					|| (packagesController.getLevelPackages().size() == currentPackageIndex + 1 && LevelPackagesController
 							.getPackageSize(currentPackageIndex) - 1 <= currentLevelIndex)) {
-				game.showMainMenuScreen(false);
+				game.showMainMenuScreen();
 			} else if (LevelPackagesController
 					.getPackageSize(currentPackageIndex) - 1 <= currentLevelIndex) {
 				game.showLevelOverviewScreen(packagesController
@@ -169,4 +169,10 @@ public class LevelTerminatedScreen extends AbstractScreen {
 		}
 	}
 
+	@Override
+	protected void showLogicalPredecessor() {
+		game.showLevelOverviewScreen(game
+				.getLevelPackagesController()
+				.getLevelController(gameController.getLevel().getPackageIndex()));
+	}
 }
