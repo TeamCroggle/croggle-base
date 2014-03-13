@@ -82,6 +82,22 @@ class BoardActorLayoutEditing {
 		return b;
 	}
 
+	ObjectBar getObjectBar() {
+		return obar;
+	}
+
+	ActorLayout getLayout() {
+		return b.getLayout();
+	}
+
+	BoardEventMessenger getMessenger() {
+		return messenger;
+	}
+
+	/**
+	 * Creates and registers drag sources and drag targets that are permanent,
+	 * such as the placeholder target, the object bar etc.
+	 */
 	private void addPermanentSourcesAndTargets() {
 		if (!permanentRegistered) {
 			permanentRegistered = true;
@@ -122,10 +138,6 @@ class BoardActorLayoutEditing {
 		temporaryTargets.clear();
 	}
 
-	ObjectBar getObjectBar() {
-		return obar;
-	}
-
 	void registerLayoutListeners() {
 		for (BoardObjectActor child : b.getLayout()) {
 			registerLayoutListeners(child);
@@ -152,14 +164,6 @@ class BoardActorLayoutEditing {
 		}
 	}
 
-	ActorLayout getLayout() {
-		return b.getLayout();
-	}
-
-	BoardEventMessenger getMessenger() {
-		return messenger;
-	}
-
 	private class RecolorPopupListener extends ClickListener {
 		private final ColoredBoardObject o;
 
@@ -180,6 +184,11 @@ class BoardActorLayoutEditing {
 		}
 	}
 
+	/**
+	 * Listens to long presses on (movable) BoardObjectActors to start a drag
+	 * process.
+	 * 
+	 */
 	private class EnableDraggingListener extends ActorGestureListener {
 		public EnableDraggingListener() {
 			getGestureDetector().setLongPressSeconds(0.8f);
@@ -194,25 +203,13 @@ class BoardActorLayoutEditing {
 
 			Gdx.input.vibrate(100);
 
+			// in order for the ExistingActorSource to respond to the faked drag
+			// events we have to tell it not to have a threshold the finger must
+			// move before a drag is initiiated
 			dnd.setTapSquareSize(-1);
 			dnd.addSource(new ExistingActorSource((BoardObjectActor) actor));
 			dnd.setTapSquareSize(8);
-			final float zoomAmount = 8f;
-			final float zoomDelay = .2f;
-			b.zoomOut(zoomAmount);
-			actor.addAction(Actions.delay(zoomDelay, new Action() {
-				private boolean done = false;
-
-				@Override
-				public boolean act(float delta) {
-					if (!done) {
-						done = true;
-						b.zoomIn(100 - 100 / (1 + zoomAmount / 100));
-					}
-					return true;
-				}
-
-			}));
+			shakeBoardActor();
 			actor.addAction(Actions.alpha(0.5f, fadeDuration));
 
 			/*
@@ -237,6 +234,34 @@ class BoardActorLayoutEditing {
 			}
 
 			return false;
+		}
+
+		private void shakeBoardActor() {
+			final float zoomAmount = 8f;
+			final float zoomDelay = .2f;
+			final boolean zoomOut = b.zoomOut(zoomAmount);
+			// beware: If we cannot zoom out, we need to perform it the other
+			// way round
+			if (!zoomOut) {
+				b.zoomIn(zoomAmount);
+			}
+			b.addAction(Actions.delay(zoomDelay, new Action() {
+				private boolean done = false;
+
+				@Override
+				public boolean act(float delta) {
+					if (!done) {
+						done = true;
+						if (zoomOut) {
+							b.zoomIn(100 - 100 / (1 + zoomAmount / 100));
+						} else {
+							b.zoomOut(100 - 100 / (1 + zoomAmount / 100));
+						}
+					}
+					return true;
+				}
+
+			}));
 		}
 	}
 
