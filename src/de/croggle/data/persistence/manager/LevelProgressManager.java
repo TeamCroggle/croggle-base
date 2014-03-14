@@ -75,7 +75,11 @@ public class LevelProgressManager extends TableManager {
 		values.put(KEY_PROFILE_NAME, profileName);
 		values.put(KEY_LEVEL_ID, levelProgress.getLevelId());
 		values.put(KEY_SOLVED, levelProgress.isSolved());
-		values.put(KEY_CURRENT_BOARD, levelProgress.getCurrentBoard());
+		// may be changed by a different thread due to disconnection of
+		// AlligatorToJason
+		synchronized (levelProgress) {
+			values.put(KEY_CURRENT_BOARD, levelProgress.getCurrentBoard());
+		}
 		values.put(KEY_USED_TIME, levelProgress.getUsedTime());
 
 		database.insert(TABLE_NAME, null, values);
@@ -112,21 +116,25 @@ public class LevelProgressManager extends TableManager {
 
 		return null;
 	}
-	
+
 	/**
-	 * Returns the ids of levels that were solved by the user identified with the name profileName.
-	 * @param profileName the name of the profile
+	 * Returns the ids of levels that were solved by the user identified with
+	 * the name profileName.
+	 * 
+	 * @param profileName
+	 *            the name of the profile
 	 * @return the ids of the solved levels
 	 */
-	List<Integer> getSolvedLevels (String profileName) {
+	List<Integer> getSolvedLevels(String profileName) {
 		List<Integer> levelsSolved = new ArrayList<Integer>();
 		String selectQuery = "select * from " + TABLE_NAME + " where "
 				+ KEY_PROFILE_NAME + " = " + "'" + profileName + "' and "
-						+ KEY_SOLVED + " = " + 1;
+				+ KEY_SOLVED + " = " + 1;
 		Cursor cursor = database.rawQuery(selectQuery, null);
 		if (cursor.moveToFirst()) {
 			do {
-				levelsSolved.add(cursor.getInt(cursor.getColumnIndex(KEY_LEVEL_ID)));
+				levelsSolved.add(cursor.getInt(cursor
+						.getColumnIndex(KEY_LEVEL_ID)));
 			} while (cursor.moveToNext());
 		}
 		return levelsSolved;
@@ -149,7 +157,11 @@ public class LevelProgressManager extends TableManager {
 		ContentValues values = BackendHelper.getNewContentValues();
 
 		values.put(KEY_SOLVED, levelProgress.isSolved());
-		values.put(KEY_CURRENT_BOARD, levelProgress.getCurrentBoard());
+		// may be changed by a different thread due to disconnection of
+		// AlligatorToJason
+		synchronized (levelProgress) {
+			values.put(KEY_CURRENT_BOARD, levelProgress.getCurrentBoard());
+		}
 		values.put(KEY_USED_TIME, levelProgress.getUsedTime());
 
 		database.update(TABLE_NAME, values,
