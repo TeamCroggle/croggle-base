@@ -28,8 +28,17 @@ public class EditLevelGameController extends GameController {
 	}
 
 	@Override
-	protected void onBeforeSaveProgress(LevelProgress progress) {
-		progress.setCurrentBoard(AlligatorToJson.convert(getUserBoard()));
+	protected void onBeforeSaveProgress(final LevelProgress progress) {
+		final Board boardCopy = getUserBoard().copy();
+		Thread jsonConverter = new Thread() {
+			@Override
+			public void run() {
+				synchronized (progress) {
+					progress.setCurrentBoard(AlligatorToJson.convert(boardCopy));
+				}
+			}
+		};
+		jsonConverter.start();
 	}
 
 	@Override
