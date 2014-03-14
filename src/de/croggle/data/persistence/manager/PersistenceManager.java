@@ -1,5 +1,6 @@
 package de.croggle.data.persistence.manager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -222,11 +223,18 @@ public class PersistenceManager {
 		statisticManager.close();
 
 		if (statistic != null) {
-			List<Integer> levelsSolved;
+			List<Integer> levelsSolved = new ArrayList<Integer>();
+			synchronized (progressBuffer) {
+				for (LevelProgress progress : progressBuffer.values()) {
+					if (progress.isSolved()) {
+						levelsSolved.add(progress.getLevelId());
+					}
+				}
+			}
 			synchronized (levelProgressManager) {
 				levelProgressManager.open();
-				levelsSolved = levelProgressManager
-						.getSolvedLevels(profileName);
+				levelsSolved.addAll(levelProgressManager
+						.getSolvedLevels(profileName));
 				levelProgressManager.close();
 			}
 
