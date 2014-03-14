@@ -18,11 +18,11 @@ import de.croggle.game.board.operations.BoardObjectVisitor;
  */
 public class AlligatorToJson implements BoardObjectVisitor {
 
-	private String result;
+	private StringBuilder result;
 	private int depth;
 
 	private AlligatorToJson() {
-		result = "";
+		result = new StringBuilder();
 		depth = 0;
 	}
 
@@ -40,73 +40,79 @@ public class AlligatorToJson implements BoardObjectVisitor {
 	}
 
 	private String toJson(BoardObject b) {
-		result = "";
+		result = new StringBuilder();
 		depth = 0;
 		b.accept(this);
-		return result;
+		return result.toString();
 	}
 
 	@Override
 	public void visitEgg(Egg egg) {
-		println("{");
+		println('{');
 		depth++;
 		println("\"type\" : \"egg\",");
-		println("\"color\" : " + egg.getColor().getId() + ",");
-		println("\"movable\" : " + egg.isMovable() + ",");
-		println("\"removable\" : " + egg.isRemovable() + ",");
-		println("\"recolorable\" : " + egg.isRecolorable() + "");
+		printThree("\"color\" : ", egg.getColor().getId(), ',');
+		printThree("\"movable\" : ", egg.isMovable(), ',');
+		printThree("\"removable\" : ", egg.isRemovable(), ',');
+		printTwo("\"recolorable\" : ", egg.isRecolorable());
 		depth--;
 		if (egg.getParent().isLastChild(egg)) {
-			println("}");
+			println('}');
 		} else {
-			print(indent() + "}");
+			indent();
+			print('}');
 		}
 	}
 
 	@Override
 	public void visitColoredAlligator(ColoredAlligator alligator) {
-		println("{");
+		println('{');
 		depth++;
 		println("\"type\" : \"colored alligator\",");
-		println("\"color\" : " + alligator.getColor().getId() + ",");
-		println("\"movable\" : " + alligator.isMovable() + ",");
-		println("\"removable\" : " + alligator.isRemovable() + ",");
-		println("\"recolorable\" : " + alligator.isRecolorable() + ",");
-		print(indent() + "\"children\" : ");
+		printThree("\"color\" : ", alligator.getColor().getId(), ',');
+		printThree("\"movable\" : ", alligator.isMovable(), ',');
+		printThree("\"removable\" : ", alligator.isRemovable(), ',');
+		printThree("\"recolorable\" : ", alligator.isRecolorable(), ',');
+		indent();
+		print("\"children\" : ");
 		printChildren(alligator);
 		depth--;
 		if (alligator.getParent().isLastChild(alligator)) {
-			println("}");
+			println('}');
 		} else {
-			print(indent() + "}");
+			indent();
+			print('}');
 		}
 	}
 
 	@Override
 	public void visitAgedAlligator(AgedAlligator alligator) {
-		println("{");
+		println('{');
 		depth++;
 		println("\"type\" : \"aged alligator\",");
-		println("\"movable\" : " + alligator.isMovable() + ",");
-		println("\"removable\" : " + alligator.isRemovable() + ",");
-		print(indent() + "\"children\" : ");
+		printThree("\"movable\" : ", alligator.isMovable(), ',');
+		printThree("\"removable\" : ", alligator.isRemovable(), ',');
+		indent();
+		print("\"children\" : ");
 		printChildren(alligator);
 		depth--;
 		if (alligator.getParent().isLastChild(alligator)) {
-			println("}");
+			println('}');
 		} else {
-			print(indent() + "}");
+			indent();
+			print('}');
 		}
 	}
 
 	@Override
 	public void visitBoard(Board board) {
-		println("{");
+		println('{');
 		depth++;
-		print(indent() + "\"families\" : ");
+		indent();
+		print("\"families\" : ");
 		printChildren(board);
 		depth--;
-		println("}");
+		println('}');
 	}
 
 	private void printChildren(Parent p) {
@@ -117,48 +123,105 @@ public class AlligatorToJson implements BoardObjectVisitor {
 			boolean breakAfter) {
 		if (p.getChildCount() < 1) {
 			if (indentBefore) {
-				print(indent() + "[]");
+				indent();
+				print("[]");
 			} else {
 				print("[]");
 			}
 			if (breakAfter) {
-				print(BackendHelper.lineSeparator);
+				newLine();
 			}
 		} else {
 			if (indentBefore) {
-				println("[");
+				println('[');
 			} else {
-				print("[" + BackendHelper.lineSeparator);
+				print('[');
+				newLine();
 			}
 			depth++;
 			Iterator<InternalBoardObject> i = p.iterator();
 			while (i.hasNext()) {
 				i.next().accept(this);
 				if (i.hasNext()) {
-					print("," + BackendHelper.lineSeparator);
+					print(',');
+					newLine();
 				}
 			}
 			depth--;
 			if (breakAfter) {
-				println("]");
+				println(']');
 			} else {
-				print(indent() + "]");
+				indent();
+				print(']');
 			}
 		}
 	}
 
 	private void println(String line) {
-		result += indent() + line + BackendHelper.lineSeparator;
+		indent();
+		result.append(line);
+		newLine();
+	}
+
+	private void println(char c) {
+		indent();
+		result.append(c);
+		newLine();
+	}
+
+	private void print(char c) {
+		result.append(c);
 	}
 
 	private void print(String s) {
-		result += s;
+		result.append(s);
 	}
 
-	private String indent() {
-		String result = "";
-		for (int i = 0; i < depth; i++)
-			result += '\t';
-		return result;
+	private void print(int i) {
+		result.append(i);
+	}
+
+	private void print(boolean b) {
+		result.append(b);
+	}
+
+	private void indent() {
+		for (int i = 0; i < depth; i++) {
+			result.append('\t');
+		}
+	}
+
+	private void newLine() {
+		print(BackendHelper.lineSeparator);
+	}
+
+	private void printTwo(String prefix, int value) {
+		indent();
+		print(prefix);
+		print(value);
+		newLine();
+	}
+
+	private void printTwo(String prefix, boolean value) {
+		indent();
+		print(prefix);
+		print(value);
+		newLine();
+	}
+
+	private void printThree(String prefix, int value, char postfix) {
+		indent();
+		print(prefix);
+		print(value);
+		print(postfix);
+		newLine();
+	}
+
+	private void printThree(String prefix, boolean value, char postfix) {
+		indent();
+		print(prefix);
+		print(value);
+		print(postfix);
+		newLine();
 	}
 }
