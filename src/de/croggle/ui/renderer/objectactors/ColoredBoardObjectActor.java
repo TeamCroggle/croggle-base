@@ -13,7 +13,17 @@ import de.croggle.backends.BackendHelper;
 import de.croggle.data.AssetManager;
 import de.croggle.game.board.ColoredBoardObject;
 
-public class ColoredBoardObjectActor extends BoardObjectActor {
+/**
+ * Parent class for all {@link BoardObjectActor}s representing
+ * {@link ColoredBoardObject}s. Therefore it provides the ability to draw in
+ * three steps:
+ * <ol>
+ * <li>Applying an alpha mask</li>
+ * <li>draw actual color</li>
+ * <li>draw a foreground picture</li>
+ * </ol>
+ */
+public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 
 	private final TextureRegion mask;
 	private final TextureRegion foreground;

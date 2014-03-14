@@ -140,18 +140,18 @@ class BoardObjectActorDragging {
 				pMax = b.stageToLocalCoordinates(pMax);
 				if (pMin.x <= autoPanBorderWidth) {
 					if (pMax.x < w - autoPanBorderWidth) {
-						b.panActorCoords(xDistance, 0);
+						b.panActorDistance(xDistance, 0);
 					}
 				} else if (pMax.x >= w - autoPanBorderWidth) {
-					b.panActorCoords(-xDistance, 0);
+					b.panActorDistance(-xDistance, 0);
 				}
 
 				if (pMin.y <= autoPanBorderHeight) {
 					if (pMax.y < h - autoPanBorderHeight) {
-						b.panActorCoords(0, yDistance);
+						b.panActorDistance(0, yDistance);
 					}
 				} else if (pMax.y >= h - autoPanBorderHeight) {
-					b.panActorCoords(0, -yDistance);
+					b.panActorDistance(0, -yDistance);
 				}
 			}
 			timePassed += delta;

@@ -42,9 +42,6 @@ class BoardActorZoomAndPan extends ActorGestureListener {
 	}
 
 	public void panActorCoords(float deltaX, float deltaY) {
-		// TODO quick fix for libgdx continuing to delegate events after
-		// listeners have been removed
-
 		Vector2 delta = new Vector2(deltaX, deltaY);
 		float posX = b.getWorldX();
 		b.setWorldX(posX + delta.x);

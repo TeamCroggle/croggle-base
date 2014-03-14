@@ -177,7 +177,19 @@ public class BoardActor extends Group implements SettingChangeListener {
 		backgroundColor = c;
 	}
 
-	public void panActorCoords(float deltaX, float deltaY) {
+	/**
+	 * Moves (pans) the "world of alligators" (the plane on which the actors are
+	 * presented) by the given distances, whereby the lengths are corresponding
+	 * to the {@link BoardActor}'s and its parents' scalings.
+	 * 
+	 * @param deltaX
+	 *            the distance to move the "world" to the right, in the same
+	 *            unit as you would specify the actor's width in
+	 * @param deltaY
+	 *            the distance to move the "world" to the bottom, in the same
+	 *            unit as you would specify the actor's height in
+	 */
+	public void panActorDistance(float deltaX, float deltaY) {
 		if (zoomAndPan != null) {
 			zoomAndPan.panActorCoords(deltaX, deltaY);
 		}

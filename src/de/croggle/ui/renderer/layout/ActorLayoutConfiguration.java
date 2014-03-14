@@ -3,7 +3,6 @@ package de.croggle.ui.renderer.layout;
 import com.badlogic.gdx.math.Vector2;
 
 import de.croggle.game.ColorController;
-import de.croggle.ui.renderer.TreeGrowth;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;

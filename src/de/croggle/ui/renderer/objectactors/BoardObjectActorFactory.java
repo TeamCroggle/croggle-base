@@ -1,5 +1,8 @@
 package de.croggle.ui.renderer.objectactors;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+
+import de.croggle.data.persistence.Setting;
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.Board;
 import de.croggle.game.board.ColoredAlligator;
@@ -7,19 +10,46 @@ import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.operations.BoardObjectVisitor;
 
+/**
+ * Helper class providing easy to use functionality for creating new or cloning
+ * existing {@link BoardObjectActor}s. Using this class primarily helps to avoid
+ * reoccurring type checks of the actors' InternalBoardObjects
+ * 
+ */
 public class BoardObjectActorFactory {
 	private BoardObjectActorFactory() {
-
 	}
 
 	public static enum BoardObjectActorType {
 		EGG, AGED_ALLIGATOR, COLORED_ALLIGATOR
 	}
 
+	/**
+	 * Performs the same task as {@link #getType(InternalBoardObject)}, just
+	 * wrapping the {@link BoardObjectActor#getBoardObject()} method to call it.
+	 * 
+	 * @param a
+	 *            a {@link BoardObjectActor} whose type is to be found out
+	 * @return a {@link BoardObjectActorType} matching the given
+	 *         {@link InternalBoardObject}
+	 * 
+	 * @see #getType(InternalBoardObject)
+	 */
 	public static BoardObjectActorType getType(BoardObjectActor a) {
 		return getType(a.getBoardObject());
 	}
 
+	/**
+	 * Small utility function to find out the {@link BoardObjectActorType type}
+	 * a {@link BoardObjectActor} should have regarding a given
+	 * {@link InternalBoardObject}.
+	 * 
+	 * @param o
+	 *            the {@link InternalBoardObject} for which the proper
+	 *            {@link BoardObjectActorType} is to be found out
+	 * @return a {@link BoardObjectActorType} matching the given
+	 *         {@link InternalBoardObject}
+	 */
 	public static BoardObjectActorType getType(InternalBoardObject o) {
 		final BoardObjectActorType result[] = new BoardObjectActorType[1];
 		BoardObjectVisitor visitor = new BoardObjectVisitor() {
@@ -48,6 +78,21 @@ public class BoardObjectActorFactory {
 		return result[0];
 	}
 
+	/**
+	 * Creates a new {@link BoardObjectActor} representing and matching the
+	 * actual type of the given {@link InternalBoardObject}. It can be of type
+	 * {@link AgedAlligatorActor}, {@link ColoredAlligatorActor} or
+	 * {@link EggActor}
+	 * 
+	 * @param o
+	 *            the {@link InternalBoardObject} to create a representation for
+	 * @param colorBlindEnabled
+	 *            whether the created {@link Actor} is supposed to be drawing
+	 *            itself in {@link Setting#isColorblindEnabled() color blind
+	 *            mode} or not
+	 * @return a {@link BoardObjectActor} suitable to represent the given
+	 *         {@link InternalBoardObject}
+	 */
 	public static BoardObjectActor createActor(InternalBoardObject o,
 			boolean colorBlindEnabled) {
 		switch (getType(o)) {
@@ -66,6 +111,19 @@ public class BoardObjectActorFactory {
 		}
 	}
 
+	/**
+	 * Copies given {@link BoardObjectActor}, no matter of which type. The
+	 * {@link InternalBoardObject} used by the original Actor can be either
+	 * chosen to be copied or to be shared between both actors, resulting in a
+	 * shallow copy.
+	 * 
+	 * @param a
+	 *            the {@link BoardObjectActor} to be copied
+	 * @param copyBoardObject
+	 *            whether or not to copy the {@link InternalBoardObject}
+	 *            represented by a
+	 * @return a copy of the given {@link BoardObjectActor}
+	 */
 	public static BoardObjectActor copyActor(BoardObjectActor a,
 			boolean copyBoardObject) {
 		BoardObjectActor result;
