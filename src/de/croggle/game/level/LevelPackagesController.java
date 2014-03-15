@@ -95,17 +95,18 @@ public class LevelPackagesController {
 		JsonReader reader = new JsonReader();
 		JsonValue de_croggle = reader.parse(handle.readString());
 		JsonValue json = de_croggle.child().getChild("packages");
-		String animation = BackendHelper.getAssetDirPath()
-				+ json.getString("animation");
-		Boolean hasAnimation = false;
-		if (!animation.equals("")) {
-			hasAnimation = true;
+		
+		String animationPath = null;
+		String animation = json.getString("animation");
+		Boolean hasAnimation = !animation.equals("");
+		if (hasAnimation) {
+			animationPath = BackendHelper.getAssetDirPath() + animation;
 		}
-
+		
 		LevelPackage levelPackage = new LevelPackage(packageIndex,
 				json.getString("name"), json.getString("description"),
 				BackendHelper.getAssetDirPath() + json.getString("banner"),
-				hasAnimation, animation, BackendHelper.getAssetDirPath()
+				hasAnimation, animationPath, BackendHelper.getAssetDirPath()
 						+ json.getString("design"));
 		return levelPackage;
 	}
