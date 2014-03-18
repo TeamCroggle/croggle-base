@@ -1,5 +1,8 @@
 package de.croggle.data.persistence;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Peripheral;
+
 /**
  * Represents the settings of a certain profile in the database.
  * 
@@ -19,7 +22,7 @@ public class Setting {
 	/**
 	 * Determines whether the zoom button is enabled or not.
 	 */
-	private boolean zoomEnabled = false;
+	private boolean zoomEnabled;
 
 	/**
 	 * Determines whether colorblind mode is enabled or not.
@@ -52,7 +55,11 @@ public class Setting {
 	 * Creates a new default setting.
 	 */
 	public Setting() {
-
+		if (Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen)) {
+			zoomEnabled = false;
+		} else {
+			zoomEnabled = true;
+		}
 	}
 
 	/**
