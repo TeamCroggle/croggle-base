@@ -97,9 +97,4 @@ public class LevelPackagesScreen extends AbstractScreen {
 					.getLevelController(packageId));
 		}
 	}
-
-	@Override
-	protected void showLogicalPredecessor() {
-		game.showMainMenuScreen();
-	}
 }

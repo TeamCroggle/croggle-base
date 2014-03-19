@@ -81,7 +81,11 @@ public class LevelsOverviewScreen extends AbstractScreen {
 
 	@Override
 	protected void showLogicalPredecessor() {
-		game.showLevelPackagesScreen();
+		if (temporaryPredecessor == null) {
+			game.showLevelPackagesScreen();
+		} else {
+			game.setScreen(temporaryPredecessor);
+		}
 	}
 
 	private class StartGameListener extends ClickListener {

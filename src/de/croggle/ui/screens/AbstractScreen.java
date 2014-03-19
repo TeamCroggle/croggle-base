@@ -35,6 +35,8 @@ public abstract class AbstractScreen implements Screen {
 	private boolean widgetsInitialized = false;
 
 	private final InputMultiplexer inputMediator;
+	
+	protected AbstractScreen temporaryPredecessor = null;
 
 	/**
 	 * Super constructor for all screens. Initializes everything they share,
@@ -232,10 +234,18 @@ public abstract class AbstractScreen implements Screen {
 
 	/**
 	 * Override this method if you want to use the LogicalPredecessorListener
-	 * and set the respective predecessor screen in it. On default, the
-	 * previously shown screen is used.
+	 * and set the respective predecessor screen in it. On default, 
+	 * if a temporary predecessor is set it will be displayed, else 
+	 * the main menu screen is displayed. The temporary predecessor will be invalidated
+	 * after it gets displayed.
 	 */
 	protected void showLogicalPredecessor() {
+		if (temporaryPredecessor == null) {
+			game.showMainMenuScreen();
+		} else {
+			game.setScreen(temporaryPredecessor);
+			temporaryPredecessor = null;
+		}
 	}
 
 	/**
@@ -327,5 +337,9 @@ public abstract class AbstractScreen implements Screen {
 		public void clicked(InputEvent event, float x, float y) {
 			game.showCreditsScreen();
 		}
+	}
+
+	public void setTemporaryPredecessor(AbstractScreen temporaryPredecessor) {
+		this.temporaryPredecessor = temporaryPredecessor;
 	}
 }

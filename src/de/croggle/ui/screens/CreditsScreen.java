@@ -45,9 +45,4 @@ public class CreditsScreen extends AbstractScreen {
 		back.addListener(new LogicalPredecessorListener());
 	}
 
-	@Override
-	protected void showLogicalPredecessor() {
-		game.showMainMenuScreen();
-	}
-
 }

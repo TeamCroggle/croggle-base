@@ -275,7 +275,7 @@ public class PlacementModeScreen extends AbstractScreen implements
 	private class MenuClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			Dialog menuDialog = new IngameMenuDialog(game, gameController);
+			Dialog menuDialog = new IngameMenuDialog(game, gameController, PlacementModeScreen.this);
 			menuDialog.show(stage);
 		}
 	}

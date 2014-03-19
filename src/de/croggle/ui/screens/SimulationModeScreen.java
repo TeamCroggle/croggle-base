@@ -334,7 +334,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 	private class MenuClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			Dialog menuDialog = new IngameMenuDialog(game, gameController);
+			Dialog menuDialog = new IngameMenuDialog(game, gameController, SimulationModeScreen.this);
 			menuDialog.show(stage);
 		}
 	}

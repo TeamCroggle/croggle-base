@@ -285,9 +285,4 @@ public class StatisticScreen extends AbstractScreen implements
 		showCategory(lastCategory);
 	}
 
-	@Override
-	protected void showLogicalPredecessor() {
-		game.showMainMenuScreen();
-	}
-
 }

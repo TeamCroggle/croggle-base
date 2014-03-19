@@ -72,13 +72,12 @@ public class ProfileSetNameScreen extends AbstractScreen {
 				if (name.length() != 0) {
 					if (isInEditMode) {
 						if (name.equals(profileController
-								.getCurrentProfileName())) {
-							game.showSettingsScreen();
-						} else if (profileController.isValidUserName(name)) {
+								.getCurrentProfileName()) || profileController.isValidUserName(name)) {
 							profileController.editCurrentProfile(name,
 									profileController.getCurrentProfile()
 											.getPicturePath());
 							showBackButton = true;
+							isInEditMode = false;
 							game.showSettingsScreen();
 						} else {
 							Dialog notification = new NotificationDialog(
@@ -145,6 +144,11 @@ public class ProfileSetNameScreen extends AbstractScreen {
 
 	@Override
 	protected void showLogicalPredecessor() {
-		game.showSettingsScreen();
+		if (isInEditMode) {
+			isInEditMode = false;
+			game.showSettingsScreen();
+		} else {
+			game.showSelectProfileScreen();
+		}
 	}
 }

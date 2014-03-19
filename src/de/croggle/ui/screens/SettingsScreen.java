@@ -257,9 +257,4 @@ public class SettingsScreen extends AbstractScreen implements
 
 	}
 
-	@Override
-	protected void showLogicalPredecessor() {
-		// TODO does not consider opening settings from ingame menu
-		game.showMainMenuScreen();
-	}
 }

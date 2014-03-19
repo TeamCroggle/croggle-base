@@ -10,16 +10,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import de.croggle.AlligatorApp;
 import de.croggle.game.GameController;
 import de.croggle.ui.StyleHelper;
+import de.croggle.ui.screens.AbstractScreen;
 
 public class IngameMenuDialog extends Dialog {
 
 	private final AlligatorApp game;
 	private final GameController gameController;
+	private final AbstractScreen predecessor;
 
-	public IngameMenuDialog(AlligatorApp game, GameController gameController) {
+	public IngameMenuDialog(AlligatorApp game, GameController gameController, AbstractScreen predecessor) {
 		super("", StyleHelper.getInstance().getDialogStyle());
 		this.game = game;
 		this.gameController = gameController;
+		this.predecessor = predecessor;
 
 		fillTable();
 	}
@@ -80,7 +83,7 @@ public class IngameMenuDialog extends Dialog {
 		settings.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.showSettingsScreen();
+				game.showSettingsScreen(predecessor);
 			}
 		});
 		levelOverview.addListener(new ClickListener() {
@@ -88,13 +91,13 @@ public class IngameMenuDialog extends Dialog {
 			public void clicked(InputEvent event, float x, float y) {
 				game.showLevelOverviewScreen(game.getLevelPackagesController()
 						.getLevelController(
-								gameController.getLevel().getPackageIndex()));
+								gameController.getLevel().getPackageIndex()), predecessor);
 			}
 		});
 		achievements.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.showAchievementScreen();
+				game.showAchievementScreen(predecessor);
 			}
 		});
 		mainMenu.addListener(new ClickListener() {
