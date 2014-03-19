@@ -48,6 +48,8 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 	private BoardActor boardActor;
 	private CheckBox checkboxes[];
 	private final Dialog dialog;
+	
+	private boolean displayTutorial = true;
 
 	/**
 	 * Creates the base screen of a multiple choice level, which is shown to the
@@ -92,8 +94,15 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 
 		gameController.setTimeStamp();
 		gameController.enterPlacement();
-
-		// simply open all tutorials over each other, beginning with the last
+		
+		if(displayTutorial) {
+			showTutorial();
+			displayTutorial = false;
+		}
+		
+	}
+	
+	private void showTutorial() {
 		if (gameController.getLevel().hasAnimation()) {
 			List<String> animations = gameController.getLevel().getAnimation();
 			for (int i = animations.size() - 1; i >= 0; i--) {
