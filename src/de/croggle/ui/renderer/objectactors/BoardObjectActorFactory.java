@@ -20,6 +20,11 @@ public class BoardObjectActorFactory {
 	private BoardObjectActorFactory() {
 	}
 
+	/**
+	 * An enumeration representing the different types of concrete
+	 * {@link BoardObjectActor}s
+	 * 
+	 */
 	public static enum BoardObjectActorType {
 		EGG, AGED_ALLIGATOR, COLORED_ALLIGATOR
 	}

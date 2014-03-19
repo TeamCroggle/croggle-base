@@ -165,7 +165,7 @@ public class ActorDelta {
 		return created;
 	}
 
-	public void setCreated(boolean created) {
+	void setCreated(boolean created) {
 		this.created = created;
 	}
 }

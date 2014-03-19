@@ -6,12 +6,16 @@ import de.croggle.game.board.BoardObject;
 import de.croggle.game.board.operations.CreateHeightMap;
 import de.croggle.game.board.operations.CreateWidthMap;
 
+/**
+ * A class to cache useful statistics associated with an {@link ActorLayout}.
+ * 
+ */
 public class ActorLayoutStatistics {
 	private Map<BoardObject, Float> widthMap;
 	private Map<BoardObject, Float> heightMap;
 	private final ActorLayout layout;
 
-	public ActorLayoutStatistics(ActorLayout l) {
+	ActorLayoutStatistics(ActorLayout l) {
 		layout = l;
 	}
 
