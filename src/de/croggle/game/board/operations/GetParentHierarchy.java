@@ -14,14 +14,29 @@ import de.croggle.game.board.Parent;
 /**
  * A visitor-based operation to determine the list of a BoardObject's parents.
  * Use the static <code>get</code> method(s) to receive the respective lists.
- * 
  */
 public class GetParentHierarchy implements BoardObjectVisitor {
 
 	private final List<Parent> parents;
+	private Parent currentParent;
 
-	private GetParentHierarchy() {
+	private GetParentHierarchy(BoardObject b) {
 		parents = new ArrayList<Parent>();
+		/*
+		 * See {@link #get(BoardObject)} description:
+		 * 
+		 * 
+		 * if (b instanceof Parent) { currentParent = (Parent) b; } else
+		 */
+		if (b instanceof InternalBoardObject) {
+			currentParent = ((InternalBoardObject) b).getParent();
+		} else {
+			currentParent = null;
+		}
+		while (currentParent != null) {
+			parents.add(currentParent);
+			currentParent.accept(this);
+		}
 	}
 
 	/**
@@ -31,17 +46,13 @@ public class GetParentHierarchy implements BoardObjectVisitor {
 	 * BoardObject itself will NOT be part of the list, so the list's first
 	 * element will be the given BoardObject's parent.
 	 * 
-	 * The implementation currently uses a LinkedList for its better pushFront
-	 * behavior without knowing the final list's length.
-	 * 
 	 * @param b
 	 *            the BoardObject whose parent hierarchy is to be determined
 	 * @return the given BoardObject's parent hierarchy beginning with the b's
 	 *         parent and ending with tree's root
 	 */
 	public static List<Parent> get(BoardObject b) {
-		GetParentHierarchy getter = new GetParentHierarchy();
-		b.accept(getter);
+		GetParentHierarchy getter = new GetParentHierarchy(b);
 		return getter.parents;
 	}
 
@@ -52,17 +63,13 @@ public class GetParentHierarchy implements BoardObjectVisitor {
 	 *            the InternalBoardObject to be visited
 	 */
 	private void visitInternalBoardObject(InternalBoardObject ibo) {
-		Parent p = ibo.getParent();
-		if (p == null) {
-			return;
-		}
-		parents.add(p);
-		p.accept(this);
+		currentParent = ibo.getParent();
 	}
 
 	@Override
 	public void visitEgg(Egg egg) {
-		visitInternalBoardObject(egg);
+		throw new IllegalStateException(
+				"This should never happen: Egg is a parent");
 	}
 
 	@Override
@@ -78,7 +85,7 @@ public class GetParentHierarchy implements BoardObjectVisitor {
 
 	@Override
 	public void visitBoard(Board board) {
-		// has no parents
+		currentParent = null;
 	}
 
 }
