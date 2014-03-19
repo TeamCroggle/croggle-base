@@ -75,11 +75,7 @@ public class LevelProgressManager extends TableManager {
 		values.put(KEY_PROFILE_NAME, profileName);
 		values.put(KEY_LEVEL_ID, levelProgress.getLevelId());
 		values.put(KEY_SOLVED, levelProgress.isSolved());
-		// may be changed by a different thread due to disconnection of
-		// AlligatorToJason
-		synchronized (levelProgress) {
-			values.put(KEY_CURRENT_BOARD, levelProgress.getCurrentBoard());
-		}
+		values.put(KEY_CURRENT_BOARD, levelProgress.getCurrentBoard());
 		values.put(KEY_USED_TIME, levelProgress.getUsedTime());
 
 		database.insert(TABLE_NAME, null, values);
@@ -157,11 +153,7 @@ public class LevelProgressManager extends TableManager {
 		ContentValues values = BackendHelper.getNewContentValues();
 
 		values.put(KEY_SOLVED, levelProgress.isSolved());
-		// may be changed by a different thread due to disconnection of
-		// AlligatorToJason
-		synchronized (levelProgress) {
-			values.put(KEY_CURRENT_BOARD, levelProgress.getCurrentBoard());
-		}
+		values.put(KEY_CURRENT_BOARD, levelProgress.getCurrentBoard());
 		values.put(KEY_USED_TIME, levelProgress.getUsedTime());
 
 		database.update(TABLE_NAME, values,

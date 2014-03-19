@@ -1,10 +1,7 @@
 package de.croggle.data.persistence.manager;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.croggle.AlligatorApp;
 import de.croggle.data.persistence.LevelProgress;
@@ -13,7 +10,6 @@ import de.croggle.data.persistence.Statistic;
 import de.croggle.game.achievement.Achievement;
 import de.croggle.game.level.LevelPackagesController;
 import de.croggle.game.profile.Profile;
-import de.croggle.util.MapEntry;
 import de.croggle.util.SparseArray;
 
 /**
@@ -53,9 +49,6 @@ public class PersistenceManager {
 	 */
 	private final AlligatorApp game;
 
-	private Map<MapEntry<String, Integer>, LevelProgress> progressBuffer;
-
-	private final PersistenceDaemon persistenceDaemon;
 
 	/**
 	 * Creates a new PersistenceManager and initializes the different managers.
@@ -69,11 +62,6 @@ public class PersistenceManager {
 		statisticManager = new StatisticManager();
 		levelProgressManager = new LevelProgressManager();
 		achievementManager = new AchievementManager();
-
-		progressBuffer = new HashMap<MapEntry<String, Integer>, LevelProgress>();
-
-		persistenceDaemon = new PersistenceDaemon();
-		persistenceDaemon.start();
 
 		this.game = game;
 	}
@@ -223,20 +211,11 @@ public class PersistenceManager {
 		statisticManager.close();
 
 		if (statistic != null) {
-			List<Integer> levelsSolved = new ArrayList<Integer>();
-			synchronized (progressBuffer) {
-				for (LevelProgress progress : progressBuffer.values()) {
-					if (progress.isSolved()) {
-						levelsSolved.add(progress.getLevelId());
-					}
-				}
-			}
-			synchronized (levelProgressManager) {
-				levelProgressManager.open();
-				levelsSolved.addAll(levelProgressManager
-						.getSolvedLevels(profileName));
-				levelProgressManager.close();
-			}
+
+			levelProgressManager.open();
+			List<Integer> levelsSolved = levelProgressManager
+					.getSolvedLevels(profileName);
+			levelProgressManager.close();
 
 			statistic.setLevelsComplete(levelsSolved.size());
 
@@ -293,12 +272,15 @@ public class PersistenceManager {
 	 */
 	public void saveLevelProgress(String profileName,
 			LevelProgress levelProgress) {
-		synchronized (progressBuffer) {
-			progressBuffer.put(new MapEntry<String, Integer>(profileName,
-					levelProgress.getLevelId()), levelProgress);
-			progressBuffer.notify();
+		levelProgressManager.open();
+		LevelProgress lp = levelProgressManager.getLevelProgress(profileName, levelProgress.getLevelId());
+		if (lp == null) {
+			levelProgressManager.addLevelProgress(profileName, levelProgress);
+		} else {
+			levelProgressManager
+					.updateLevelProgress(profileName, levelProgress);
 		}
-
+		levelProgressManager.close();
 	}
 
 	/**
@@ -312,22 +294,12 @@ public class PersistenceManager {
 	 * @return the found level progress, null if no level progress is found
 	 */
 	public LevelProgress getLevelProgress(String profileName, int levelID) {
-		LevelProgress progress;
-		// first look in the buffer
-		synchronized (progressBuffer) {
-			progress = progressBuffer.get(new MapEntry<String, Integer>(
-					profileName, levelID));
-			if (progress != null) {
-				return progress;
-			}
-		}
-		// then look in database
-		synchronized (levelProgressManager) {
-			levelProgressManager.open();
-			progress = levelProgressManager.getLevelProgress(profileName,
-					levelID);
-			levelProgressManager.close();
-		}
+
+		levelProgressManager.open();
+		LevelProgress progress = levelProgressManager.getLevelProgress(
+				profileName, levelID);
+		levelProgressManager.close();
+
 		return progress;
 	}
 
@@ -412,58 +384,4 @@ public class PersistenceManager {
 		return isValid;
 	}
 
-	/**
-	 * A separate thread to persist changes to the database without blocking the
-	 * main thread
-	 * 
-	 */
-	private class PersistenceDaemon extends Thread {
-		private Map<MapEntry<String, Integer>, LevelProgress> localProgressBuffer;
-
-		public PersistenceDaemon() {
-			localProgressBuffer = new HashMap<MapEntry<String, Integer>, LevelProgress>();
-			setDaemon(true);
-		}
-
-		@Override
-		public void run() {
-			Map<MapEntry<String, Integer>, LevelProgress> swap;
-			while (!isInterrupted()) {
-				// synchronize most of the method to levelProgressManager so it
-				// is not possible to read while persisting (and only the
-				// PeristenceManager's progressBuffer has to be looked into)
-				synchronized (progressBuffer) {
-					try {
-						progressBuffer.wait();
-					} catch (InterruptedException e) {
-						interrupt();
-					}
-				}
-				synchronized (levelProgressManager) {
-					synchronized (progressBuffer) {
-						swap = progressBuffer;
-						progressBuffer = localProgressBuffer;
-						localProgressBuffer = swap;
-					}
-
-					levelProgressManager.open();
-					for (Map.Entry<MapEntry<String, Integer>, LevelProgress> entry : localProgressBuffer
-							.entrySet()) {
-						LevelProgress lp = levelProgressManager
-								.getLevelProgress(entry.getKey().getKey(),
-										entry.getValue().getLevelId());
-						if (lp == null) {
-							levelProgressManager.addLevelProgress(entry
-									.getKey().getKey(), entry.getValue());
-						} else {
-							levelProgressManager.updateLevelProgress(entry
-									.getKey().getKey(), entry.getValue());
-						}
-					}
-					levelProgressManager.close();
-				}
-				localProgressBuffer.clear();
-			}
-		}
-	}
 }
