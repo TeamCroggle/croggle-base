@@ -265,13 +265,8 @@ public class SimulationModeScreen extends AbstractScreen implements
 
 	@Override
 	public void onSettingChange(Setting setting) {
-		if (setting.isZoomEnabled()) {
-			zoomIn.setVisible(true);
-			zoomOut.setVisible(true);
-		} else {
-			zoomIn.setVisible(false);
-			zoomOut.setVisible(false);
-		}
+		zoomIn.setVisible(setting.isZoomEnabled());
+		zoomOut.setVisible(setting.isZoomEnabled());
 
 	}
 
@@ -289,6 +284,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 		if (isSimulating) {
 			play.setStyle(StyleHelper.getInstance().getImageButtonStyleRound(
 					"widgets/icon-next"));
+			stepper.reset();
 			isSimulating = false;
 
 		}
@@ -305,16 +301,26 @@ public class SimulationModeScreen extends AbstractScreen implements
 	private class StepAction extends Action {
 		private float delay;
 		private float waited = 0;
+		private boolean hasStarted = false;
+		
+		private static final float INTIAL_DELAY = 0.5f;
+	
+		public void reset() {
+			hasStarted = false;
+			waited = 0;
+			
+		}
 
-		public void setDelay(long d) {
-			delay = d / 1000;
+		public void setDelay(long delay) {
+			this.delay = delay / 1000;
 		}
 
 		@Override
 		public boolean act(float delta) {
 			if (SimulationModeScreen.this.isSimulating) {
 				waited += delta;
-				if (waited >= delay) {
+				if (waited >= delay  || !hasStarted && waited >= INTIAL_DELAY) {
+					hasStarted = true;
 					try {
 						gameController.evaluateStep();
 					} catch (ColorOverflowException e) {
@@ -326,6 +332,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 					}
 					waited -= delay;
 				}
+
 			}
 			return false;
 		}
@@ -334,7 +341,8 @@ public class SimulationModeScreen extends AbstractScreen implements
 	private class MenuClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			Dialog menuDialog = new IngameMenuDialog(game, gameController, SimulationModeScreen.this);
+			Dialog menuDialog = new IngameMenuDialog(game, gameController,
+					SimulationModeScreen.this);
 			menuDialog.show(stage);
 		}
 	}
