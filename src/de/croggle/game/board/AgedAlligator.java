@@ -1,6 +1,7 @@
 package de.croggle.game.board;
 
 import de.croggle.game.board.operations.BoardObjectVisitor;
+import de.croggle.game.board.operations.CopyConstellation;
 
 /**
  * 
@@ -44,6 +45,7 @@ public class AgedAlligator extends Alligator {
 	 */
 	@Override
 	public AgedAlligator copy() {
-		return new AgedAlligator(this);
+		// return new AgedAlligator(this);
+		return CopyConstellation.copy(this);
 	}
 }

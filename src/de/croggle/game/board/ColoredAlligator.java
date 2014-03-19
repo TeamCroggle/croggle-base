@@ -4,6 +4,7 @@ import java.util.Map;
 
 import de.croggle.game.Color;
 import de.croggle.game.board.operations.BoardObjectVisitor;
+import de.croggle.game.board.operations.CopyConstellation;
 
 /**
  * Colored alligators represent lambda abstractions in the Lambda Calculus. The
@@ -62,7 +63,8 @@ public class ColoredAlligator extends Alligator implements ColoredBoardObject {
 	 */
 	@Override
 	public ColoredAlligator copy() {
-		return new ColoredAlligator(this);
+		// return new ColoredAlligator(this);
+		return CopyConstellation.copy(this);
 	}
 
 	/**

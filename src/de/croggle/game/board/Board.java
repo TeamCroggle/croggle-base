@@ -1,6 +1,7 @@
 package de.croggle.game.board;
 
 import de.croggle.game.board.operations.BoardObjectVisitor;
+import de.croggle.game.board.operations.CopyConstellation;
 
 /**
  * Root object of every alligator term. This class acts as the root of the tree
@@ -36,7 +37,8 @@ public class Board extends Parent implements BoardObject {
 	 */
 	@Override
 	public Board copy() {
-		return new Board(this);
+		// return new Board(this);
+		return CopyConstellation.copy(this);
 	}
 
 }
