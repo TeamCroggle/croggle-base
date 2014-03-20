@@ -47,8 +47,8 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 	private final MultipleChoiceGameController gameController;
 	private BoardActor boardActor;
 	private CheckBox checkboxes[];
-	private final Dialog dialog;
-	
+	private final Dialog goalDialog;
+
 	private boolean displayTutorial = true;
 
 	/**
@@ -68,7 +68,7 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 		AssetManager assetManager = AssetManager.getInstance();
 		assetManager.load(getAssetDirPath() + "textures/pack.atlas",
 				TextureAtlas.class);
-		dialog = new Dialog("", StyleHelper.getInstance().getDialogStyle());
+		goalDialog = new Dialog("", StyleHelper.getInstance().getDialogStyle());
 
 		fillTable();
 		final int packageIndex = gameController.getLevel().getPackageIndex();
@@ -94,14 +94,16 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 
 		gameController.setTimeStamp();
 		gameController.enterPlacement();
-		
-		if(displayTutorial) {
+
+		goalDialog.show(stage);
+
+		if (displayTutorial) {
 			showTutorial();
 			displayTutorial = false;
 		}
-		
+
 	}
-	
+
 	private void showTutorial() {
 		if (gameController.getLevel().hasAnimation()) {
 			List<String> animations = gameController.getLevel().getAnimation();
@@ -207,13 +209,13 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 		okay.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				dialog.hide();
+				goalDialog.hide();
 			}
 		});
 
-		dialog.add(goalTable).width(getViewportWidth() - 250)
+		goalDialog.add(goalTable).width(getViewportWidth() - 250)
 				.height(getViewportHeight());
-		dialog.stack(okay).center().bottom().width(300).height(70).pad(20);
+		goalDialog.stack(okay).center().bottom().width(300).height(70).pad(20);
 	}
 
 	private void buildTutorialDialog(String animationPath) {
@@ -258,7 +260,8 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 	private class MenuClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			Dialog menuDialog = new IngameMenuDialog(game, gameController, MultipleChoiceScreen.this);
+			Dialog menuDialog = new IngameMenuDialog(game, gameController,
+					MultipleChoiceScreen.this);
 			menuDialog.show(stage);
 		}
 	}
@@ -299,7 +302,7 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			dialog.show(stage);
+			goalDialog.show(stage);
 		}
 	}
 
