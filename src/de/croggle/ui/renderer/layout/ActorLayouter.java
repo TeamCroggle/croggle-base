@@ -19,7 +19,6 @@ import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
 import de.croggle.ui.renderer.objectactors.EggActor;
-import de.croggle.util.MapEntry;
 
 abstract class ActorLayouter implements BoardObjectVisitor {
 	/**
@@ -110,8 +109,8 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 	 */
 	protected final Map<BoardObject, Float> widthMap;
 
-	private final Stack<MapEntry<Parent, Vector2>> parents;
-	private final Stack<MapEntry<Parent, Vector2>> parentReverser;
+	private final Stack<ParentState> parents;
+	private final Stack<ParentState> parentReverser;
 
 	/**
 	 * The current scaling of newly added BoardObjectActors
@@ -127,8 +126,8 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 		this.config = config;
 		this.b = b;
 
-		parents = new Stack<MapEntry<Parent, Vector2>>();
-		parentReverser = new Stack<MapEntry<Parent, Vector2>>();
+		parents = new Stack<ParentState>();
+		parentReverser = new Stack<ParentState>();
 
 		widthMap = CreateWidthMap.create(b, config.getUniformObjectWidth(),
 				config.getVerticalScaleFactor(), config.getHorizontalPadding());
@@ -165,9 +164,8 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 		setParentActorBounds(a, alligator);
 		notifyColoredAlligatorLayouted(a);
 		notifyLayouted(a);
-		// layoutChildren(alligator);
-		parentReverser.push(new MapEntry<Parent, Vector2>(alligator,
-				currentPosition.cpy()));
+		parentReverser.push(new ParentState(alligator, currentPosition.cpy(),
+				getScaling()));
 	}
 
 	@Override
@@ -176,9 +174,8 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 		setParentActorBounds(a, alligator);
 		notifyAgedAlligatorLayouted(a);
 		notifyLayouted(a);
-		// layoutChildren(alligator);
-		parentReverser.push(new MapEntry<Parent, Vector2>(alligator,
-				currentPosition.cpy()));
+		parentReverser.push(new ParentState(alligator, currentPosition.cpy(),
+				getScaling()));
 	}
 
 	@Override
@@ -343,9 +340,10 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 		visitBoard(b);
 		reverseParents();
 		while (!parents.isEmpty()) {
-			MapEntry<Parent, Vector2> current = parents.pop();
-			currentPosition = current.getValue();
-			layoutChildren(current.getKey());
+			ParentState current = parents.pop();
+			currentPosition = current.position;
+			scaling = current.scale;
+			layoutChildren(current.parent);
 			reverseParents();
 		}
 	}
@@ -354,5 +352,17 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 		while (!parentReverser.isEmpty()) {
 			parents.push(parentReverser.pop());
 		}
+	}
+
+	private static class ParentState {
+		public ParentState(Parent p, Vector2 position, float scale) {
+			parent = p;
+			this.position = position;
+			this.scale = scale;
+		}
+
+		public Parent parent;
+		public float scale;
+		public Vector2 position;
 	}
 }
