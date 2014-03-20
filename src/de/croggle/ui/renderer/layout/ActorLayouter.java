@@ -2,6 +2,7 @@ package de.croggle.ui.renderer.layout;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Stack;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -18,34 +19,86 @@ import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
 import de.croggle.ui.renderer.objectactors.EggActor;
+import de.croggle.util.MapEntry;
 
 abstract class ActorLayouter implements BoardObjectVisitor {
-	protected abstract AgedAlligatorActor provideAgedAlligatorActor(AgedAlligator alligator);
-	protected abstract ColoredAlligatorActor provideColoredAlligatorActor(ColoredAlligator alligator);
-	protected abstract EggActor provideEggActor(Egg egg);
 	/**
-	 * Called before any children are layouted
+	 * Abstract method to influence where the layouter obtains its new
+	 * {@link AgedAlligatorActor}s from before they get integrated into the
+	 * layout. A basic layout fixer would return the already existent actor
+	 * here, whereas a builder would provide a completely new one.
+	 * 
+	 * @param alligator
+	 * @return
+	 */
+	protected abstract AgedAlligatorActor provideAgedAlligatorActor(
+			AgedAlligator alligator);
+
+	/**
+	 * Abstract method to influence where the layouter obtains its new
+	 * {@link ColoredAlligatorActor}s from before they get integrated into the
+	 * layout. A basic layout fixer would return the already existent actor
+	 * here, whereas a builder would provide a completely new one.
+	 * 
+	 * @param alligator
+	 * @return
+	 */
+	protected abstract ColoredAlligatorActor provideColoredAlligatorActor(
+			ColoredAlligator alligator);
+
+	/**
+	 * Abstract method to influence where the layouter obtains its new
+	 * {@link EggActor}s from before they get integrated into the layout. A
+	 * basic layout fixer would return the already existent actor here, whereas
+	 * a builder would provide a completely new one.
+	 * 
+	 * @param egg
+	 * @return
+	 */
+	protected abstract EggActor provideEggActor(Egg egg);
+
+	/**
+	 * Called after the given actor was layouted. Overwrite this in derived
+	 * classes to be notified when this happens.
+	 * 
 	 * @param actor
 	 */
 	protected void notifyAgedAlligatorLayouted(AgedAlligatorActor actor) {
 	}
+
 	/**
-	 * Called before any children are layouted
+	 * Called after the given actor was layouted. Overwrite this in derived
+	 * classes to be notified when this happens.
+	 * 
 	 * @param actor
 	 */
 	protected void notifyColoredAlligatorLayouted(ColoredAlligatorActor actor) {
 	}
+
+	/**
+	 * Called after the given actor was layouted. Overwrite this in derived
+	 * classes to be notified when this happens.
+	 * 
+	 * @param actor
+	 */
 	protected void notifyEggLayouted(EggActor actor) {
 	}
+
+	/**
+	 * Called after the given actor was layouted. Overwrite this in derived
+	 * classes.
+	 * 
+	 * @param actor
+	 */
 	protected void notifyLayouted(BoardObjectActor actor) {
 	}
-	
+
 	// settings
 	/**
 	 * The configuration used for adjusting the created layouts
 	 */
 	private final ActorLayoutConfiguration config;
-	
+
 	/**
 	 * the board to operate on
 	 */
@@ -56,38 +109,31 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 	 * build in O(1)
 	 */
 	protected final Map<BoardObject, Float> widthMap;
-	
+
+	private final Stack<MapEntry<Parent, Vector2>> parents;
+	private final Stack<MapEntry<Parent, Vector2>> parentReverser;
+
 	/**
 	 * The current scaling of newly added BoardObjectActors
 	 */
 	private float scaling = 1;
-	
+
 	/**
 	 * Where newly added BoardObjectActors will be placed
 	 */
 	private Vector2 currentPosition;
 
-	
 	ActorLayouter(Board b, ActorLayoutConfiguration config) {
 		this.config = config;
 		this.b = b;
-		widthMap = CreateWidthMap.create(b,
-				config.getUniformObjectWidth(),
+
+		parents = new Stack<MapEntry<Parent, Vector2>>();
+		parentReverser = new Stack<MapEntry<Parent, Vector2>>();
+
+		widthMap = CreateWidthMap.create(b, config.getUniformObjectWidth(),
 				config.getVerticalScaleFactor(), config.getHorizontalPadding());
-		currentPosition = config.getTreeOrigin().cpy();
 	}
-	
-	protected ActorLayoutConfiguration getConfig() {
-		return config;
-	}
-	
-	/**
-	 * To be called before accessing this {@link ActorLayouter layouter's} results.
-	 */
-	protected void doLayout() {
-		b.accept(this);
-	}
-	
+
 	@Override
 	public void visitEgg(Egg egg) {
 		EggActor a = provideEggActor(egg);
@@ -119,7 +165,9 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 		setParentActorBounds(a, alligator);
 		notifyColoredAlligatorLayouted(a);
 		notifyLayouted(a);
-		layoutChildren(alligator);
+		// layoutChildren(alligator);
+		parentReverser.push(new MapEntry<Parent, Vector2>(alligator,
+				currentPosition.cpy()));
 	}
 
 	@Override
@@ -128,7 +176,9 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 		setParentActorBounds(a, alligator);
 		notifyAgedAlligatorLayouted(a);
 		notifyLayouted(a);
-		layoutChildren(alligator);
+		// layoutChildren(alligator);
+		parentReverser.push(new MapEntry<Parent, Vector2>(alligator,
+				currentPosition.cpy()));
 	}
 
 	@Override
@@ -164,10 +214,6 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 				}
 			}
 		}
-	}
-
-	private float getScaling() {
-		return scaling;
 	}
 
 	/**
@@ -266,6 +312,10 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 		currentPosition = initialPosition;
 	}
 
+	private float getScaling() {
+		return scaling;
+	}
+
 	/**
 	 * Enter the next level inside the syntax tree
 	 */
@@ -278,5 +328,31 @@ abstract class ActorLayouter implements BoardObjectVisitor {
 	 */
 	private void goHigher() {
 		scaling /= config.getVerticalScaleFactor();
+	}
+
+	protected ActorLayoutConfiguration getConfig() {
+		return config;
+	}
+
+	/**
+	 * To be called before accessing this {@link ActorLayouter layouter's}
+	 * results.
+	 */
+	protected void doLayout() {
+		currentPosition = config.getTreeOrigin().cpy();
+		visitBoard(b);
+		reverseParents();
+		while (!parents.isEmpty()) {
+			MapEntry<Parent, Vector2> current = parents.pop();
+			currentPosition = current.getValue();
+			layoutChildren(current.getKey());
+			reverseParents();
+		}
+	}
+
+	private void reverseParents() {
+		while (!parentReverser.isEmpty()) {
+			parents.push(parentReverser.pop());
+		}
 	}
 }
