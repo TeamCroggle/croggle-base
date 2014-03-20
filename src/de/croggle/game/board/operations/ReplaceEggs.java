@@ -34,16 +34,6 @@ public class ReplaceEggs implements BoardObjectVisitor {
 	private ColorOverflowException colorOverflowException;
 
 	private ReplaceEggs(BoardObject constellation, Color eggColor,
-			InternalBoardObject bornFamily) {
-		this(constellation, eggColor, bornFamily, null, null);
-	}
-
-	private ReplaceEggs(BoardObject constellation, Color eggColor,
-			InternalBoardObject bornFamily, BoardEventMessenger boardMessenger) {
-		this(constellation, eggColor, bornFamily, boardMessenger, null);
-	}
-
-	private ReplaceEggs(BoardObject constellation, Color eggColor,
 			InternalBoardObject bornFamily, ColorController colorController) {
 		this(constellation, eggColor, bornFamily, null, colorController);
 	}
@@ -57,10 +47,9 @@ public class ReplaceEggs implements BoardObjectVisitor {
 		this.boardMessenger = boardMessenger;
 		this.colorController = colorController;
 
-		if (colorController != null) {
-			boundColors = CollectBoundColors.collect(bornFamily);
-			freeColors = CollectFreeColors.collect(bornFamily);
-		}
+		boundColors = CollectBoundColors.collect(bornFamily);
+		freeColors = CollectFreeColors.collect(bornFamily);
+
 	}
 
 	/**
@@ -87,35 +76,6 @@ public class ReplaceEggs implements BoardObjectVisitor {
 			ColorController colorController) throws ColorOverflowException {
 		ReplaceEggs replacer = new ReplaceEggs(constellation, eggColor,
 				bornFamily, boardMessenger, colorController);
-		constellation.accept(replacer);
-		if (replacer.colorOverflowException != null) {
-			throw replacer.colorOverflowException;
-		}
-	}
-
-	/**
-	 * Replaces all eggs below <code>parent</code>, which share it's color, with
-	 * a copy of <code>bornFamily</code>. While replacing, there will be no
-	 * checks if the recoloring is semantically incorrect. To perform
-	 * semantically correct recoloring, use this method with the
-	 * <code>colorController</code> argument. When an egg is replaced, an onEat
-	 * event is sent through <code>boardMessenger</code>.
-	 * 
-	 * @param constellation
-	 *            the (sub) constellation whose child eggs are to be replaced
-	 * @param eggColor
-	 *            the color that the eggs to be replaced have
-	 * @param bornFamily
-	 *            the family with which eggs are replaced
-	 * @param boardMessenger
-	 *            the messenger used for sending events when eggs are replaced
-	 * @throws ColorOverflowException
-	 */
-	public static void replace(BoardObject constellation, Color eggColor,
-			InternalBoardObject bornFamily, BoardEventMessenger boardMessenger)
-			throws ColorOverflowException {
-		ReplaceEggs replacer = new ReplaceEggs(constellation, eggColor,
-				bornFamily, boardMessenger);
 		constellation.accept(replacer);
 		if (replacer.colorOverflowException != null) {
 			throw replacer.colorOverflowException;
@@ -152,33 +112,6 @@ public class ReplaceEggs implements BoardObjectVisitor {
 	}
 
 	/**
-	 * Replaces all eggs below <code>parent</code>, which share it's color, with
-	 * a copy of <code>bornFamily</code>. While replacing, there will be no
-	 * checks if the recoloring is semantically incorrect. To perform
-	 * semantically correct recoloring, use this method with the
-	 * <code>colorController</code> argument. To receive events in case an egg
-	 * is replaced, use this method with the <code>boardMessenger</code>
-	 * argument.
-	 * 
-	 * @param constellation
-	 *            the (sub) constellation whose child eggs are to be replaced
-	 * @param eggColor
-	 *            the color that the eggs to be replaced have
-	 * @param bornFamily
-	 *            the family with which eggs are replaced
-	 * @throws ColorOverflowException
-	 */
-	public static void replace(BoardObject constellation, Color eggColor,
-			InternalBoardObject bornFamily) throws ColorOverflowException {
-		ReplaceEggs replacer = new ReplaceEggs(constellation, eggColor,
-				bornFamily);
-		constellation.accept(replacer);
-		if (replacer.colorOverflowException != null) {
-			throw replacer.colorOverflowException;
-		}
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -187,56 +120,46 @@ public class ReplaceEggs implements BoardObjectVisitor {
 			return;
 		}
 		if (egg.getColor().equals(eggColor)) {
-			InternalBoardObject replacement;
-			if (colorController != null) {
-				replacement = bornFamilyPrototype.copy();
-				final Color[] locallyBoundColors = findLocallyBoundColors(egg);
-				final Color[] globallyBoundColors = findGloballyBoundColors(egg);
+			InternalBoardObject replacement = bornFamilyPrototype.copy();
+			final Color[] locallyBoundColors = findLocallyBoundColors(egg);
+			final Color[] globallyBoundColors = findGloballyBoundColors(egg);
 
-				final Set<Color> unusableColors = new HashSet<Color>();
-				Collections.addAll(unusableColors, globallyBoundColors);
-				Collections.addAll(unusableColors, freeColors);
-				Collections.addAll(unusableColors, boundColors);
+			final Set<Color> unusableColors = new HashSet<Color>();
+			Collections.addAll(unusableColors, globallyBoundColors);
+			Collections.addAll(unusableColors, freeColors);
+			Collections.addAll(unusableColors, boundColors);
 
-				final Set<Color> locallyBoundAndFreeColors = new HashSet<Color>();
-				Collections.addAll(locallyBoundAndFreeColors,
-						locallyBoundColors);
-				locallyBoundAndFreeColors.retainAll(Arrays.asList(freeColors));
-				for (Color color : locallyBoundAndFreeColors) {
-					try {
-						final Color newColor = colorController
-								.requestColor(unusableColors
-										.toArray(new Color[unusableColors
-												.size()]));
-						ExchangeColor.recolor(constellation, color, newColor,
-								boardMessenger);
-					} catch (ColorOverflowException e) {
-						colorOverflowException = e;
-						return;
-					}
+			final Set<Color> locallyBoundAndFreeColors = new HashSet<Color>();
+			Collections.addAll(locallyBoundAndFreeColors, locallyBoundColors);
+			locallyBoundAndFreeColors.retainAll(Arrays.asList(freeColors));
+			for (Color color : locallyBoundAndFreeColors) {
+				try {
+					final Color newColor = colorController
+							.requestColor(unusableColors
+									.toArray(new Color[unusableColors.size()]));
+					ExchangeColor.recolor(constellation, color, newColor,
+							boardMessenger);
+				} catch (ColorOverflowException e) {
+					colorOverflowException = e;
+					return;
 				}
-				final Set<Color> locallyBoundAndBoundColors = new HashSet<Color>();
-				Collections.addAll(locallyBoundAndBoundColors,
-						locallyBoundColors);
-				locallyBoundAndBoundColors
-						.retainAll(Arrays.asList(boundColors));
-				for (Color color : locallyBoundAndBoundColors) {
-					try {
-						final Color newColor = colorController
-								.requestColor(unusableColors
-										.toArray(new Color[unusableColors
-												.size()]));
-						unusableColors.add(newColor);
-						ExchangeColor.recolor(replacement, color, newColor,
-								boardMessenger);
-					} catch (ColorOverflowException e) {
-						colorOverflowException = e;
-						return;
-					}
-
+			}
+			final Set<Color> locallyBoundAndBoundColors = new HashSet<Color>();
+			Collections.addAll(locallyBoundAndBoundColors, locallyBoundColors);
+			locallyBoundAndBoundColors.retainAll(Arrays.asList(boundColors));
+			for (Color color : locallyBoundAndBoundColors) {
+				try {
+					final Color newColor = colorController
+							.requestColor(unusableColors
+									.toArray(new Color[unusableColors.size()]));
+					unusableColors.add(newColor);
+					ExchangeColor.recolor(replacement, color, newColor,
+							boardMessenger);
+				} catch (ColorOverflowException e) {
+					colorOverflowException = e;
+					return;
 				}
-			} else {
-				replacement = bornFamilyPrototype.copy();
+
 			}
 
 			egg.getParent().replaceChild(egg, replacement);
