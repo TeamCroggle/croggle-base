@@ -295,13 +295,6 @@ public class AlligatorApp extends Game {
 		setScreen(newScreen);
 	}
 	
-	public void showLevelOverviewScreen(LevelController levelController, AbstractScreen temporaryPredecessor) {
-		LevelsOverviewScreen newScreen = new LevelsOverviewScreen(this,
-				levelController);
-		newScreen.setTemporaryPredecessor(temporaryPredecessor);
-		setScreen(newScreen);
-	}
-
 	public void showAchievementScreen() {
 		setScreen(achievementScreen);
 	}
