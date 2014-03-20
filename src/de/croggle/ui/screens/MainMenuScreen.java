@@ -63,8 +63,6 @@ public class MainMenuScreen extends AbstractScreen implements
 		Table leftTable = new Table();
 
 		ImageButton title = new ImageButton(helper.getDrawable("widgets/title"));
-		// ImageButton credits = new ImageButton(
-		// helper.getImageButtonStyleRound("widgets/icon-hint"));
 		ImageButton play = new ImageButton(
 				helper.getImageButtonStyleRound("widgets/icon-play"));
 		ImageButton stats = new ImageButton(
@@ -79,26 +77,26 @@ public class MainMenuScreen extends AbstractScreen implements
 
 		// add listeners
 		title.addListener(new CreditsScreenClickListener());
-		// credits.addListener(new CreditsScreenClickListener());
 		play.addListener(new PlayClickListener());
 		stats.addListener(new StatisticScreenClickListener());
 		settings.addListener(new SettingsScreenClickListener());
 		achievements.addListener(new AchievementScreenClickListener());
 		profileButton.addListener(new SelectProfileScreenClickListener());
 
+		// resize 'play' icon
 		play.getImageCell().pad(20);
 
 		leftTable.pad(30);
 		leftTable.defaults().size(100);
-		leftTable.add(title).colspan(3).size(700, 150);
+		leftTable.add(title).colspan(3).size(600, 150);
 		leftTable.row();
 		leftTable.add(play).expandY().colspan(3).size(200);
 		leftTable.row();
-		leftTable.add(settings).bottom().padLeft(20);
-		leftTable.add(stats).bottom();
+		leftTable.add(settings).bottom().space(20);
+		leftTable.add(stats).bottom().space(20);
 		leftTable.add(achievements).right().bottom().expandX().size(150);
 
-		profileButtonTable.add(profileButton).padRight(30).padLeft(30).width(300)
+		profileButtonTable.add(profileButton).padRight(30).width(300)
 				.height(400);
 
 		table.add(leftTable).expand().fill();
