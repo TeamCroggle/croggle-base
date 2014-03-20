@@ -53,9 +53,13 @@ public class GameController implements BoardEventListener {
 	private final BoardEventMessenger placementMessenger;
 	// listeners of the statisticsDelta
 	private final List<StatisticsDeltaProcessor> statisticsDeltaProcessors;
-	private final AlligatorApp app;
 	private LevelProgress progress;
 	private boolean simulationPaused;
+	
+	/**
+	 * The reference to the central game object.
+	 */
+	protected final AlligatorApp app;
 
 	/**
 	 * Creates a new game controller for the given level.

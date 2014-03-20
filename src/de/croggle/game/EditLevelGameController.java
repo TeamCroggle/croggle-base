@@ -22,9 +22,14 @@ public class EditLevelGameController extends GameController {
 		if (serializedBoard == null) {
 			return;
 		}
-		final Board previousBoard = JsonToAlligator
-				.convertBoard(serializedBoard);
-		setUserBoard(previousBoard);
+		try {
+			final Board previousBoard = JsonToAlligator
+					.convertBoard(serializedBoard);
+			setUserBoard(previousBoard);
+		} catch (IllegalArgumentException e) {
+			progress.setCurrentBoard("");
+			app.getPersistenceManager().saveLevelProgress(app.getProfileController().getCurrentProfileName(), progress);
+		}
 	}
 
 	@Override
