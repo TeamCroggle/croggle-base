@@ -14,6 +14,7 @@ import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.operations.CreateHeightMap;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActorFactory;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
 import de.croggle.ui.renderer.objectactors.EggActor;
 
@@ -43,11 +44,13 @@ class ActorLayoutFixer extends ActorLayouter {
 	private ActorLayoutFixer(ActorLayout l, Board b) {
 		super(b, l.getLayoutConfiguration());
 		this.l = l;
-		aaaDummy = new AgedAlligatorActor(new AgedAlligator(true, true));
-		caaDummy = new ColoredAlligatorActor(new ColoredAlligator(true, true,
-				Color.uncolored(), true), false);
-		eaDummy = new EggActor(new Egg(true, true, Color.uncolored(), true),
+		aaaDummy = BoardObjectActorFactory
+				.instantiateAgedAlligatorActor(new AgedAlligator(true, true));
+		caaDummy = BoardObjectActorFactory.instantiateColoredAlligatorActor(
+				new ColoredAlligator(true, true, Color.uncolored(), true),
 				false);
+		eaDummy = BoardObjectActorFactory.instantiateEggActor(new Egg(true,
+				true, Color.uncolored(), true), false);
 
 		deltas = new ArrayList<ActorDelta>(l.size());
 	}
@@ -112,7 +115,9 @@ class ActorLayoutFixer extends ActorLayouter {
 		}
 		if (current == null) {
 			unused.setCreated(true);
-			BoardObjectActor actor = createActor(lastProvidedFor);
+			BoardObjectActor actor = BoardObjectActorFactory.createActorFor(
+					lastProvidedFor, l.getLayoutConfiguration()
+							.isColorBlindEnabled());
 			actor.setX(newActor.getX());
 			actor.setY(newActor.getY());
 			actor.setWidth(newActor.getWidth());
@@ -144,20 +149,6 @@ class ActorLayoutFixer extends ActorLayouter {
 			return result;
 		} else {
 			return null;
-		}
-	}
-
-	private BoardObjectActor createActor(InternalBoardObject boardObject) {
-		if (boardObject.getClass() == AgedAlligator.class) {
-			return new AgedAlligatorActor((AgedAlligator) boardObject);
-		} else if (boardObject.getClass() == ColoredAlligator.class) {
-			return new ColoredAlligatorActor((ColoredAlligator) boardObject, l
-					.getLayoutConfiguration().isColorBlindEnabled());
-		} else if (boardObject.getClass() == Egg.class) {
-			return new EggActor((Egg) boardObject, l.getLayoutConfiguration()
-					.isColorBlindEnabled());
-		} else {
-			throw new IllegalStateException();
 		}
 	}
 }

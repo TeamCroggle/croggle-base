@@ -7,7 +7,7 @@ import de.croggle.game.board.Egg;
  */
 public class EggActor extends ColoredBoardObjectActor {
 
-	public EggActor(Egg egg, boolean colorBlindEnabled) {
+	EggActor(Egg egg, boolean colorBlindEnabled) {
 		super(egg, colorBlindEnabled, "egg/foreground", "egg/background");
 	}
 

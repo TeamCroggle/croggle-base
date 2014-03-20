@@ -7,8 +7,7 @@ import de.croggle.game.board.ColoredAlligator;
  */
 public class ColoredAlligatorActor extends ColoredBoardObjectActor {
 
-	public ColoredAlligatorActor(ColoredAlligator alligator,
-			boolean colorBlindEnabled) {
+	ColoredAlligatorActor(ColoredAlligator alligator, boolean colorBlindEnabled) {
 		super(alligator, colorBlindEnabled, "coloredalligator/foreground",
 				"coloredalligator/background");
 	}

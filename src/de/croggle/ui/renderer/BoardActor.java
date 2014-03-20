@@ -3,6 +3,7 @@ package de.croggle.ui.renderer;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -30,6 +31,8 @@ import de.croggle.ui.renderer.objectactors.ColoredBoardObjectActor;
  * constellation.
  */
 public class BoardActor extends Group implements SettingChangeListener {
+
+	private static boolean headless = false;
 
 	/*
 	 * the layout to be displayed
@@ -115,10 +118,12 @@ public class BoardActor extends Group implements SettingChangeListener {
 		zoomAndPan = new BoardActorZoomAndPan(this);
 		setZoomAndPanEnabled(true);
 
-		// set transparent but existing background
-		background = AssetManager.getInstance().getColorTexture(
-				de.croggle.game.Color.uncolored());
-		setBackgroundColor(new Color(1.f, 1.f, 1.f, 0.f));
+		if (!headless) {
+			// set transparent but existing background
+			background = AssetManager.getInstance().getColorTexture(
+					de.croggle.game.Color.uncolored());
+			setBackgroundColor(new Color(1.f, 1.f, 1.f, 0.f));
+		}
 
 		initializePosition();
 	}
@@ -605,5 +610,17 @@ public class BoardActor extends Group implements SettingChangeListener {
 	@Override
 	public SnapshotArray<Actor> getChildren() {
 		return super.getChildren();
+	}
+
+	/**
+	 * If set to true, future instantiations of {@link BoardActor} will assume
+	 * to run in a headless environment, causing e.g. that no background is
+	 * initially set (would need {@link Pixmap}s), preventing teinting using
+	 * {@link #setColor(Color)} effectless.
+	 * 
+	 * @param headless
+	 */
+	public static void setHeadlessInstantiation(boolean headless) {
+		BoardActor.headless = headless;
 	}
 }

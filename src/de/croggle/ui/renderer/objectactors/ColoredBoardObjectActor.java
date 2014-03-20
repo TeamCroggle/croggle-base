@@ -25,8 +25,8 @@ import de.croggle.game.board.ColoredBoardObject;
  */
 public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 
-	private final TextureRegion mask;
-	private final TextureRegion foreground;
+	private TextureRegion mask;
+	private TextureRegion foreground;
 	private Texture background;
 	private boolean valid = false;
 	boolean colorBlindEnabled = false;
@@ -34,7 +34,11 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 	public ColoredBoardObjectActor(ColoredBoardObject object,
 			boolean colorBlindEnabled, String foregroundPath, String maskPath) {
 		super(object);
+		initialize(foregroundPath, maskPath, colorBlindEnabled);
+	}
 
+	protected void initialize(String foregroundPath, String maskPath,
+			boolean colorBlindEnabled) {
 		AssetManager assetManager = AssetManager.getInstance();
 		TextureAtlas tex;
 		try {

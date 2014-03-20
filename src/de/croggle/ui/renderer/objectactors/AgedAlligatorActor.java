@@ -15,7 +15,7 @@ import de.croggle.game.board.AgedAlligator;
  */
 public class AgedAlligatorActor extends BoardObjectActor {
 
-	private final TextureRegion foreground;
+	private TextureRegion foreground;
 
 	/**
 	 * Creates a new actor.
@@ -23,8 +23,12 @@ public class AgedAlligatorActor extends BoardObjectActor {
 	 * @param alligator
 	 *            the AgedAlligator represented by this actor
 	 */
-	public AgedAlligatorActor(AgedAlligator alligator) {
+	AgedAlligatorActor(AgedAlligator alligator) {
 		super(alligator);
+		initialize();
+	}
+
+	protected void initialize() {
 		AssetManager assetManager = AssetManager.getInstance();
 
 		TextureAtlas tex;

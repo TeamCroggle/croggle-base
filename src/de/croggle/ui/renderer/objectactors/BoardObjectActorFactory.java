@@ -2,6 +2,7 @@ package de.croggle.ui.renderer.objectactors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import de.croggle.AlligatorApp;
 import de.croggle.data.persistence.Setting;
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.Board;
@@ -17,6 +18,8 @@ import de.croggle.game.board.operations.BoardObjectVisitor;
  * 
  */
 public class BoardObjectActorFactory {
+	private static boolean headlessActors = false;
+
 	private BoardObjectActorFactory() {
 	}
 
@@ -83,6 +86,34 @@ public class BoardObjectActorFactory {
 		return result[0];
 	}
 
+	public static ColoredAlligatorActor instantiateColoredAlligatorActor(
+			ColoredAlligator alligator, boolean colorBlindEnabled) {
+		if (AlligatorApp.DEBUG && headlessActors) {
+			return new HeadlessColoredAlligatorActor(alligator,
+					colorBlindEnabled);
+		} else {
+			return new ColoredAlligatorActor(alligator, colorBlindEnabled);
+		}
+	}
+
+	public static AgedAlligatorActor instantiateAgedAlligatorActor(
+			AgedAlligator alligator) {
+		if (AlligatorApp.DEBUG && headlessActors) {
+			return new HeadlessAgedAlligatorActor(alligator);
+		} else {
+			return new AgedAlligatorActor(alligator);
+		}
+	}
+
+	public static EggActor instantiateEggActor(Egg egg,
+			boolean colorBlindEnabled) {
+		if (AlligatorApp.DEBUG && headlessActors) {
+			return new HeadlessEggActor(egg, colorBlindEnabled);
+		} else {
+			return new EggActor(egg, colorBlindEnabled);
+		}
+	}
+
 	/**
 	 * Creates a new {@link BoardObjectActor} representing and matching the
 	 * actual type of the given {@link InternalBoardObject}. It can be of type
@@ -98,17 +129,17 @@ public class BoardObjectActorFactory {
 	 * @return a {@link BoardObjectActor} suitable to represent the given
 	 *         {@link InternalBoardObject}
 	 */
-	public static BoardObjectActor createActor(InternalBoardObject o,
+	public static BoardObjectActor createActorFor(InternalBoardObject o,
 			boolean colorBlindEnabled) {
 		switch (getType(o)) {
 		case EGG: {
-			return new EggActor((Egg) o, colorBlindEnabled);
+			return instantiateEggActor((Egg) o, colorBlindEnabled);
 		}
 		case AGED_ALLIGATOR: {
-			return new AgedAlligatorActor((AgedAlligator) o);
+			return instantiateAgedAlligatorActor((AgedAlligator) o);
 		}
 		case COLORED_ALLIGATOR: {
-			return new ColoredAlligatorActor((ColoredAlligator) o,
+			return instantiateColoredAlligatorActor((ColoredAlligator) o,
 					colorBlindEnabled);
 		}
 		default:
@@ -137,18 +168,18 @@ public class BoardObjectActorFactory {
 		switch (getType(a)) {
 		case EGG: {
 			EggActor ea = (EggActor) a;
-			EggActor res = new EggActor((Egg) ibo, ea.colorBlindEnabled);
+			EggActor res = instantiateEggActor((Egg) ibo, ea.colorBlindEnabled);
 			result = res;
 			break;
 		}
 		case AGED_ALLIGATOR: {
-			AgedAlligatorActor res = new AgedAlligatorActor((AgedAlligator) ibo);
+			AgedAlligatorActor res = instantiateAgedAlligatorActor((AgedAlligator) ibo);
 			result = res;
 			break;
 		}
 		case COLORED_ALLIGATOR: {
 			ColoredAlligatorActor ca = (ColoredAlligatorActor) a;
-			ColoredAlligatorActor res = new ColoredAlligatorActor(
+			ColoredAlligatorActor res = instantiateColoredAlligatorActor(
 					(ColoredAlligator) ibo, ca.colorBlindEnabled);
 			result = res;
 			break;
@@ -160,5 +191,9 @@ public class BoardObjectActorFactory {
 		result.setScale(a.getScaleX(), a.getScaleY());
 		result.setColor(a.getColor());
 		return result;
+	}
+
+	public static void setActorsHeadless(boolean headless) {
+		BoardObjectActorFactory.headlessActors = headless;
 	}
 }

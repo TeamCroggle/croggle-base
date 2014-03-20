@@ -60,49 +60,55 @@ class BoardObjectActorDragging {
 				.isColorBlindEnabled();
 
 		{
-			coloredDragActor = new ColoredAlligatorActor(new ColoredAlligator(
-					false, false, Color.uncolored(), false), colorBlind);
+			coloredDragActor = BoardObjectActorFactory
+					.instantiateColoredAlligatorActor(new ColoredAlligator(
+							false, false, Color.uncolored(), false), colorBlind);
 			coloredDragActor.addAction(new AutoPanAction());
 
-			eggDragActor = new EggActor(new Egg(false, false,
-					Color.uncolored(), false), colorBlind);
+			eggDragActor = BoardObjectActorFactory.instantiateEggActor(new Egg(
+					false, false, Color.uncolored(), false), colorBlind);
 			eggDragActor.addAction(new AutoPanAction());
 
-			agedDragActor = new AgedAlligatorActor(new AgedAlligator(false,
-					false));
+			agedDragActor = BoardObjectActorFactory
+					.instantiateAgedAlligatorActor(new AgedAlligator(false,
+							false));
 			agedDragActor.addAction(new AutoPanAction());
 		}
 
 		{
-			coloredValidDragActor = new ColoredAlligatorActor(
-					coloredDragActor.getBoardObject(), colorBlind);
+			coloredValidDragActor = BoardObjectActorFactory
+					.instantiateColoredAlligatorActor(
+							coloredDragActor.getBoardObject(), colorBlind);
 			coloredValidDragActor.setColor(validColor);
 			coloredValidDragActor.addAction(new AutoPanAction());
 
-			eggValidDragActor = new EggActor(eggDragActor.getBoardObject(),
-					colorBlind);
+			eggValidDragActor = BoardObjectActorFactory.instantiateEggActor(
+					eggDragActor.getBoardObject(), colorBlind);
 			eggValidDragActor.setColor(validColor);
 			eggValidDragActor.addAction(new AutoPanAction());
 
-			agedValidDragActor = new AgedAlligatorActor(
-					agedDragActor.getBoardObject());
+			agedValidDragActor = BoardObjectActorFactory
+					.instantiateAgedAlligatorActor(agedDragActor
+							.getBoardObject());
 			agedValidDragActor.setColor(validColor);
 			agedValidDragActor.addAction(new AutoPanAction());
 		}
 
 		{
-			coloredInvalidDragActor = new ColoredAlligatorActor(
-					coloredDragActor.getBoardObject(), colorBlind);
+			coloredInvalidDragActor = BoardObjectActorFactory
+					.instantiateColoredAlligatorActor(
+							coloredDragActor.getBoardObject(), colorBlind);
 			coloredInvalidDragActor.setColor(invalidColor);
 			coloredInvalidDragActor.addAction(new AutoPanAction());
 
-			eggInvalidDragActor = new EggActor(eggDragActor.getBoardObject(),
-					colorBlind);
+			eggInvalidDragActor = BoardObjectActorFactory.instantiateEggActor(
+					eggDragActor.getBoardObject(), colorBlind);
 			eggInvalidDragActor.setColor(invalidColor);
 			eggInvalidDragActor.addAction(new AutoPanAction());
 
-			agedInvalidDragActor = new AgedAlligatorActor(
-					agedDragActor.getBoardObject());
+			agedInvalidDragActor = BoardObjectActorFactory
+					.instantiateAgedAlligatorActor(agedDragActor
+							.getBoardObject());
 			agedInvalidDragActor.setColor(invalidColor);
 			agedInvalidDragActor.addAction(new AutoPanAction());
 		}

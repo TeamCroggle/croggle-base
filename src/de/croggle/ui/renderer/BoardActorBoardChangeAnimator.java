@@ -26,6 +26,7 @@ import de.croggle.ui.renderer.layout.ActorDelta;
 import de.croggle.ui.renderer.layout.ActorLayout;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActorFactory;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
 import de.croggle.ui.renderer.objectactors.ColoredBoardObjectActor;
 import de.croggle.ui.renderer.objectactors.EggActor;
@@ -319,7 +320,8 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		final float animationDuration = 0.3f;
 
 		BoardObjectActor coloredActor = b.getLayout().getActor(colored);
-		AgedAlligatorActor agedActor = new AgedAlligatorActor(aged);
+		AgedAlligatorActor agedActor = BoardObjectActorFactory
+				.instantiateAgedAlligatorActor(aged);
 		agedActor.setSize(coloredActor.getWidth(), coloredActor.getHeight());
 		agedActor.setPosition(coloredActor.getX(), coloredActor.getY());
 		agedActor.setColor(1.f, 1.f, 1.f, 0.f);

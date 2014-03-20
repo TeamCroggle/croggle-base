@@ -15,6 +15,7 @@ import de.croggle.game.board.operations.CreateHeightMap;
 import de.croggle.ui.renderer.BoardActor;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActorFactory;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
 import de.croggle.ui.renderer.objectactors.EggActor;
 
@@ -96,7 +97,8 @@ class ActorLayoutBuilder extends ActorLayouter {
 	@Override
 	protected AgedAlligatorActor provideAgedAlligatorActor(
 			AgedAlligator alligator) {
-		AgedAlligatorActor actor = new AgedAlligatorActor(alligator);
+		AgedAlligatorActor actor = BoardObjectActorFactory
+				.instantiateAgedAlligatorActor(alligator);
 		actors.put(alligator, actor);
 		return actor;
 	}
@@ -104,15 +106,17 @@ class ActorLayoutBuilder extends ActorLayouter {
 	@Override
 	protected ColoredAlligatorActor provideColoredAlligatorActor(
 			ColoredAlligator alligator) {
-		ColoredAlligatorActor actor = new ColoredAlligatorActor(alligator,
-				getConfig().isColorBlindEnabled());
+		ColoredAlligatorActor actor = BoardObjectActorFactory
+				.instantiateColoredAlligatorActor(alligator, getConfig()
+						.isColorBlindEnabled());
 		actors.put(alligator, actor);
 		return actor;
 	}
 
 	@Override
 	protected EggActor provideEggActor(Egg egg) {
-		EggActor actor = new EggActor(egg, getConfig().isColorBlindEnabled());
+		EggActor actor = BoardObjectActorFactory.instantiateEggActor(egg,
+				getConfig().isColorBlindEnabled());
 		actors.put(egg, actor);
 		return actor;
 	}

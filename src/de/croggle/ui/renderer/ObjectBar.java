@@ -15,6 +15,7 @@ import de.croggle.game.board.Parent;
 import de.croggle.ui.StyleHelper;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
+import de.croggle.ui.renderer.objectactors.BoardObjectActorFactory;
 import de.croggle.ui.renderer.objectactors.ColoredAlligatorActor;
 import de.croggle.ui.renderer.objectactors.EggActor;
 
@@ -53,11 +54,13 @@ public class ObjectBar extends Table {
 
 		dragging = new BoardObjectActorDragging(editing);
 
-		agedAlligator = new AgedAlligatorActor(new AgedAlligator(false, false));
-		coloredAlligator = new ColoredAlligatorActor(new ColoredAlligator(
-				false, false, Color.uncolored(), false), colorBlind);
-		eggActor = new EggActor(
-				new Egg(false, false, Color.uncolored(), false), colorBlind);
+		agedAlligator = BoardObjectActorFactory
+				.instantiateAgedAlligatorActor(new AgedAlligator(false, false));
+		coloredAlligator = BoardObjectActorFactory
+				.instantiateColoredAlligatorActor(new ColoredAlligator(false,
+						false, Color.uncolored(), false), colorBlind);
+		eggActor = BoardObjectActorFactory.instantiateEggActor(new Egg(false,
+				false, Color.uncolored(), false), colorBlind);
 
 		setBackground(StyleHelper.getInstance().getDrawable("widgets/button"));
 
@@ -75,7 +78,9 @@ public class ObjectBar extends Table {
 				bufferedAged = null;
 				return aged;
 			} else {
-				return new AgedAlligatorActor(new AgedAlligator(true, true));
+				return BoardObjectActorFactory
+						.instantiateAgedAlligatorActor(new AgedAlligator(true,
+								true));
 			}
 		} else if (prototype == coloredAlligator) {
 			if (bufferedColored != null) {
@@ -83,8 +88,10 @@ public class ObjectBar extends Table {
 				bufferedColored = null;
 				return colored;
 			} else {
-				return new ColoredAlligatorActor(new ColoredAlligator(true,
-						true, Color.uncolored(), true), colorBlind);
+				return BoardObjectActorFactory
+						.instantiateColoredAlligatorActor(new ColoredAlligator(
+								true, true, Color.uncolored(), true),
+								colorBlind);
 			}
 		} else if (prototype == eggActor) {
 			if (bufferedEgg != null) {
@@ -92,9 +99,8 @@ public class ObjectBar extends Table {
 				bufferedEgg = null;
 				return egg;
 			} else {
-				return new EggActor(
-						new Egg(true, true, Color.uncolored(), true),
-						colorBlind);
+				return BoardObjectActorFactory.instantiateEggActor(new Egg(
+						true, true, Color.uncolored(), true), colorBlind);
 			}
 		} else {
 			throw new IllegalStateException();
