@@ -114,15 +114,17 @@ public class JsonToAlligator {
 	 * @return an instance of {@link Board} corresponding to the constellation
 	 *         described in the given {@link JsonValue}
 	 */
-	if (board == null) {
-		throw new IllegalArgumentException(
-				"Illegal argument: The json value is null.");
+	public static Board convertBoard(JsonValue board) {
+		if (board == null) {
+			throw new IllegalArgumentException(
+					"Illegal argument: The json value is null.");
+		}
+		if (!board.hasChild("families")) {
+			throw new IllegalArgumentException(
+					"Illegal board: Did not find list \"families\" in given JsonValue.");
+		}
+		return toBoard(board);
 	}
-	if (!board.hasChild("families")) {
-		throw new IllegalArgumentException(
-				"Illegal board: Did not find list \"families\" in given JsonValue.");
-	}
-	return toBoard(board);
 
 	/**
 	 * Dispatches a JsonValue by examining its "type" attribute to the
