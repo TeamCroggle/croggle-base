@@ -8,7 +8,7 @@
 			"animation" : ["tutorial/introduction.png", "tutorial/introduction2.png", 
 						"tutorial/introduction3.png", "tutorial/introduction4.png"
 			],
-			"abort simulation after" : 111 ,
+			"abort simulation after" : -10 ,
 			"hints" : [ "hints/0000"
 			],
 			"data" : {
