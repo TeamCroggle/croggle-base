@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -181,6 +182,14 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 
 			pager.addPage(pageTable);
 
+		}
+
+		// group checkboxes so only one can be checked at a time
+		// (max check amount is one per default)
+		ButtonGroup checkboxGroup = new ButtonGroup();
+		checkboxGroup.setMinCheckCount(0);
+		for (int i = 0; i < level.getAnswers().length; i++) {
+			checkboxGroup.add(checkboxes[i]);
 		}
 
 		table.stack(pager, leftTable).expand().fill();
