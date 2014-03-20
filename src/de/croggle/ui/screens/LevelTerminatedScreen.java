@@ -55,10 +55,11 @@ public class LevelTerminatedScreen extends AbstractScreen {
 
 	private void fillTable() {
 		StyleHelper helper = StyleHelper.getInstance();
+		final boolean solved = gameController.isSolved();
 
 		ImageButton image = new ImageButton(
 				helper.getDrawable("widgets/icon-trophy"));
-		Label message = new Label(gameController.isSolved() ? _("level_solved")
+		Label message = new Label(solved ? _("level_solved")
 				: _("level_failed"), helper.getBlackLabelStyle(50));
 		ImageButton next = new ImageButton(
 				helper.getImageButtonStyleRound("widgets/icon-next"));
@@ -87,19 +88,30 @@ public class LevelTerminatedScreen extends AbstractScreen {
 		levelOverview.getImageCell().pad(7);
 
 		table.pad(30);
-		table.add(image).colspan(5).size(300).expand();
-		table.row();
-		table.add(message).colspan(5);
-		table.row();
 
-		if (!achievementController.getLatestUnlockedAchievements().isEmpty()) {
-			table.add(achievements).left().size(150);
+		if (solved) {
+			table.add(image).colspan(5).size(300).expand();
+			table.row();
+			table.add(message).colspan(5);
+			table.row();
+
+			if (!achievementController.getLatestUnlockedAchievements()
+					.isEmpty()) {
+				table.add(achievements).left().size(150);
+			}
+
+			table.add(replay).size(100).bottom().space(30).expandX().right();
+			table.add(levelOverview).size(100).bottom().space(30);
+			table.add(home).size(100).bottom().space(30);
+			table.add(next).size(150);
+		} else {
+			table.add(message).colspan(5).expand();
+			table.row();
+			table.add(levelOverview).size(100).bottom().space(30).expandX()
+					.right();
+			table.add(home).size(100).bottom().space(30);
+			table.add(replay).size(150);
 		}
-
-		table.add(replay).size(100).bottom().space(30).expandX().right();
-		table.add(levelOverview).size(100).bottom().space(30);
-		table.add(home).size(100).bottom().space(30);
-		table.add(next).size(150);
 	}
 
 	private class LevelOverviewClickListener extends ClickListener {
