@@ -1,6 +1,7 @@
 package de.croggle.ui.screens;
 
 import static de.croggle.backends.BackendHelper.getAssetDirPath;
+import static de.croggle.data.LocalizationHelper._;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -26,8 +27,10 @@ import de.croggle.game.board.Board;
 import de.croggle.game.board.IllegalBoardException;
 import de.croggle.game.level.LevelPackage;
 import de.croggle.game.level.LevelPackagesController;
+import de.croggle.ui.NotificationCloseListener;
 import de.croggle.ui.StyleHelper;
 import de.croggle.ui.actors.IngameMenuDialog;
+import de.croggle.ui.actors.NotificationDialog;
 import de.croggle.ui.renderer.BoardActor;
 import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
 
@@ -36,7 +39,7 @@ import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
  * see ``Pflichtenheft 10.5.5 / Abbildung 14''.
  */
 public class SimulationModeScreen extends AbstractScreen implements
-		SettingChangeListener {
+		SettingChangeListener, NotificationCloseListener {
 
 	private static final float ZOOM_RATE = 3f;
 
@@ -240,15 +243,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 		public void clicked(InputEvent event, float x, float y) {
 			super.clicked(event, x, y);
 			stopAutomaticSimulation();
-			try {
-				gameController.evaluateStep();
-			} catch (ColorOverflowException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (AlligatorOverflowException e) {
-				// TODO Auto-generated catch block//
-				e.printStackTrace();
-			}
+			evaluateStep();
 		}
 	}
 
@@ -321,15 +316,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 				waited += delta;
 				if (waited >= delay  || !hasStarted && waited >= INTIAL_DELAY) {
 					hasStarted = true;
-					try {
-						gameController.evaluateStep();
-					} catch (ColorOverflowException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (AlligatorOverflowException e) {
-						// TODO Auto-generated catch block//
-						e.printStackTrace();
-					}
+					evaluateStep();
 					waited -= delay;
 				}
 
@@ -346,10 +333,32 @@ public class SimulationModeScreen extends AbstractScreen implements
 			menuDialog.show(stage);
 		}
 	}
+	
+	private void evaluateStep() {
+		try {
+			gameController.evaluateStep();
+		} catch (ColorOverflowException e) {
+			stopAutomaticSimulation();
+			NotificationDialog dialog = new NotificationDialog(_("alligator_overflow_msg"));
+			dialog.registerListener(this);
+			dialog.show(stage);
+		} catch (AlligatorOverflowException e) {
+			stopAutomaticSimulation();
+			NotificationDialog dialog = new NotificationDialog(_("alligator_overflow_msg"));
+			dialog.registerListener(this);
+			dialog.show(stage);
+		}
+	}
 
 	@Override
 	protected void showLogicalPredecessor() {
 		game.showPlacementModeScreen(gameController);
+	}
+
+	@Override
+	public void onNotificationClose() {
+		game.showPlacementModeScreen(gameController);
+		
 	}
 
 }
