@@ -3,6 +3,7 @@ package de.croggle.game.board.operations;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Stack;
 
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.Board;
@@ -20,14 +21,36 @@ public class CreateWidthMap implements BoardObjectVisitor {
 	private final float scaleFactor;
 	private final float padding;
 
+	private final Stack<ParentState> parents;
+	private final Stack<ParentState> stateReverser;
 	private float scaling = 1;
 
-	private CreateWidthMap(float objectWidth, float depthScaleFactor,
+	private CreateWidthMap(Parent p, float objectWidth, float depthScaleFactor,
 			float padding) {
 		widthMap = new HashMap<BoardObject, Float>();
 		this.objectWidth = objectWidth;
 		scaleFactor = depthScaleFactor;
 		this.padding = padding;
+		parents = new Stack<CreateWidthMap.ParentState>();
+		stateReverser = new Stack<CreateWidthMap.ParentState>();
+
+		p.accept(this);
+		parents.push(stateReverser.pop());
+		while (!parents.isEmpty()) {
+			ParentState current = parents.peek();
+			scaling = current.scale;
+			if (current.childrenDone) {
+				parents.pop();
+				calculateParent(current);
+			} else {
+				current.childrenDone = true;
+				goDeeper();
+				for (InternalBoardObject child : current.parent) {
+					child.accept(this);
+				}
+				reverseParents();
+			}
+		}
 	}
 
 	/**
@@ -53,10 +76,15 @@ public class CreateWidthMap implements BoardObjectVisitor {
 	 */
 	public static Map<BoardObject, Float> create(BoardObject b,
 			float objectWidth, float depthScaleFactor, float padding) {
-		CreateWidthMap creator = new CreateWidthMap(objectWidth,
-				depthScaleFactor, padding);
-		b.accept(creator);
-		return creator.widthMap;
+		if (!(b instanceof Parent)) {
+			Map<BoardObject, Float> map = new HashMap<BoardObject, Float>();
+			map.put(b, objectWidth);
+			return map;
+		} else {
+			CreateWidthMap creator = new CreateWidthMap((Parent) b,
+					objectWidth, depthScaleFactor, padding);
+			return creator.widthMap;
+		}
 	}
 
 	/**
@@ -95,22 +123,25 @@ public class CreateWidthMap implements BoardObjectVisitor {
 	}
 
 	private void visitParent(Parent p) {
+		stateReverser.push(new ParentState(p, getScaling()));
+	}
+
+	private void calculateParent(ParentState parentState) {
 		float width = getObectWidth();
 		float childWidth = 0;
-		goDeeper();
-		Iterator<InternalBoardObject> it = p.iterator();
+		Iterator<InternalBoardObject> it = parentState.parent.iterator();
 		InternalBoardObject child;
+		goDeeper();
 		while (it.hasNext()) {
 			child = it.next();
-			child.accept(this);
+			// child.accept(this);
 			childWidth += widthMap.get(child);
 			if (it.hasNext()) {
 				// TODO apply scaling on padding or not?
 				childWidth += padding * getScaling();
 			}
 		}
-		goHigher();
-		widthMap.put(p, Math.max(width, childWidth));
+		widthMap.put(parentState.parent, Math.max(width, childWidth));
 	}
 
 	/**
@@ -133,5 +164,22 @@ public class CreateWidthMap implements BoardObjectVisitor {
 
 	private float getObectWidth() {
 		return scaling * objectWidth;
+	}
+
+	private static class ParentState {
+		public ParentState(Parent p, float scale) {
+			this.parent = p;
+			this.scale = scale;
+		}
+
+		public Parent parent;
+		public float scale;
+		public boolean childrenDone = false;
+	}
+
+	private void reverseParents() {
+		while (!stateReverser.isEmpty()) {
+			parents.push(stateReverser.pop());
+		}
 	}
 }
