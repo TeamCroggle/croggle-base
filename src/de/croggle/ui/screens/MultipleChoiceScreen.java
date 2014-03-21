@@ -50,7 +50,7 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 	private CheckBox checkboxes[];
 	private final Dialog goalDialog;
 
-	private boolean displayTutorial = true;
+	private boolean showDialogs = true;
 
 	/**
 	 * Creates the base screen of a multiple choice level, which is shown to the
@@ -96,13 +96,16 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 		gameController.setTimeStamp();
 		gameController.enterPlacement();
 
-		goalDialog.show(stage);
-
-		if (displayTutorial) {
+		if (showDialogs) {
 			showTutorial();
-			displayTutorial = false;
+			showGoal();
+			showDialogs = false;
 		}
 
+	}
+	
+	private void showGoal() {
+		goalDialog.show(stage);
 	}
 
 	private void showTutorial() {
@@ -311,7 +314,7 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			goalDialog.show(stage);
+			showGoal();
 		}
 	}
 
