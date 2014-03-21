@@ -64,9 +64,10 @@ public class ProfileManager extends TableManager {
 	Profile getProfile(String profileName) {
 
 		String selectQuery = "select * from " + TABLE_NAME + " where "
-				+ KEY_PROFILE_NAME + " = " + "'" + profileName + "'";
+				+ KEY_PROFILE_NAME + " = ?";
 
-		Cursor cursor = database.rawQuery(selectQuery, null);
+		Cursor cursor = database.rawQuery(selectQuery,
+				new String[] { profileName });
 
 		if (cursor.moveToFirst()) {
 			String name = cursor.getString(cursor
@@ -108,7 +109,6 @@ public class ProfileManager extends TableManager {
 	 *            the name of the user whose profile is to be deleted
 	 */
 	void deleteProfile(String profileName) {
-
 		database.delete(TABLE_NAME, KEY_PROFILE_NAME + " = ?",
 				new String[] { profileName });
 
@@ -123,7 +123,7 @@ public class ProfileManager extends TableManager {
 
 		List<Profile> profileList = new ArrayList<Profile>();
 
-		String selectQuery = "SELECT  * FROM " + TABLE_NAME;
+		String selectQuery = "select * from " + TABLE_NAME;
 		Cursor cursor = database.rawQuery(selectQuery, null);
 		if (cursor.moveToFirst()) {
 			String name;
@@ -148,9 +148,10 @@ public class ProfileManager extends TableManager {
 	 */
 	boolean isNameUsed(String profileName) {
 		String selectQuery = "select * from " + TABLE_NAME + " where "
-				+ KEY_PROFILE_NAME + " = " + "'" + profileName + "'";
+				+ KEY_PROFILE_NAME + " = ?";
 
-		Cursor cursor = database.rawQuery(selectQuery, null);
+		Cursor cursor = database.rawQuery(selectQuery,
+				new String[] { profileName });
 		if (cursor.moveToFirst()) {
 			return true;
 		}

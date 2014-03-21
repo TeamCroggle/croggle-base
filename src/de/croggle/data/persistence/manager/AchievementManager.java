@@ -63,9 +63,9 @@ public class AchievementManager extends TableManager {
 		values.put(KEY_PROFILE_NAME, profileName);
 		values.put(KEY_ACHIEVEMENT_INDEX, achievement.getIndex());
 
-		database.update(TABLE_NAME, values, KEY_PROFILE_NAME + " = '"
-				+ profileName + "' and " + KEY_ACHIEVEMENT_ID + " = "
-				+ achievement.getId(), null);
+		database.update(TABLE_NAME, values, KEY_PROFILE_NAME + " = ? and "
+				+ KEY_ACHIEVEMENT_ID + " = " + achievement.getId(),
+				new String[] { profileName });
 	}
 
 	/**
@@ -101,8 +101,9 @@ public class AchievementManager extends TableManager {
 	SparseArray<Integer> getUnlockedAchievements(String profileName) {
 
 		String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-				+ KEY_PROFILE_NAME + " = '" + profileName + "'";
-		Cursor cursor = database.rawQuery(selectQuery, null);
+				+ KEY_PROFILE_NAME + " = ?";
+		Cursor cursor = database.rawQuery(selectQuery,
+				new String[] { profileName });
 		if (cursor.moveToFirst()) {
 			SparseArray<Integer> unlockedAchievements = new SparseArray<Integer>();
 			Integer unlockedFound;

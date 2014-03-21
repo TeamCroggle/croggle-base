@@ -113,9 +113,10 @@ public class StatisticManager extends TableManager {
 	Statistic getStatistic(String profileName) {
 
 		String selectQuery = "select * from " + TABLE_NAME + " where "
-				+ KEY_PROFILE_NAME + " = " + "'" + profileName + "'";
+				+ KEY_PROFILE_NAME + " = ?";
 
-		Cursor cursor = database.rawQuery(selectQuery, null);
+		Cursor cursor = database.rawQuery(selectQuery,
+				new String[] { profileName });
 
 		if (cursor.moveToFirst()) {
 			int playtime = cursor.getInt(cursor.getColumnIndex(KEY_PLAYTIME));

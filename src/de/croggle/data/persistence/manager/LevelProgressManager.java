@@ -95,10 +95,11 @@ public class LevelProgressManager extends TableManager {
 	LevelProgress getLevelProgress(String profileName, long levelId) {
 
 		String selectQuery = "select * from " + TABLE_NAME + " where "
-				+ KEY_PROFILE_NAME + " = " + "'" + profileName + "' and "
-				+ KEY_LEVEL_ID + " = " + levelId;
+				+ KEY_PROFILE_NAME + " = ?  and " + KEY_LEVEL_ID + " = "
+				+ levelId;
 
-		Cursor cursor = database.rawQuery(selectQuery, null);
+		Cursor cursor = database.rawQuery(selectQuery,
+				new String[] { profileName });
 
 		if (cursor.moveToFirst()) {
 			int levelID = cursor.getInt(cursor.getColumnIndex(KEY_LEVEL_ID));
@@ -124,9 +125,9 @@ public class LevelProgressManager extends TableManager {
 	List<Integer> getSolvedLevels(String profileName) {
 		List<Integer> levelsSolved = new ArrayList<Integer>();
 		String selectQuery = "select * from " + TABLE_NAME + " where "
-				+ KEY_PROFILE_NAME + " = " + "'" + profileName + "' and "
-				+ KEY_SOLVED + " = " + 1;
-		Cursor cursor = database.rawQuery(selectQuery, null);
+				+ KEY_PROFILE_NAME + " = ? and " + KEY_SOLVED + " = " + 1;
+		Cursor cursor = database.rawQuery(selectQuery,
+				new String[] { profileName });
 		if (cursor.moveToFirst()) {
 			do {
 				levelsSolved.add(cursor.getInt(cursor
@@ -156,10 +157,9 @@ public class LevelProgressManager extends TableManager {
 		values.put(KEY_CURRENT_BOARD, levelProgress.getCurrentBoard());
 		values.put(KEY_USED_TIME, levelProgress.getUsedTime());
 
-		database.update(TABLE_NAME, values,
-				KEY_PROFILE_NAME + " = '" + profileName + "' and "
-						+ KEY_LEVEL_ID + " = " + levelProgress.getLevelId(),
-				null);
+		database.update(TABLE_NAME, values, KEY_PROFILE_NAME + " = ? and "
+				+ KEY_LEVEL_ID + " = " + levelProgress.getLevelId(),
+				new String[] { profileName });
 
 	}
 
