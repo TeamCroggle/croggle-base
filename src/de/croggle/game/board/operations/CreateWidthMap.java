@@ -22,7 +22,6 @@ public class CreateWidthMap implements BoardObjectVisitor {
 	private final float padding;
 
 	private final Stack<ParentState> parents;
-	private final Stack<ParentState> stateReverser;
 	private float scaling = 1;
 
 	private CreateWidthMap(Parent p, float objectWidth, float depthScaleFactor,
@@ -32,23 +31,20 @@ public class CreateWidthMap implements BoardObjectVisitor {
 		scaleFactor = depthScaleFactor;
 		this.padding = padding;
 		parents = new Stack<CreateWidthMap.ParentState>();
-		stateReverser = new Stack<CreateWidthMap.ParentState>();
 
 		p.accept(this);
-		parents.push(stateReverser.pop());
 		while (!parents.isEmpty()) {
 			ParentState current = parents.peek();
 			scaling = current.scale;
 			if (current.childrenDone) {
 				parents.pop();
-				calculateParent(current);
+				calculateParent(current.parent);
 			} else {
 				current.childrenDone = true;
 				goDeeper();
 				for (InternalBoardObject child : current.parent) {
 					child.accept(this);
 				}
-				reverseParents();
 			}
 		}
 	}
@@ -119,29 +115,31 @@ public class CreateWidthMap implements BoardObjectVisitor {
 		// prevent board from adding up to level depth
 		goHigher();
 		visitParent(board);
-		goDeeper();
 	}
 
 	private void visitParent(Parent p) {
-		stateReverser.push(new ParentState(p, getScaling()));
+		parents.push(new ParentState(p, getScaling()));
 	}
 
-	private void calculateParent(ParentState parentState) {
-		float width = getObectWidth();
+	private void calculateParent(Parent parent) {
+		float width;
+		if (parent.getClass() == Board.class) {
+			width = 0;
+		} else {
+			width = getObectWidth();
+		}
 		float childWidth = 0;
-		Iterator<InternalBoardObject> it = parentState.parent.iterator();
+		Iterator<InternalBoardObject> it = parent.iterator();
 		InternalBoardObject child;
 		goDeeper();
 		while (it.hasNext()) {
 			child = it.next();
-			// child.accept(this);
 			childWidth += widthMap.get(child);
 			if (it.hasNext()) {
-				// TODO apply scaling on padding or not?
 				childWidth += padding * getScaling();
 			}
 		}
-		widthMap.put(parentState.parent, Math.max(width, childWidth));
+		widthMap.put(parent, Math.max(width, childWidth));
 	}
 
 	/**
@@ -175,11 +173,5 @@ public class CreateWidthMap implements BoardObjectVisitor {
 		public Parent parent;
 		public float scale;
 		public boolean childrenDone = false;
-	}
-
-	private void reverseParents() {
-		while (!stateReverser.isEmpty()) {
-			parents.push(stateReverser.pop());
-		}
 	}
 }

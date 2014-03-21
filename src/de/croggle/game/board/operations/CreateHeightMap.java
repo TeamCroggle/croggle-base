@@ -2,6 +2,7 @@ package de.croggle.game.board.operations;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.Board;
@@ -29,26 +30,38 @@ import de.croggle.game.board.Parent;
  */
 public class CreateHeightMap implements BoardObjectVisitor {
 
-	private Map<BoardObject, Float> heightMap;
+	private final Map<BoardObject, Float> heightMap;
 
 	private final float depthScaleFactor;
 	private final float padding;
-	private float scale = 1;
 	private final float objectHeight;
+	private final Stack<ParentState> parents;
 
-	private CreateHeightMap() {
-		objectHeight = 1;
-		depthScaleFactor = 1;
-		padding = 0;
-		heightMap = new HashMap<BoardObject, Float>();
-	}
+	private float scale = 1;
 
-	private CreateHeightMap(float objectHeight, float depthScaleFactor,
-			float padding) {
+	private CreateHeightMap(Parent p, float objectHeight,
+			float depthScaleFactor, float padding) {
 		this.objectHeight = objectHeight;
 		this.depthScaleFactor = depthScaleFactor;
 		this.padding = padding;
+		parents = new Stack<CreateHeightMap.ParentState>();
 		heightMap = new HashMap<BoardObject, Float>();
+
+		p.accept(this);
+		while (!parents.isEmpty()) {
+			ParentState current = parents.peek();
+			if (current.childrenDone) {
+				parents.pop();
+				scale = current.scale;
+				calculateParent(current.parent);
+			} else {
+				current.childrenDone = true;
+				goDeeper();
+				for (InternalBoardObject child : current.parent) {
+					child.accept(this);
+				}
+			}
+		}
 	}
 
 	/**
@@ -63,9 +76,7 @@ public class CreateHeightMap implements BoardObjectVisitor {
 	 * @return a height map corresponding to b
 	 */
 	public static Map<BoardObject, Float> create(BoardObject b) {
-		CreateHeightMap creator = new CreateHeightMap();
-		b.accept(creator);
-		return creator.heightMap;
+		return create(b, 1, 1, 0);
 	}
 
 	/**
@@ -93,10 +104,15 @@ public class CreateHeightMap implements BoardObjectVisitor {
 	 */
 	public static Map<BoardObject, Float> create(BoardObject b,
 			float objectHeight, float depthScaleFactor, float padding) {
-		CreateHeightMap creator = new CreateHeightMap(objectHeight,
-				depthScaleFactor, padding);
-		b.accept(creator);
-		return creator.heightMap;
+		if (!(b instanceof Parent)) {
+			Map<BoardObject, Float> map = new HashMap<BoardObject, Float>();
+			map.put(b, objectHeight);
+			return map;
+		} else {
+			CreateHeightMap creator = new CreateHeightMap((Parent) b,
+					objectHeight, depthScaleFactor, padding);
+			return creator.heightMap;
+		}
 	}
 
 	@Override
@@ -116,33 +132,31 @@ public class CreateHeightMap implements BoardObjectVisitor {
 
 	@Override
 	public void visitBoard(Board board) {
-		// Boards do not need to apply padding on children and must not add up
-		// to the depth for scaling
-		float height = 0;
-		float childHeight;
-		for (InternalBoardObject child : board) {
-			child.accept(this);
-			childHeight = heightMap.get(child);
-			if (childHeight > height) {
-				height = childHeight;
-			}
-		}
-		heightMap.put(board, height);
+		goHigher();
+		visitParent(board);
 	}
 
 	private void visitParent(Parent p) {
+		parents.add(new ParentState(p, getScale()));
+	}
+
+	private void calculateParent(Parent parent) {
+		float parentHeight;
+		if (parent.getClass() == Board.class) {
+			parentHeight = 0;
+		} else {
+			parentHeight = (padding + objectHeight) * getScale();
+		}
 		float height = 0;
 		float childHeight;
 		goDeeper();
-		for (InternalBoardObject child : p) {
-			child.accept(this);
+		for (InternalBoardObject child : parent) {
 			childHeight = heightMap.get(child);
 			if (childHeight > height) {
 				height = childHeight;
 			}
 		}
-		goHigher();
-		heightMap.put(p, height + (padding + objectHeight) * getScale());
+		heightMap.put(parent, height + parentHeight);
 	}
 
 	private float getScale() {
@@ -157,4 +171,14 @@ public class CreateHeightMap implements BoardObjectVisitor {
 		scale *= depthScaleFactor;
 	}
 
+	private static class ParentState {
+		public Parent parent;
+		public float scale;
+		public boolean childrenDone = false;
+
+		public ParentState(Parent p, float scale) {
+			this.parent = p;
+			this.scale = scale;
+		}
+	}
 }
