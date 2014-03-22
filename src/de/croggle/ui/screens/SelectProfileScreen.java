@@ -4,7 +4,9 @@ import static de.croggle.data.LocalizationHelper._;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -53,12 +55,20 @@ public class SelectProfileScreen extends AbstractScreen implements
 
 		newProfile.addListener(new NewProfileClickListener());
 
-		scrollTable.defaults().width(500).height(100).space(10);
+		scrollTable.defaults().minWidth(500).height(100).space(10);
 
 		scrollTable.padTop(30);
 		for (Profile profile : profileController.getAllProfiles()) {
+			final String avatarPath = profile.getPicturePath();
+			// needs to be a TextButton because the label is used later
 			TextButton profileButton = new TextButton(profile.getName(),
 					helper.getTextButtonStyle());
+			Label label = profileButton.getLabel();
+			profileButton.clearChildren();
+			profileButton.add(new Image(helper.getDrawable(avatarPath)))
+					.size(100).pad(10);
+			profileButton.add(label).expandX();
+
 			scrollTable.add(profileButton);
 			scrollTable.row();
 			profileButton.addListener(new ChangeProfileClickListener());
