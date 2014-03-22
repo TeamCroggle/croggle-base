@@ -75,4 +75,6 @@
     <string name="level_failed">Level verloren.</string>
 	<string name="quit_game_prompt">Möchstest du das Spiel wirklich beenden?</string>
 	<string name="alligator_overflow_msg">Deine Alligator Familien werden zu groß. Versuche es nochmal!</string>
+	<string name="warning_name_already_used">Dieser Name ist schon vergeben.</string>
+	<string name="warning_empty_name">Gib einen Namen ein.</string>
 </resources>

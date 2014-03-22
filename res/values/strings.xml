@@ -75,5 +75,7 @@
     <string name="level_failed">Level failed.</string>
     <string name="quit_game_prompt">Would you really like to quit?</string>
     <string name="alligator_overflow_msg">Your alligator families are getting to big. Try again!</string>
+    <string name="warning_name_already_used">This name is already in use.</string>
+    <string name="warning_empty_name">Please enter a name.</string>
 
 </resources>

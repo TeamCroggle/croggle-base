@@ -72,7 +72,8 @@ public class ProfileSetNameScreen extends AbstractScreen {
 				if (name.length() != 0) {
 					if (isInEditMode) {
 						if (name.equals(profileController
-								.getCurrentProfileName()) || profileController.isValidUserName(name)) {
+								.getCurrentProfileName())
+								|| profileController.isValidUserName(name)) {
 							profileController.editCurrentProfile(name,
 									profileController.getCurrentProfile()
 											.getPicturePath());
@@ -81,7 +82,7 @@ public class ProfileSetNameScreen extends AbstractScreen {
 							game.showSettingsScreen();
 						} else {
 							Dialog notification = new NotificationDialog(
-									"This name is already in use");
+									_("warning_name_already_used"));
 							notification.show(stage);
 						}
 					} else {
@@ -90,13 +91,13 @@ public class ProfileSetNameScreen extends AbstractScreen {
 							game.showProfileSetAvatarScreen(name);
 						} else {
 							Dialog notification = new NotificationDialog(
-									"This name is already in use");
+									_("warning_name_already_used"));
 							notification.show(stage);
 						}
 					}
 				} else {
 					Dialog notification = new NotificationDialog(
-							"I guess your name isn't empty?");
+							_("warning_empty_name"));
 					notification.show(stage);
 				}
 
