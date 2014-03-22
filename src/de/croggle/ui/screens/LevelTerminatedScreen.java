@@ -61,7 +61,7 @@ public class LevelTerminatedScreen extends AbstractScreen {
 		StyleHelper helper = StyleHelper.getInstance();
 
 		ImageButton image = new ImageButton(
-				helper.getDrawable("widgets/icon-trophy"));
+				helper.getDrawable("widgets/level-solved"));
 		Label message = new Label(won ? _("level_solved") : _("level_failed"),
 				helper.getBlackLabelStyle(50));
 		ImageButton next = new ImageButton(
