@@ -25,9 +25,9 @@ public class MultipleChoiceGameController extends GameController {
 	public Screen createPlacementScreen(AlligatorApp app) {
 		return new MultipleChoiceScreen(app, this);
 	}
-	
+
 	@Override
-	protected void onFinishedSimulation() {
-		getProgress().setSolved(level.validateAnswer(selection));
+	protected boolean isLevelSolved() {
+		return super.isLevelSolved() && level.validateAnswer(selection);
 	}
 }

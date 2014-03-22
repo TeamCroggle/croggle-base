@@ -208,7 +208,7 @@ public class AlligatorApp extends Game {
 				setScreen(new LoadingScreen(this, profileSetNameScreen));
 			} else if (!profileController.isActiveProfileStored()) {
 				setScreen(new LoadingScreen(this, selectProfileScreen));
-			} else  {
+			} else {
 				setScreen(new LoadingScreen(this, mainMenuScreen));
 			}
 		}
@@ -294,11 +294,11 @@ public class AlligatorApp extends Game {
 				levelController);
 		setScreen(newScreen);
 	}
-	
+
 	public void showAchievementScreen() {
 		setScreen(achievementScreen);
 	}
-	
+
 	public void showAchievementScreen(AbstractScreen temporaryPredecessor) {
 		achievementScreen.setTemporaryPredecessor(temporaryPredecessor);
 		setScreen(achievementScreen);
@@ -307,7 +307,7 @@ public class AlligatorApp extends Game {
 	public void showSettingsScreen() {
 		setScreen(settingsScreen);
 	}
-	
+
 	public void showSettingsScreen(AbstractScreen temporaryPredecessor) {
 		settingsScreen.setTemporaryPredecessor(temporaryPredecessor);
 		setScreen(settingsScreen);
@@ -343,8 +343,9 @@ public class AlligatorApp extends Game {
 		setScreen(creditsScreen);
 	}
 
-	public void showLevelTerminatedScreen(GameController gameController) {
-		setScreen(new LevelTerminatedScreen(this, gameController));
+	public void showLevelTerminatedScreen(GameController gameController,
+			boolean won) {
+		setScreen(new LevelTerminatedScreen(this, gameController, won));
 	}
 
 	public void showQuitOverlay() {

@@ -70,20 +70,24 @@ public class GameController implements BoardEventListener {
 	public GameController(AlligatorApp app, Level level) {
 		this.app = app;
 		this.level = level;
-		elapsedTime = 0;
-		timeStamp = TimeUtils.millis();
 		setupColorController();
 		shownBoard = level.getInitialBoard().copy();
 		userBoard = shownBoard;
-		statisticsDelta = new Statistic();
 		simulationMessenger = new BoardEventMessenger();
 		placementMessenger = new BoardEventMessenger();
 		statisticsDeltaProcessors = new ArrayList<StatisticsDeltaProcessor>();
 		simulationPaused = false;
+		resetStatistics();
 
 		simulationMessenger.register(this);
 		placementMessenger.register(this);
 		loadProgress();
+	}
+
+	private void resetStatistics() {
+		elapsedTime = 0;
+		timeStamp = TimeUtils.millis();
+		statisticsDelta = new Statistic();
 	}
 
 	protected void setupColorController() {
@@ -140,9 +144,6 @@ public class GameController implements BoardEventListener {
 	 * 
 	 */
 	private void onCompletedLevel(boolean won) {
-		boolean alreadyWon = progress.isSolved();
-		onFinishedSimulation();
-		saveProgress();
 		statisticsDelta.setPlaytime(elapsedTime / 1000); // time in
 															// statisticDelta
 															// is
@@ -153,16 +154,13 @@ public class GameController implements BoardEventListener {
 		for (StatisticsDeltaProcessor processor : statisticsDeltaProcessors) {
 			processor.processDelta(statisticsDelta);
 		}
-		statisticsDelta = new Statistic();
-		app.showLevelTerminatedScreen(this);
-		simulationPaused = false;
-		if (!progress.isSolved() && alreadyWon) {
-			progress.setSolved(true);
+		resetStatistics();
+		if (!progress.isSolved()) {
+			progress.setSolved(won);
+			saveProgress();
 		}
-		saveProgress();
-	}
-
-	protected void onFinishedSimulation() {
+		app.showLevelTerminatedScreen(this, won);
+		simulationPaused = false;
 	}
 
 	/**
@@ -311,8 +309,7 @@ public class GameController implements BoardEventListener {
 			return;
 		}
 		final boolean evaluated = simulator.evaluate();
-		if (level.isLevelSolved(simulator.getCurrentBoard(),
-				simulator.getSteps())) {
+		if (isLevelSolved()) {
 			Timer timer = new Timer();
 			simulationPaused = true;
 			timer.scheduleTask(new Task() {
@@ -459,5 +456,10 @@ public class GameController implements BoardEventListener {
 
 	protected Simulator getSimulator() {
 		return simulator;
+	}
+
+	protected boolean isLevelSolved() {
+		return level.isLevelSolved(simulator.getCurrentBoard(),
+				simulator.getSteps());
 	}
 }

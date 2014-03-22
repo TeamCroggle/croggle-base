@@ -28,7 +28,9 @@ public class EditLevelGameController extends GameController {
 			setUserBoard(previousBoard);
 		} catch (IllegalArgumentException e) {
 			progress.setCurrentBoard("");
-			app.getPersistenceManager().saveLevelProgress(app.getProfileController().getCurrentProfileName(), progress);
+			app.getPersistenceManager().saveLevelProgress(
+					app.getProfileController().getCurrentProfileName(),
+					progress);
 		}
 	}
 
@@ -60,13 +62,6 @@ public class EditLevelGameController extends GameController {
 			colorController.addBlockedColor(color);
 		}
 		return colorController;
-	}
-
-	@Override
-	protected void onFinishedSimulation() {
-		getProgress().setSolved(
-				level.isLevelSolved(getSimulator().getCurrentBoard(),
-						getSimulator().getSteps()));
 	}
 
 }

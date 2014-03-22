@@ -30,6 +30,7 @@ public class LevelTerminatedScreen extends AbstractScreen {
 	private final GameController gameController;
 	private final AchievementController achievementController;
 	private final LevelPackagesController packagesController;
+	private final boolean won;
 
 	/**
 	 * Creates the level terminated screen that is shown to the player after the
@@ -40,12 +41,15 @@ public class LevelTerminatedScreen extends AbstractScreen {
 	 * @param controller
 	 *            the game controller, who is responsible for the completed
 	 *            level
+	 * @param won
 	 */
-	public LevelTerminatedScreen(AlligatorApp game, GameController controller) {
+	public LevelTerminatedScreen(AlligatorApp game, GameController controller,
+			boolean won) {
 		super(game);
 		gameController = controller;
 		achievementController = game.getAchievementController();
 		packagesController = game.getLevelPackagesController();
+		this.won = won;
 
 		setBackground(getAssetDirPath() + "textures/background-default.png");
 		AssetManager.getInstance().finishLoading();
@@ -55,12 +59,11 @@ public class LevelTerminatedScreen extends AbstractScreen {
 
 	private void fillTable() {
 		StyleHelper helper = StyleHelper.getInstance();
-		final boolean solved = gameController.isSolved();
 
 		ImageButton image = new ImageButton(
 				helper.getDrawable("widgets/icon-trophy"));
-		Label message = new Label(solved ? _("level_solved")
-				: _("level_failed"), helper.getBlackLabelStyle(50));
+		Label message = new Label(won ? _("level_solved") : _("level_failed"),
+				helper.getBlackLabelStyle(50));
 		ImageButton next = new ImageButton(
 				helper.getImageButtonStyleRound("widgets/icon-next"));
 		ImageButton levelOverview = new ImageButton(
@@ -89,7 +92,7 @@ public class LevelTerminatedScreen extends AbstractScreen {
 
 		table.pad(30);
 
-		if (solved) {
+		if (won) {
 			table.add(image).colspan(5).size(300).expand();
 			table.row();
 			table.add(message).colspan(5);
