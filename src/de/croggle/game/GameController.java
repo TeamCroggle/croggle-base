@@ -55,7 +55,7 @@ public class GameController implements BoardEventListener {
 	private final List<StatisticsDeltaProcessor> statisticsDeltaProcessors;
 	private LevelProgress progress;
 	private boolean simulationPaused;
-	
+
 	/**
 	 * The reference to the central game object.
 	 */
@@ -143,17 +143,15 @@ public class GameController implements BoardEventListener {
 		boolean alreadyWon = progress.isSolved();
 		onFinishedSimulation();
 		saveProgress();
-		if (progress.isSolved()) {
-			statisticsDelta.setPlaytime(elapsedTime / 1000); // time in
-																// statisticDelta
-																// is
-																// in sec,
-																// elapsedTime
-																// in
-																// millisec.
-			for (StatisticsDeltaProcessor processor : statisticsDeltaProcessors) {
-				processor.processDelta(statisticsDelta);
-			}
+		statisticsDelta.setPlaytime(elapsedTime / 1000); // time in
+															// statisticDelta
+															// is
+															// in sec,
+															// elapsedTime
+															// in
+															// millisec.
+		for (StatisticsDeltaProcessor processor : statisticsDeltaProcessors) {
+			processor.processDelta(statisticsDelta);
 		}
 		statisticsDelta = new Statistic();
 		app.showLevelTerminatedScreen(this);
@@ -277,7 +275,8 @@ public class GameController implements BoardEventListener {
 	@Override
 	public void onObjectPlaced(InternalBoardObject placed) {
 		if (placed instanceof Parent) {
-			statisticsDelta.setAlligatorsPlaced(statisticsDelta.getAlligatorsPlaced() + 1);
+			statisticsDelta.setAlligatorsPlaced(statisticsDelta
+					.getAlligatorsPlaced() + 1);
 		} else if (placed instanceof Egg) {
 			statisticsDelta.setEggsPlaced(statisticsDelta.getEggsPlaced() + 1);
 		}
@@ -453,7 +452,6 @@ public class GameController implements BoardEventListener {
 		return userBoard;
 	}
 
-	// TODO call this somewhere
 	public void onUsedHint() {
 		statisticsDelta.setUsedHints(statisticsDelta.getUsedHints() + 1);
 		saveProgress();
