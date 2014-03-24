@@ -56,7 +56,7 @@ public class AlligatorToJson implements BoardObjectVisitor {
 		printThree("\"removable\" : ", egg.isRemovable(), ',');
 		printTwo("\"recolorable\" : ", egg.isRecolorable());
 		depth--;
-		if (egg.getParent().isLastChild(egg)) {
+		if (egg.getParent() == null || egg.getParent().isLastChild(egg)) {
 			println('}');
 		} else {
 			indent();
