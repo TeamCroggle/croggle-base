@@ -94,41 +94,23 @@
 							]
 						},
 						{
-							"type" : "colored alligator" ,
+							"type" : "egg" ,
 							"movable" : false ,
 							"removable" : false ,
-							"color" : -1 ,
-							"recolorable" : true ,
-							"children" : [
-								{
-									"type" : "egg" ,
-									"movable" : false ,
-									"removable" : false ,
-									"color" : -1 ,
-									"recolorable" : true
-								}
-							]
+							"color" : 15 ,
+							"recolorable" : true
 						}
-					
 					]
 				},
 				"objective" : {
 					"families" : [
+
 						{
-							"type" : "colored alligator" ,
+							"type" : "egg" ,
 							"movable" : false ,
 							"removable" : false ,
-							"color" : 8 ,
-							"recolorable" : true ,
-							"children" : [
-								{
-									"type" : "egg" ,
-									"movable" : false ,
-									"removable" : false ,
-									"color" : 8 ,
-									"recolorable" : true
-								}
-							]
+							"color" : 15 ,
+							"recolorable" : true
 						}
 						
 					]
