@@ -46,7 +46,7 @@ public class JsonToAlligator {
 	 * @return an alligator constellation based on the given JsonValue
 	 */
 	public static BoardObject convert(JsonValue json) {
-		if (json.hasChild("families")) {
+		if (json.get("families") != null) {
 			return toBoard(json);
 		} else {
 			return dispatchInternalBoardObject(json);
