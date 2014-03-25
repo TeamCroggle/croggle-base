@@ -131,8 +131,8 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 		final float width = getWidth() * getScaleX();
 		final float height = getHeight() * getScaleY();
 		final int n = 10;
-		batch.draw(background, getX(), getY(), width, height, 0, 0, n, n
-				* height / width);
+		batch.draw(background, getX(), getY(), width, height, 0, n * height
+				/ width, n, 0);
 
 		batch.flush();
 		// disable scissor before continuing
