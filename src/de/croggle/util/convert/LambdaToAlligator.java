@@ -327,6 +327,9 @@ public class LambdaToAlligator {
 		assert (e.startsWith(bindPrfx));
 
 		int separatorIndex = e.indexOf(bindPstfx, bindPrfx.length());
+		if (separatorIndex < 0) {
+			throw new IllegalArgumentException("Missing binding separator");
+		}
 
 		AbstractionBegin ab = new AbstractionBegin();
 		AbstractionSeparator as = new AbstractionSeparator();
