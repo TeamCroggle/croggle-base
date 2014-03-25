@@ -1,5 +1,8 @@
 package de.croggle.game.board.operations;
 
+import java.util.LinkedList;
+import java.util.Stack;
+
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.Board;
 import de.croggle.game.board.BoardObject;
@@ -11,16 +14,29 @@ import de.croggle.game.event.BoardEventMessenger;
 
 public class RemoveUselessAgedAlligators implements BoardObjectVisitor {
 	private final BoardEventMessenger boardMessenger;
+	private final LinkedList<Parent> parents;
+	private final Stack<Parent> bottomUpStack;
 
-	private RemoveUselessAgedAlligators(BoardEventMessenger boardMessenger) {
+	private RemoveUselessAgedAlligators(Parent family,
+			BoardEventMessenger boardMessenger) {
 		this.boardMessenger = boardMessenger;
+		parents = new LinkedList<Parent>();
+		bottomUpStack = new Stack<Parent>();
+		parents.add(family);
+		for (int i = 0; i < parents.size(); i++) {
+			parents.get(i).accept(this);
+		}
+		while (!bottomUpStack.isEmpty()) {
+			checkChildren(bottomUpStack.pop());
+		}
 	}
 
 	public static void remove(BoardObject family,
 			BoardEventMessenger boardMessenger) {
-		RemoveUselessAgedAlligators visitor = new RemoveUselessAgedAlligators(
-				boardMessenger);
-		family.accept(visitor);
+		if (!(family instanceof Parent)) {
+			return;
+		}
+		new RemoveUselessAgedAlligators((Parent) family, boardMessenger);
 	}
 
 	@Override
@@ -29,20 +45,20 @@ public class RemoveUselessAgedAlligators implements BoardObjectVisitor {
 
 	@Override
 	public void visitColoredAlligator(ColoredAlligator alligator) {
-		alligator.acceptOnChildren(this);
-		checkChildren(alligator);
+		parents.add(alligator);
+		bottomUpStack.push(alligator);
 	}
 
 	@Override
 	public void visitAgedAlligator(AgedAlligator alligator) {
-		alligator.acceptOnChildren(this);
-		checkChildren(alligator);
+		parents.add(alligator);
+		bottomUpStack.push(alligator);
 	}
 
 	@Override
 	public void visitBoard(Board board) {
-		board.acceptOnChildren(this);
-		checkChildren(board);
+		parents.add(board);
+		bottomUpStack.push(board);
 	}
 
 	private void checkChildren(Parent p) {
