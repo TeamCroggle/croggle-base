@@ -116,7 +116,10 @@ public class LambdaToAlligator {
 
 		UnparsedObject o = unparsedDeque.element();
 		String e = o.getExpr();
-		if (e.startsWith(bindPrfx)) {
+		if (e.startsWith(bindPstfx)) {
+			throw new IllegalArgumentException(
+					"Binding separator \".\" too much");
+		} else if (e.startsWith(bindPrfx)) {
 			splitAbstraction(o);
 		} else if (e.startsWith("(")) {
 			splitBraces(o);
