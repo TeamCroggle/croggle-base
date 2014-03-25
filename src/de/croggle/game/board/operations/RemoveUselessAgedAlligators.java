@@ -73,8 +73,10 @@ public class RemoveUselessAgedAlligators implements BoardObjectVisitor {
 					i++;
 				}
 				p.removeChild(firstNotEgg);
-				boardMessenger.notifyAgedAlligatorVanishes(
-						(AgedAlligator) firstNotEgg, 0);
+				if (boardMessenger != null) {
+					boardMessenger.notifyAgedAlligatorVanishes(
+							(AgedAlligator) firstNotEgg, 0);
+				}
 			}
 		}
 	}

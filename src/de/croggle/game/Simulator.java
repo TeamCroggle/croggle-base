@@ -84,7 +84,10 @@ public class Simulator {
 		final Parent parent = eater.getParent();
 		final InternalBoardObject eaten = parent.getChildAfter(eater);
 		parent.removeChild(eaten);
-		boardMessenger.notifyEat(eater, eaten, parent.getChildPosition(eaten));
+		if (boardMessenger != null) {
+			boardMessenger.notifyEat(eater, eaten,
+					parent.getChildPosition(eaten));
+		}
 
 		final AgedAlligator constellation = replaceColoredWithAgedAlligator(eater);
 		ReplaceEggs.replace(constellation, eater.getColor(), eaten,
@@ -111,7 +114,9 @@ public class Simulator {
 	public Board undo() {
 		try {
 			currentBoard = history.pop();
-			boardMessenger.notifyBoardRebuilt(currentBoard);
+			if (boardMessenger != null) {
+				boardMessenger.notifyBoardRebuilt(currentBoard);
+			}
 			steps--;
 		} catch (Exception e) {
 			// TODO
@@ -128,7 +133,9 @@ public class Simulator {
 	public Board reset() {
 		currentBoard = entranceBoard.copy();
 		steps = 0;
-		boardMessenger.notifyBoardRebuilt(currentBoard);
+		if (boardMessenger != null) {
+			boardMessenger.notifyBoardRebuilt(currentBoard);
+		}
 		return currentBoard;
 	}
 
@@ -142,7 +149,9 @@ public class Simulator {
 		for (InternalBoardObject child : coloredAlligator) {
 			agedAlligator.addChild(child);
 		}
-		boardMessenger.notifyAlligatorAged(coloredAlligator, agedAlligator);
+		if (boardMessenger != null) {
+			boardMessenger.notifyAlligatorAged(coloredAlligator, agedAlligator);
+		}
 		return agedAlligator;
 	}
 
