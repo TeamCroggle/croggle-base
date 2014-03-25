@@ -1,5 +1,8 @@
 package de.croggle.data;
 
+import static de.croggle.backends.BackendHelper.getAssetDirPath;
+
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -24,10 +27,17 @@ public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 	private Pixmap uncoloredPattern;
 	private final Pixmap[] colors;
 	private final Pixmap[] patterns;
+	private final Texture[] patternTextures;
+	private final static String[] patternAssets = new String[] {
+			"pattern_maze.png", "pattern_turbulence.png", "pattern_noise.png" };
+	private final static String patternAssetBase = getAssetDirPath()
+			+ "textures/";
+	private int nGeneratedAssets;
 
 	private AssetManager() {
 		colors = new Pixmap[Color.MAX_COLORS];
 		patterns = new Pixmap[Color.MAX_COLORS];
+		patternTextures = new Texture[Color.MAX_COLORS];
 		buildColors();
 		buildPatterns();
 	}
@@ -56,9 +66,7 @@ public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 		patterns[n++] = PatternBuilder.generateRhombus(256, 160, 200, true);
 		patterns[n++] = PatternBuilder.generateFilled(1);
 		patterns[n++] = PatternBuilder.generateTriangleStrip(256, 1);
-		for (int i = n; i < patterns.length; i++) {
-			patterns[i] = PatternBuilder.generateHorizontalLines(8, 4);
-		}
+		nGeneratedAssets = n;
 	}
 
 	public Texture getColorTexture(Color c) {
@@ -70,13 +78,37 @@ public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 
 	public Texture getPatternTexture(Color c) {
 		if (c.equals(Color.uncolored())) {
-			return new Texture(uncoloredColor);
+			return new Texture(uncoloredColor, true);
 		}
-		final Texture texture = new Texture(patterns[c.getId()], true);
+		Texture texture;
+
+		if (patternTextures[c.getId()] != null) {
+			texture = patternTextures[c.getId()];
+		} else {
+			int i = c.getId() - nGeneratedAssets;
+			if (i < 0) {
+				texture = new Texture(patterns[c.getId()], true);
+				patterns[c.getId()].dispose();
+				patterns[c.getId()] = null;
+			} else if (i < patternAssets.length) {
+				texture = assetManager.get(patternAssetBase + patternAssets[i],
+						Texture.class);
+			} else {
+				if (patternTextures[0] != null) {
+					texture = patternTextures[0];
+				} else {
+					texture = new Texture(patterns[0], true);
+					patterns[0].dispose();
+					patterns[0] = null;
+					patternTextures[0] = texture;
+				}
+			}
+			patternTextures[c.getId()] = texture;
+		}
 		// apparently texture size has to be a power of two for this to work
 		texture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		texture.setFilter(TextureFilter.MipMapLinearLinear,
-				TextureFilter.MipMapLinearLinear);
+				TextureFilter.Linear);
 		return texture;
 	}
 
@@ -89,7 +121,14 @@ public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 			c.dispose();
 		}
 		for (Pixmap p : patterns) {
-			p.dispose();
+			if (p != null) {
+				p.dispose();
+			}
+		}
+		for (Texture t : patternTextures) {
+			if (t != null) {
+				t.dispose();
+			}
 		}
 	}
 
@@ -105,5 +144,10 @@ public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 
 	public static void initialize() {
 		AssetManager.assetManager = new AssetManager();
+		final TextureParameter param = new TextureParameter();
+		param.genMipMaps = true;
+		for (String name : patternAssets) {
+			assetManager.load(patternAssetBase + name, Texture.class, param);
+		}
 	}
 }
