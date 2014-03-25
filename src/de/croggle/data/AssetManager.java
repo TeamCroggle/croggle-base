@@ -34,7 +34,11 @@ public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 			"pattern_left_top_right_bottom.png",
 			"pattern_left_bottom_right_top.png", "pattern_lambda.png",
 			"pattern_lambda_inv.png", "pattern_left_top_right_bottom_inv.png",
-			"pattern_left_bottom_right_top_inv.png" };
+			"pattern_left_bottom_right_top_inv.png", "pattern_triangle.png",
+			"pattern_zebra.png", "pattern_triangle_inverted.png",
+			"pattern_zebra_inverted.png", "pattern_sierpinski.png",
+			"pattern_sierpinski_inv.png", "pattern_dice.png",
+			"pattern_dice_inverted.png" };
 	private final static String patternAssetBase = getAssetDirPath()
 			+ "textures/";
 	private int nGeneratedAssets;
