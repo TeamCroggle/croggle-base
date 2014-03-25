@@ -45,20 +45,26 @@ public class RemoveUselessAgedAlligators implements BoardObjectVisitor {
 
 	@Override
 	public void visitColoredAlligator(ColoredAlligator alligator) {
-		parents.add(alligator);
-		bottomUpStack.push(alligator);
+		visitParent(alligator);
 	}
 
 	@Override
 	public void visitAgedAlligator(AgedAlligator alligator) {
-		parents.add(alligator);
-		bottomUpStack.push(alligator);
+		visitParent(alligator);
 	}
 
 	@Override
 	public void visitBoard(Board board) {
-		parents.add(board);
-		bottomUpStack.push(board);
+		visitParent(board);
+	}
+
+	private void visitParent(Parent p) {
+		for (InternalBoardObject child : p) {
+			if (child instanceof Parent) {
+				parents.add((Parent) child);
+			}
+		}
+		bottomUpStack.push(p);
 	}
 
 	private void checkChildren(Parent p) {
