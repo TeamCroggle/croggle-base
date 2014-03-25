@@ -28,8 +28,6 @@ public class ObjectBar extends Table {
 
 	private final BoardActorLayoutEditing editing;
 
-	private final boolean colorBlind;
-
 	private final AgedAlligatorActor agedAlligator;
 	private final ColoredAlligatorActor coloredAlligator;
 	private final EggActor eggActor;
@@ -49,18 +47,15 @@ public class ObjectBar extends Table {
 	 */
 	ObjectBar(BoardActorLayoutEditing editing) {
 		this.editing = editing;
-		colorBlind = editing.getBoardActor().getLayoutConfiguration()
-				.isColorBlindEnabled();
-
 		dragging = new BoardObjectActorDragging(editing);
 
 		agedAlligator = BoardObjectActorFactory
 				.instantiateAgedAlligatorActor(new AgedAlligator(false, false));
 		coloredAlligator = BoardObjectActorFactory
 				.instantiateColoredAlligatorActor(new ColoredAlligator(false,
-						false, Color.uncolored(), false), colorBlind);
+						false, Color.uncolored(), false), colorBlind());
 		eggActor = BoardObjectActorFactory.instantiateEggActor(new Egg(false,
-				false, Color.uncolored(), false), colorBlind);
+				false, Color.uncolored(), false), colorBlind());
 
 		setBackground(StyleHelper.getInstance().getDrawable("widgets/button"));
 
@@ -91,7 +86,7 @@ public class ObjectBar extends Table {
 				return BoardObjectActorFactory
 						.instantiateColoredAlligatorActor(new ColoredAlligator(
 								true, true, Color.uncolored(), true),
-								colorBlind);
+								colorBlind());
 			}
 		} else if (prototype == eggActor) {
 			if (bufferedEgg != null) {
@@ -100,7 +95,7 @@ public class ObjectBar extends Table {
 				return egg;
 			} else {
 				return BoardObjectActorFactory.instantiateEggActor(new Egg(
-						true, true, Color.uncolored(), true), colorBlind);
+						true, true, Color.uncolored(), true), colorBlind());
 			}
 		} else {
 			throw new IllegalStateException();
@@ -215,5 +210,10 @@ public class ObjectBar extends Table {
 			editing.getMessenger().notifyObjectRemoved(payloadObject);
 			editing.getBoardActor().layoutSizeChanged();
 		}
+	}
+
+	private boolean colorBlind() {
+		return editing.getBoardActor().getLayoutConfiguration()
+				.isColorBlindEnabled();
 	}
 }
