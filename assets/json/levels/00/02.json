@@ -37,14 +37,14 @@
 							"type" : "egg" ,
 							"movable" : false ,
 							"removable" : false ,
-							"color" : 8 ,
+							"color" : 21 ,
 							"recolorable" : true
 						}
 					]
 				},
 
 				"user colors" : [
-					10, 1, 12, 3, 16, 8
+					0, 1, 12, 3, 13, 21
 				],
 				"blocked colors" : [
 				],
