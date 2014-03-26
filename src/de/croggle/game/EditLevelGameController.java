@@ -17,7 +17,7 @@ public class EditLevelGameController extends GameController {
 	}
 
 	@Override
-	protected void onAfterLoadProgress(LevelProgress progress) {
+	protected void loadBoard(LevelProgress progress) {
 		final String serializedBoard = progress.getCurrentBoard();
 		if (serializedBoard == null) {
 			return;
@@ -35,7 +35,7 @@ public class EditLevelGameController extends GameController {
 	}
 
 	@Override
-	protected void onBeforeSaveProgress(final LevelProgress progress) {
+	protected void convertBoard(final LevelProgress progress) {
 		final Board boardCopy = getUserBoard().copy();
 		Thread jsonConverter = new Thread() {
 			@Override

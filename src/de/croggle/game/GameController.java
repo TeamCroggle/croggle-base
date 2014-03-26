@@ -155,9 +155,17 @@ public class GameController implements BoardEventListener {
 			processor.processDelta(statisticsDelta);
 		}
 		resetStatistics();
+		boolean saveProgress = false;
+		if (won) {
+			progress.setCurrentBoard(" ");
+			saveProgress = true;
+		}
 		if (!progress.isSolved()) {
 			progress.setSolved(won);
-			saveProgress();
+			saveProgress = true;
+		}
+		if (saveProgress) {
+			saveProgress(!won);
 		}
 		app.showLevelTerminatedScreen(this, won);
 		simulationPaused = false;
@@ -239,7 +247,7 @@ public class GameController implements BoardEventListener {
 	@Override
 	public void onObjectRecolored(ColoredBoardObject recoloredObject) {
 		statisticsDelta.setRecolorings(statisticsDelta.getRecolorings() + 1);
-		saveProgress();
+		saveProgress(true);
 	}
 
 	/**
@@ -278,17 +286,17 @@ public class GameController implements BoardEventListener {
 		} else if (placed instanceof Egg) {
 			statisticsDelta.setEggsPlaced(statisticsDelta.getEggsPlaced() + 1);
 		}
-		saveProgress();
+		saveProgress(true);
 	}
 
 	@Override
 	public void onObjectRemoved(InternalBoardObject removed) {
-		saveProgress();
+		saveProgress(true);
 	}
 
 	@Override
 	public void onObjectMoved(InternalBoardObject moved) {
-		saveProgress();
+		saveProgress(true);
 	}
 
 	/**
@@ -358,7 +366,7 @@ public class GameController implements BoardEventListener {
 		userBoard = level.getInitialBoard().copy();
 		placementMessenger.notifyBoardRebuilt(userBoard);
 		statisticsDelta.setResetsUsed(statisticsDelta.getResetsUsed() + 1);
-		saveProgress();
+		saveProgress(true);
 	}
 
 	public Board getShownBoard() {
@@ -382,7 +390,7 @@ public class GameController implements BoardEventListener {
 	public void setElapsedTime(int elapsedTime) {
 		this.elapsedTime = elapsedTime;
 		progress.setUsedTime(elapsedTime);
-		saveProgress();
+		saveProgress(false);
 	}
 
 	public void updateTime() {
@@ -391,7 +399,7 @@ public class GameController implements BoardEventListener {
 		elapsedTime += timeAddition;
 		// TODO is this a good place?
 		progress.setUsedTime(elapsedTime);
-		saveProgress();
+		saveProgress(false);
 	}
 
 	public void setTimeStamp() {
@@ -419,16 +427,18 @@ public class GameController implements BoardEventListener {
 		placementMessenger.notifyBoardRebuilt(userBoard);
 	}
 
-	protected void onBeforeSaveProgress(LevelProgress progress) {
+	protected void convertBoard(LevelProgress progress) {
 	}
 
-	protected void onAfterLoadProgress(LevelProgress progress) {
+	protected void loadBoard(LevelProgress progress) {
 	}
 
-	private void saveProgress() {
+	private void saveProgress(boolean convertBoard) {
 		final String profileName = app.getProfileController()
 				.getCurrentProfileName();
-		onBeforeSaveProgress(progress);
+		if (convertBoard) {
+			convertBoard(progress);
+		}
 		app.getPersistenceManager().saveLevelProgress(profileName, progress);
 	}
 
@@ -441,7 +451,7 @@ public class GameController implements BoardEventListener {
 			progress = new LevelProgress(level.getLevelId(), false, "", 0);
 			return;
 		}
-		onAfterLoadProgress(previousProgress);
+		loadBoard(previousProgress);
 		progress = previousProgress;
 	}
 
@@ -451,7 +461,7 @@ public class GameController implements BoardEventListener {
 
 	public void onUsedHint() {
 		statisticsDelta.setUsedHints(statisticsDelta.getUsedHints() + 1);
-		saveProgress();
+		saveProgress(false);
 	}
 
 	protected Simulator getSimulator() {
