@@ -329,6 +329,9 @@ public class LambdaToAlligator {
 		int separatorIndex = e.indexOf(bindPstfx, bindPrfx.length());
 		if (separatorIndex < 0) {
 			throw new IllegalArgumentException("Missing binding separator");
+		} else if (separatorIndex == 1) {
+			throw new IllegalArgumentException(
+					"No variable bound by abstraction");
 		}
 
 		AbstractionBegin ab = new AbstractionBegin();
