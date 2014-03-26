@@ -17,7 +17,7 @@
 							"type" : "colored alligator" ,
 							"movable" : true ,
 							"removable" : true ,
-							"color" : 6 ,
+							"color" : 13 ,
 							"recolorable" : false ,
 							"children" : [
 
@@ -41,7 +41,7 @@
 							"type" : "colored alligator" ,
 							"movable" : false ,
 							"removable" : false ,
-							"color" : 7 ,
+							"color" : 21 ,
 							"recolorable" : false ,
 							"children" : [
 								{
@@ -105,7 +105,7 @@
 				},
 
 				"user colors" : [
-					6, 11, 7, 8, 9, 10
+					14, 0, 2, 8, 3, 29
 				],
 				"blocked colors" : [
 				]
