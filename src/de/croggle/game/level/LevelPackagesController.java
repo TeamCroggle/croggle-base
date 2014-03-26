@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
@@ -57,15 +58,34 @@ public class LevelPackagesController {
 	 * 
 	 */
 	private void initialiseLevelPackages() {
+		levelPackages = new ArrayList<LevelPackage>();
+
 		FileHandle handle = Gdx.files.internal(BackendHelper.getAssetDirPath()
 				+ "json/levels");
-		FileHandle[] packageNames = handle.list();
-		int numberOfPackages = packageNames.length;
-		levelPackages = new ArrayList<LevelPackage>();
-		for (int i = 0; i < numberOfPackages; i++) {
-			levelPackages.add(this.loadPackage(i));
+		FileHandle[] possiblePackageDirs = handle.list();
+		for (FileHandle dir : possiblePackageDirs) {
+			if (!dir.isDirectory()) {
+				continue;
+			}
+			String name = dir.name();
+			if (name.length() != 2) {
+				continue;
+			}
+			if (name.matches("[0-9][0-9]")) {
+				try {
+					if (dir.child("package.json").exists()) {
+						levelPackages.add(this.loadPackage(Integer
+								.parseInt(name)));
+					}
+				} catch (GdxRuntimeException ex) {
+					/*
+					 * Ignore. Just in case, libGdx' documentation of is telling
+					 * the truth (which it isn't) and an exception is thrown in
+					 * dir.child, because it is internal an non-existent
+					 */
+				}
+			}
 		}
-
 	}
 
 	/**
@@ -95,14 +115,14 @@ public class LevelPackagesController {
 		JsonReader reader = new JsonReader();
 		JsonValue de_croggle = reader.parse(handle.readString());
 		JsonValue json = de_croggle.child().getChild("packages");
-		
+
 		String animationPath = null;
 		String animation = json.getString("animation");
 		Boolean hasAnimation = !animation.equals("");
 		if (hasAnimation) {
 			animationPath = BackendHelper.getAssetDirPath() + animation;
 		}
-		
+
 		LevelPackage levelPackage = new LevelPackage(packageIndex,
 				json.getString("name"), json.getString("description"),
 				BackendHelper.getAssetDirPath() + json.getString("banner"),
