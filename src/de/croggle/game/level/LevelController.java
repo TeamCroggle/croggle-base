@@ -75,14 +75,20 @@ public class LevelController {
 		dirHandle = Gdx.files.internal(BackendHelper.getAssetDirPath()
 				+ "json/levels/" + String.format("%02d", packageIndex));
 		FileHandle[] files = dirHandle.list();
-		String[] levelNames = new String[files.length];
-		for (int i = 0; i < files.length; i++) {
-			levelNames[i] = files[i].name();
-		}
-		int numberOfLevel = levelNames.length - 1;
 		levels = new ArrayList<Level>();
-		for (int i = 0; i < numberOfLevel; i++) {
-			levels.add(LevelLoadHelper.instantiate(packageIndex, i, game));
+
+		for (FileHandle file : files) {
+			if (file.isDirectory()) {
+				continue;
+			}
+			String name = file.name();
+			if (name.length() != "XY.json".length()) {
+				continue;
+			}
+			if (name.matches("[0-9][0-9]\\.json")) {
+				levels.add(LevelLoadHelper.instantiate(packageIndex,
+						Integer.parseInt(name.substring(0, 2)), game));
+			}
 		}
 
 		for (int i = 0; i < levels.size(); i++) {
