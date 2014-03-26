@@ -144,17 +144,6 @@ public class GameController implements BoardEventListener {
 	 * 
 	 */
 	private void onCompletedLevel(boolean won) {
-		statisticsDelta.setPlaytime(elapsedTime / 1000); // time in
-															// statisticDelta
-															// is
-															// in sec,
-															// elapsedTime
-															// in
-															// millisec.
-		for (StatisticsDeltaProcessor processor : statisticsDeltaProcessors) {
-			processor.processDelta(statisticsDelta);
-		}
-		resetStatistics();
 		boolean saveProgress = false;
 		if (won) {
 			progress.setCurrentBoard(" ");
@@ -167,6 +156,17 @@ public class GameController implements BoardEventListener {
 		if (saveProgress) {
 			saveProgress(!won);
 		}
+		statisticsDelta.setPlaytime(elapsedTime / 1000); // time in
+		// statisticDelta
+		// is
+		// in sec,
+		// elapsedTime
+		// in
+		// millisec.
+		for (StatisticsDeltaProcessor processor : statisticsDeltaProcessors) {
+			processor.processDelta(statisticsDelta);
+		}
+		resetStatistics();
 		app.showLevelTerminatedScreen(this, won);
 		simulationPaused = false;
 	}
