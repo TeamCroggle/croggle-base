@@ -110,6 +110,10 @@ public class LevelTerminatedScreen extends AbstractScreen {
 		} else {
 			table.add(message).colspan(5).expand();
 			table.row();
+			if (!achievementController.getLatestUnlockedAchievements()
+					.isEmpty()) {
+				table.add(achievements).left().size(150);
+			}
 			table.add(levelOverview).size(100).bottom().space(30).expandX()
 					.right();
 			table.add(home).size(100).bottom().space(30);
