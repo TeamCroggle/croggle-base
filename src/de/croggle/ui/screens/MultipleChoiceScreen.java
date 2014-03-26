@@ -4,6 +4,7 @@ import static de.croggle.backends.BackendHelper.getAssetDirPath;
 import static de.croggle.data.LocalizationHelper._;
 
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -28,14 +30,15 @@ import de.croggle.data.persistence.SettingChangeListener;
 import de.croggle.game.ColorController;
 import de.croggle.game.MultipleChoiceGameController;
 import de.croggle.game.board.Board;
+import de.croggle.game.board.BoardObject;
 import de.croggle.game.board.IllegalBoardException;
+import de.croggle.game.board.operations.CreateWidthMap;
 import de.croggle.game.level.LevelPackage;
 import de.croggle.game.level.LevelPackagesController;
 import de.croggle.game.level.MultipleChoiceLevel;
 import de.croggle.ui.StyleHelper;
 import de.croggle.ui.actors.IngameMenuDialog;
 import de.croggle.ui.actors.NotificationDialog;
-import de.croggle.ui.actors.PagedScrollPane;
 import de.croggle.ui.renderer.BoardActor;
 import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
 
@@ -103,7 +106,7 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 		}
 
 	}
-	
+
 	private void showGoal() {
 		goalDialog.show(stage);
 	}
@@ -139,34 +142,26 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 				helper.getImageButtonStyleRound("widgets/icon-menu"));
 		Button goal = new ImageButton(
 				helper.getImageButtonStyleRound("widgets/icon-goal"));
-
 		ImageButton startSimulation = new ImageButton(StyleHelper.getInstance()
 				.getImageButtonStyleRound("widgets/icon-next"));
-		startSimulation.addListener(new StartSimulationListener());
 
 		// add listeners
 		menu.addListener(new MenuClickListener());
-
-		leftTable.pad(30);
-		leftTable.defaults().space(30);
-		leftTable.add(menu).size(100).top().left();
-		leftTable.row();
-		leftTable.add(goal).expand().size(100).top().left();
-		leftTable.row();
-		leftTable.add(startSimulation).size(200).center().right();
+		startSimulation.addListener(new StartSimulationListener());
 
 		final ColorController colorController = gameController
 				.getColorController();
-
 		final ActorLayoutConfiguration config = new ActorLayoutConfiguration();
 		config.setColorController(colorController);
 
 		MultipleChoiceLevel level = (MultipleChoiceLevel) gameController
 				.getLevel();
 
-		PagedScrollPane pager = new PagedScrollPane();
-
 		checkboxes = new CheckBox[3];
+		Table answerTable = new Table();
+
+		// dummy table for extended scrolling
+		answerTable.add(new Table()).width(100).left();
 
 		for (int i = 0; i < level.getAnswers().length; i++) {
 			Board answer = level.getAnswers()[i];
@@ -178,14 +173,39 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 					.getCurrentSetting().isColorblindEnabled());
 			game.getSettingController().addSettingChangeListener(boardActor);
 			boardActor.setZoomAndPanEnabled(false);
+
 			boardTable.add(boardActor).expand().fill();
 			pageTable.add(checkboxes[i]).top().center().pad(20, 0, 5, 0);
 			pageTable.row();
 			pageTable.add(boardTable).center().expand().fill();
 
-			pager.addPage(pageTable);
+			// calculate width of answer
+			Map<BoardObject, Float> map = CreateWidthMap.create(answer);
+			float width = map.get(answer);
+			width *= config.getUniformObjectWidth();
 
+			answerTable.add(pageTable).width(width).minWidth(270).expandY()
+					.fillY().space(30);
 		}
+		// dummy table for extended scrolling
+		answerTable.add(new Table()).width(300);
+
+		ScrollPane scrollPane = new ScrollPane(answerTable);
+		scrollPane.setScrollingDisabled(false, true);
+
+		leftTable.pad(30);
+		leftTable.defaults().space(30);
+		leftTable.add(menu).size(100).top().left();
+		leftTable.row();
+		leftTable.add(goal).expand().size(100).top().left();
+		leftTable.row();
+		leftTable.add(startSimulation).size(200).bottom().right();
+
+		table.stack(scrollPane, leftTable).expand().fill();
+
+		// TODO remove Simulationbutton and checkboxes and add simulationbutton
+		// on each page.
+		onSettingChange(game.getSettingController().getCurrentSetting());
 
 		// group checkboxes so only one can be checked at a time
 		// (max check amount is one per default)
@@ -195,17 +215,7 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 			checkboxGroup.add(checkboxes[i]);
 		}
 
-		table.stack(pager, leftTable).expand().fill();
-
-		// TODO remove Simulationbutton and checkboxes and add simulationbutton
-		// on each page.
-		onSettingChange(game.getSettingController().getCurrentSetting());
-
-		pager.setFlingTime(0.3f);
-		pager.setPageSpacing(5);
-		pager.setWidth(getViewportWidth() * 0.5f);
-		pager.setScrollingDisabled(false, true);
-
+		// prepare goalDialog
 		BoardActor goalBoard = new BoardActor(gameController.getLevel()
 				.getInitialBoard(), config);
 		goalBoard.setZoomAndPanEnabled(true);
@@ -228,6 +238,8 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 		goalDialog.add(goalTable).width(getViewportWidth() - 250)
 				.height(getViewportHeight());
 		goalDialog.stack(okay).center().bottom().width(300).height(70).pad(20);
+
+		Dialog.fadeDuration = 0f;
 	}
 
 	private void buildTutorialDialog(String animationPath) {
