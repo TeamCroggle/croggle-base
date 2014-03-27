@@ -1,6 +1,8 @@
 package de.croggle.game.level;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -86,6 +88,14 @@ public class LevelPackagesController {
 				}
 			}
 		}
+		Collections.sort(levelPackages, new Comparator<LevelPackage>() {
+
+			@Override
+			public int compare(LevelPackage o1, LevelPackage o2) {
+				return (int) Math.signum(o1.getLevelPackageId()
+						- o2.getLevelPackageId());
+			}
+		});
 	}
 
 	/**

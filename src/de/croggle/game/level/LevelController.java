@@ -1,8 +1,11 @@
 package de.croggle.game.level;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -77,19 +80,32 @@ public class LevelController {
 		FileHandle[] files = dirHandle.list();
 		levels = new ArrayList<Level>();
 
-		for (FileHandle file : files) {
-			if (file.isDirectory()) {
-				continue;
-			}
-			String name = file.name();
-			if (name.length() != "XY.json".length()) {
-				continue;
-			}
-			if (name.matches("[0-9][0-9]\\.json")) {
+		if (Gdx.app.getType() == ApplicationType.Android) {
+			for (FileHandle file : files) {
 				levels.add(LevelLoadHelper.instantiate(packageIndex,
-						Integer.parseInt(name.substring(0, 2)), game));
+						Integer.parseInt(file.name().substring(0, 2)), game));
+			}
+		} else {
+			for (FileHandle file : files) {
+				if (file.isDirectory()) {
+					continue;
+				}
+				String name = file.name();
+				if (name.length() != "XY.json".length()) {
+					continue;
+				}
+				if (name.matches("[0-9][0-9]\\.json")) {
+					levels.add(LevelLoadHelper.instantiate(packageIndex,
+							Integer.parseInt(name.substring(0, 2)), game));
+				}
 			}
 		}
+		Collections.sort(levels, new Comparator<Level>() {
+			@Override
+			public int compare(Level o1, Level o2) {
+				return (int) Math.signum(o1.getLevelId() - o2.getLevelId());
+			}
+		});
 
 		for (int i = 0; i < levels.size(); i++) {
 			if (!(game.getPersistenceManager().getLevelProgress(
