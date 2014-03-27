@@ -16,6 +16,7 @@ import de.croggle.game.board.operations.RemoveAgedAlligators;
 import de.croggle.game.board.operations.RemoveUselessAgedAlligators;
 import de.croggle.game.board.operations.ReplaceEggs;
 import de.croggle.game.board.operations.validation.BoardError;
+import de.croggle.game.board.operations.validation.BoardErrorType;
 import de.croggle.game.board.operations.validation.FindBoardErrors;
 import de.croggle.game.event.BoardEventMessenger;
 import de.croggle.util.RingBuffer;
@@ -56,7 +57,11 @@ public class Simulator {
 		this.boardMessenger = boardMessenger;
 		steps = 0;
 
-		final List<BoardError> errors = FindBoardErrors.find(entranceBoard);
+		final List<BoardError> errors = FindBoardErrors.find(entranceBoard,
+				new BoardErrorType[] {
+						BoardErrorType.COLOREDALLIGATOR_CHILDLESS,
+						BoardErrorType.OBJECT_UNCOLORED,
+						BoardErrorType.AGEDALLIGATOR_CHILDLESS });
 		if (!errors.isEmpty() && !AlligatorApp.DEBUG) {
 			throw new IllegalBoardException();
 		}
