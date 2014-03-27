@@ -39,7 +39,8 @@ com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 },
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: { titleFont: default-font, background: widgets/default-background, titleFontColor: white },
-	dialog: { titleFont: default-font, background: widgets/dialog-background, titleFontColor: white }
+	dialog: { titleFont: default-font, background: widgets/dialog-background, titleFontColor: white },
+	blue: { titleFont: default-font, background: widgets/dialog-background-blue, titleFontColor: white }
 },
 com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 	default: {

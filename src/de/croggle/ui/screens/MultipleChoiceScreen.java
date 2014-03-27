@@ -100,8 +100,8 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 		gameController.enterPlacement();
 
 		if (showDialogs) {
-			showTutorial();
 			showGoal();
+			showTutorial();
 			showDialogs = false;
 		}
 
@@ -247,7 +247,7 @@ public class MultipleChoiceScreen extends AbstractScreen implements
 		StyleHelper helper = StyleHelper.getInstance();
 
 		final Dialog tutorial = new Dialog("", StyleHelper.getInstance()
-				.getDialogStyle());
+				.getDialogStyleBlue());
 		tutorial.clear();
 		tutorial.fadeDuration = 0f;
 

@@ -233,6 +233,10 @@ public class StyleHelper {
 		return skin.get("dialog", WindowStyle.class);
 	}
 
+	public WindowStyle getDialogStyleBlue() {
+		return skin.get("blue", WindowStyle.class);
+	}
+
 	public WindowStyle getWindowStyle() {
 		return skin.get(WindowStyle.class);
 	}

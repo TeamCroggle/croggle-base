@@ -50,8 +50,8 @@ public class PlacementModeScreen extends AbstractScreen implements
 	private ImageButton zoomIn;
 	private ImageButton zoomOut;
 	private final Dialog goalDialog;
-	
-	private boolean displayTutorial = true;
+
+	private boolean showDialogs = true;
 
 	/**
 	 * Creates the screen of a level within the placement mode. This is the
@@ -97,13 +97,14 @@ public class PlacementModeScreen extends AbstractScreen implements
 		gameController.setTimeStamp();
 		gameController.enterPlacement();
 
-		if(displayTutorial) {
+		if (showDialogs) {
+			goalDialog.show(stage);
 			showTutorial();
-			displayTutorial = false;
+			showDialogs = false;
 		}
-		
+
 	}
-	
+
 	private void showTutorial() {
 		if (gameController.getLevel().hasAnimation()) {
 			List<String> animations = gameController.getLevel().getAnimation();
@@ -219,7 +220,7 @@ public class PlacementModeScreen extends AbstractScreen implements
 		StyleHelper helper = StyleHelper.getInstance();
 
 		final Dialog tutorial = new Dialog("", StyleHelper.getInstance()
-				.getDialogStyle());
+				.getDialogStyleBlue());
 		tutorial.clear();
 		tutorial.fadeDuration = 0f;
 
@@ -284,7 +285,8 @@ public class PlacementModeScreen extends AbstractScreen implements
 	private class MenuClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			Dialog menuDialog = new IngameMenuDialog(game, gameController, PlacementModeScreen.this);
+			Dialog menuDialog = new IngameMenuDialog(game, gameController,
+					PlacementModeScreen.this);
 			menuDialog.show(stage);
 		}
 	}
