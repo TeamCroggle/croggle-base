@@ -1,0 +1,32 @@
+[
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/introduction.png,
+ 	text: "Klicke zuerst auf die Schaltfläche mit der Flagge, um dein Levelziel zu sehen.",
+ 	id: tutorial/introduction.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/introduction2.png,
+	text: description,
+	id: tutorial/introduction2.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/introduction3.png,
+	text: description,
+	id: tutorial/introduction3.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/introduction4.png,
+	text: description,
+	id: tutorial/introduction4.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/eating1.png,
+	text: description,
+	id: tutorial/eating1.png
+ },
+]

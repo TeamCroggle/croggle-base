@@ -9,6 +9,7 @@ import de.croggle.data.persistence.SettingController;
 import de.croggle.data.persistence.StatisticController;
 import de.croggle.data.persistence.manager.PersistenceManager;
 import de.croggle.game.GameController;
+import de.croggle.game.TutorialHelper;
 import de.croggle.game.achievement.AchievementController;
 import de.croggle.game.board.IllegalBoardException;
 import de.croggle.game.level.LevelController;
@@ -160,6 +161,7 @@ public class AlligatorApp extends Game {
 		de.croggle.data.AssetManager.initialize();
 		StyleHelper.initialize();
 		SoundHelper.initialize();
+		TutorialHelper.initialize();
 
 		if (!HEADLESS) {
 			batch = new SpriteBatch();
