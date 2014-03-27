@@ -82,8 +82,11 @@ public class LevelController {
 
 		if (Gdx.app.getType() == ApplicationType.Android) {
 			for (FileHandle file : files) {
-				levels.add(LevelLoadHelper.instantiate(packageIndex,
-						Integer.parseInt(file.name().substring(0, 2)), game));
+				if (file.name().charAt(0) != 'p') {
+					levels.add(LevelLoadHelper
+							.instantiate(packageIndex, Integer.parseInt(file
+									.name().substring(0, 2)), game));
+				}
 			}
 		} else {
 			for (FileHandle file : files) {
