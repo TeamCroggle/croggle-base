@@ -115,7 +115,7 @@ public class PlacementModeScreen extends AbstractScreen implements
 			for (int i = tutorials.size() - 1; i >= 0; i--) {
 				Tutorial tutorial = helper.getTutorial(tutorials.get(i));
 				buildTutorialDialog(tutorial.getPicturePath(),
-						tutorial.getText());
+						_(tutorial.getText()));
 			}
 		}
 	}

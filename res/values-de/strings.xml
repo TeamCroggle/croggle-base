@@ -77,4 +77,22 @@
 	<string name="alligator_overflow_msg">Deine Alligator Familien werden zu groß. Versuche es nochmal!</string>
 	<string name="warning_name_already_used">Dieser Name ist schon vergeben.</string>
 	<string name="warning_empty_name">Gib einen Namen ein.</string>
+	<string name="tutorial_missing">Could not load tutorial</string>
+    <string name="tutorial_introduction">Klicke auf die Schaltfläche mit der Flagge, um das Levelziel zu sehen.</string>
+    <string name="tutorial_introduction2">Erreiche das Levelziel, um zu gewinnen.</string>
+    <string name="tutorial_introduction3">Berühre das Ei, um es einzufärben.</string>
+    <string name="tutorial_introduction4">Wenn du fertig bist, drücke zweimal auf das Startsymbol.</string>
+    <string name="tutorial_eating1">Der Alligator ist hungrig, also frisst er das Ei, dass er vor sich sieht.</string>
+    <string name="tutorial_eating2">Davon bekommt er aber Bauchschmerzen, legt sich erst einmal eine Weile hin und verschwindet.</string>
+    <string name="tutorial_eating3">Doch wie durch ein Wunder schlüpft aus seinem Ei wieder das Ei, dass er gefressen hat!</string>
+    <string name="tutorial_reminder">Vergiss nicht, dir das Levelziel anzuschauen.</string>
+    <string name="tutorial_dragging">Du kannst Eier und Alligatoren auf das Spielfeld ziehen.</string>
+    <string name="tutorial_eating_family">Der grüne Alligator ist hungrig, also frisst er die rote Familie, die er vor sich sieht.</string>
+    <string name="tutorial_eating_family2">Dadurch bekommt er wieder Bauchschmerzen und verschwindet. Doch aus seinem Ei schlüpft wieder die Familie, die er gefressen hat.</string>
+    <string name="tutorial_multiple_choice">Wie wird das Spielfeld aussehen, nachdem alle Alligatoren gefressen haben? Wähle deine Antwort und drücke auf Start!</string>
+    <string name="tutorial_alpha">Der grüne Alligator hat Hunger, also frisst er die rote Familie, die er vor sich sieht.</string>
+    <string name="tutorial_alpha2">Davon bekommt er Bauchschmerzen und verschwindet. Doch aus seinem Ei schlüpft die Familie, die er gefressen hat.</string>
+    <string name="tutorial_alpha3">Aber wem gehört jetzt das Ei? Einer der Alligatoren nimmt eine andere Farbe an, um zu zeigen, dass das Ei ihm gehört.</string>
+    <string name="tutorial_old_alligator">Das ist ein alter Alligator. Er ist müde und hat keinen Hunger mehr.</string>
+    <string name="tutorial_old_alligator2">Ein alter Alligator bewacht Familien. Ist nur noch eine Familie übrig, kann sie auf sich selbst aufpassen, und der alte Alligator geht in Rente.</string>   
 </resources>

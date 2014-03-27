@@ -36,7 +36,7 @@ public class TutorialHelper {
 		}
 		// return some dummy stuff so it won't crash
 		return new Tutorial("", "tutorials/introduction.png",
-				"Couldn't load tutorial");
+				"tutorial_missing");
 	}
 
 }

@@ -77,5 +77,23 @@
     <string name="alligator_overflow_msg">Your alligator families are getting to big. Try again!</string>
     <string name="warning_name_already_used">This name is already in use.</string>
     <string name="warning_empty_name">Please enter a name.</string>
+    <string name="tutorial_missing">Could not load tutorial</string>
+    <string name="tutorial_introduction">Touch the button with the flag to see your level goal.</string>
+    <string name="tutorial_introduction2">Reach that goal to win!</string>
+    <string name="tutorial_introduction3">Touch the egg to color it.</string>
+    <string name="tutorial_introduction4">When you\'re done, tap the start symbol two times.</string>
+    <string name="tutorial_eating1">The alligator is hungry, so it eats the egg it can see in front of itself.</string>
+    <string name="tutorial_eating2">This causes it to get some really bad stomach ache, and it disappears to lay down a bit.</string>
+    <string name="tutorial_eating3">But just like a wonder, its egg hatches to the egg it ate before!</string>
+    <string name="tutorial_reminder">Don\'t forget to see your level goal before you start.</string>
+    <string name="tutorial_dragging">You can drag and drop alligators and eggs to the board.</string>
+    <string name="tutorial_eating_family">The green alligator is hungry, so it eats the red family it sees, at a stretch!</string>
+    <string name="tutorial_eating_family2">This again causes it to get a really bas stomach ache, and it disappears to lay down. But from its egg hatches the family it just ate.</string>
+    <string name="tutorial_multiple_choice">What will theboard look like after every alligator has eaten? Choose your answer and click play!</string>
+    <string name="tutorial_alpha">The green alligator is hungry, so it eats the red family it sees.</string>
+    <string name="tutorial_alpha2">This again causes it to get a really bas stomach ache, and it disappears to lay down. But from its egg hatches the family it just ate.</string>
+    <string name="tutorial_alpha3">But who does the egg now belong to? One alligator changes its color to show the egg is its own.</string>
+    <string name="tutorial_old_alligator">This is an old alligator. It\'s tired and not hungry any more.</string>
+    <string name="tutorial_old_alligator2">An old alligator guards other families. A single family can take care of itself, so the old alligator retires.</string>    
 
 </resources>
