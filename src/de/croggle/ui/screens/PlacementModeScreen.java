@@ -12,7 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -24,6 +26,8 @@ import de.croggle.data.persistence.Setting;
 import de.croggle.data.persistence.SettingChangeListener;
 import de.croggle.game.ColorController;
 import de.croggle.game.GameController;
+import de.croggle.game.Tutorial;
+import de.croggle.game.TutorialHelper;
 import de.croggle.game.board.IllegalBoardException;
 import de.croggle.game.level.LevelPackage;
 import de.croggle.game.level.LevelPackagesController;
@@ -107,9 +111,12 @@ public class PlacementModeScreen extends AbstractScreen implements
 
 	private void showTutorial() {
 		if (gameController.getLevel().hasAnimation()) {
-			List<String> animations = gameController.getLevel().getAnimation();
-			for (int i = animations.size() - 1; i >= 0; i--) {
-				buildTutorialDialog(animations.get(i));
+			TutorialHelper helper = TutorialHelper.getInstance();
+			List<String> tutorials = gameController.getLevel().getAnimation();
+			for (int i = tutorials.size() - 1; i >= 0; i--) {
+				Tutorial tutorial = helper.getTutorial(tutorials.get(i));
+				buildTutorialDialog(tutorial.getPicturePath(),
+						_(tutorial.getText()));
 			}
 		}
 	}
@@ -215,22 +222,26 @@ public class PlacementModeScreen extends AbstractScreen implements
 
 	}
 
-	private void buildTutorialDialog(String animationPath) {
+	private void buildTutorialDialog(String animationPath, String text) {
 		AssetManager manager = AssetManager.getInstance();
 		StyleHelper helper = StyleHelper.getInstance();
 
 		final Dialog tutorial = new Dialog("", StyleHelper.getInstance()
 				.getDialogStyleBlue());
 		tutorial.clear();
-		tutorial.fadeDuration = 0f;
+		Dialog.fadeDuration = 0f;
 
 		Table buttonTable = new Table();
+		Table imageTable = new Table();
 		Drawable drawable = new TextureRegionDrawable(new TextureRegion(
 				manager.get(animationPath, Texture.class)));
 		// used image button here because it keeps the ratio of the texture
 		ImageButton tutorialImage = new ImageButton(drawable);
 		ImageButton okay = new ImageButton(
 				helper.getImageButtonStyleRound("widgets/icon-check"));
+		Label label = new Label(text, helper.getBlackLabelStyle());
+		label.setWrap(true);
+		label.setAlignment(Align.center);
 
 		okay.addListener(new ClickListener() {
 			@Override
@@ -240,7 +251,11 @@ public class PlacementModeScreen extends AbstractScreen implements
 		});
 
 		buttonTable.add(okay).size(100).bottom().right().expand().pad(30);
-		tutorial.stack(tutorialImage, buttonTable).height(500).width(800);
+		imageTable.add(tutorialImage).width(800).height(350);
+		imageTable.row();
+		imageTable.add(label).minHeight(100).width(600).left()
+				.pad(0, 30, 30, 10);
+		tutorial.stack(imageTable, buttonTable).height(500).width(800);
 		tutorial.show(stage);
 	}
 

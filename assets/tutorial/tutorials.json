@@ -1,0 +1,104 @@
+[
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/introduction.png,
+ 	text: tutorial_introduction,
+ 	id: tutorial/introduction.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/introduction2.png,
+	text: tutorial_introduction2,
+	id: tutorial/introduction2.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/introduction3.png,
+	text: tutorial_introduction3,
+	id: tutorial/introduction3.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/introduction4.png,
+	text: tutorial_introduction4,
+	id: tutorial/introduction4.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/eating1.png,
+	text: tutorial_eating1,
+	id: tutorial/eating1.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/eating2.png,
+	text: tutorial_eating2,
+	id: tutorial/eating2.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/eating3.png,
+	text: tutorial_eating3,
+	id: tutorial/eating3.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/reminder.png,
+	text: tutorial_reminder,
+	id: tutorial/reminder.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/dragging2.png,
+	text: tutorial_dragging,
+	id: tutorial/dragging2.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/eating-family.png,
+	text: tutorial_eating_family,
+	id: tutorial/eating-family.png
+ },
+  {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/eating-family2.png,
+	text: tutorial_eating_family2,
+	id: tutorial/eating-family2.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/multiple-choice.png,
+	text: tutorial_multiple_choice,
+	id: tutorial/multiple-choice.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/alpha.png,
+	text: tutorial_alpha,
+	id: tutorial/alpha.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/alpha2.png,
+	text: tutorial_alpha2,
+	id: tutorial/alpha2.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/alpha3.png,
+	text: tutorial_alpha3,
+	id: tutorial/alpha3.png
+ },
+ {
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/old-alligator.png,
+	text: tutorial_old_alligator,
+	id: tutorial/old-alligator.png
+ },
+{
+ 	class: de.croggle.game.Tutorial,
+ 	picturePath: tutorial/old-alligator2.png,
+	text: tutorial_old_alligator2,
+	id: tutorial/old-alligator2.png
+ }
+]
