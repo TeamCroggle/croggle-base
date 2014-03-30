@@ -146,6 +146,7 @@ public class GameController implements BoardEventListener {
 	private void onCompletedLevel(boolean won) {
 		boolean saveProgress = false;
 		if (won) {
+			statisticsDelta.setLevelsComplete(1);
 			progress.setCurrentBoard(" ");
 			saveProgress = true;
 		}

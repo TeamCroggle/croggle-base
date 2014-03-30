@@ -14,13 +14,10 @@ public class HintPerLevelAchievement extends PerLevelAchievement {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int requirementsMet(Statistic statistic, Statistic statisticDelta) {
+	public int requirementsMet(Statistic statisticDelta) {
 		int index = getIndex();
 		int hintsUsed = statisticDelta.getUsedHints();
-		if (statisticDelta.getLevelsComplete() ==  0) {
-			return index; // if level wasnt solved one does not deserve this acm.
-		}
-		while (index < (getNumberOfStages() - 1)
+			while (index < (getNumberOfStages() - 1)
 				&& hintsUsed <= getStage(index + 1)) { // careful: this time its
 														// <
 			// instead of >

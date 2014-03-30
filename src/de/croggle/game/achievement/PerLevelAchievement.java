@@ -8,11 +8,14 @@ import de.croggle.data.persistence.Statistic;
  */
 public abstract class PerLevelAchievement extends Achievement {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public abstract int requirementsMet(Statistic statistic,
-			Statistic statisticDelta);
+	public int requirementsMet(Statistic statistic, Statistic statisticDelta) {
+		if (statisticDelta.getLevelsComplete() > 0) {
+			return requirementsMet(statisticDelta);
+		}
+		return getIndex();
+	}
+	
+	abstract int requirementsMet(Statistic statisticDelta);
 
 }
