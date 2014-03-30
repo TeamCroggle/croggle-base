@@ -1,5 +1,7 @@
 package de.croggle.game;
 
+import static de.croggle.backends.BackendHelper.getAssetDirPath;
+
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -12,7 +14,7 @@ public class TutorialHelper {
 	private static TutorialHelper instance;
 
 	private TutorialHelper() {
-		FileHandle handle = Gdx.files.internal("tutorial/tutorials.json");
+		FileHandle handle = Gdx.files.internal(getAssetDirPath() + "tutorial/tutorials.json");
 		Json json = new Json();
 		tutorials = json.fromJson(ArrayList.class, handle.readString());
 	}
