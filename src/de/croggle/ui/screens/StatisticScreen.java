@@ -48,6 +48,9 @@ public class StatisticScreen extends AbstractScreen implements
 	private TextButton actionsButton;
 	private TextButton progressButton;
 	private TextButton gameButton;
+	
+	private Statistic selectedStatistic = new Statistic();
+	private String selectedName = null;
 
 	/**
 	 * Creates the screen within which a parent or teacher can control the
@@ -68,6 +71,7 @@ public class StatisticScreen extends AbstractScreen implements
 		fillTable();
 	}
 
+
 	private void fillTable() {
 		StyleHelper helper = StyleHelper.getInstance();
 
@@ -80,6 +84,13 @@ public class StatisticScreen extends AbstractScreen implements
 		profileList.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				
+				String profileName = profileList
+						.getSelection();
+				if (selectedName == null || !selectedName.equals(profileName)) {
+					selectedStatistic = statisticController.getStatistic(profileName);
+					selectedName = profileName;
+				}
 				showCategory(lastCategory);
 			}
 		});
@@ -151,17 +162,16 @@ public class StatisticScreen extends AbstractScreen implements
 	private void showCategory(Category category) {
 		content.clear();
 		LabelStyle style = StyleHelper.getInstance().getLabelStyle();
-		Statistic statistic = statisticController.getStatistic(profileList
-				.getSelection());
+		
 		/*
 		 * TODO make this nicer (e.g. special Category class, that can layout
 		 * itself)
 		 */
 		content.defaults().height(100).expandX().left().padLeft(10);
-		if (statistic != null) {
+		if (selectedStatistic != null) {
 			switch (category) {
 			case PROGRESS:
-				int sec = statistic.getPlaytime();
+				int sec = selectedStatistic.getPlaytime();
 				int hours = sec / 3600;
 				sec = sec % 3600;
 				int min = sec / 60;
@@ -176,11 +186,11 @@ public class StatisticScreen extends AbstractScreen implements
 				Label packagesText = new Label(
 						_("statistic_label_progress_packages"), style);
 				Label packagesVal = new Label(""
-						+ statistic.getPackagesComplete(), style);
+						+ selectedStatistic.getPackagesComplete(), style);
 
 				Label levelsText = new Label(
 						_("statistic_label_progress_levels"), style);
-				Label levelsVal = new Label("" + statistic.getLevelsComplete(),
+				Label levelsVal = new Label("" + selectedStatistic.getLevelsComplete(),
 						style);
 
 				content.add(timeText);
@@ -199,16 +209,16 @@ public class StatisticScreen extends AbstractScreen implements
 				Label recoloringsText = new Label(
 						_("statistic_label_action_recolorings"), style);
 				Label recoloringsVal = new Label(""
-						+ statistic.getRecolorings(), style);
+						+ selectedStatistic.getRecolorings(), style);
 
 				Label resetsText = new Label(
 						_("statistic_label_action_resets"), style);
-				Label resetsVal = new Label("" + statistic.getResetsUsed(),
+				Label resetsVal = new Label("" + selectedStatistic.getResetsUsed(),
 						style);
 
 				Label hintsText = new Label(_("statistic_label_action_hints"),
 						style);
-				Label hintsVal = new Label("" + statistic.getUsedHints(), style);
+				Label hintsVal = new Label("" + selectedStatistic.getUsedHints(), style);
 
 				content.add(recoloringsText);
 				content.add(recoloringsVal);
@@ -226,21 +236,21 @@ public class StatisticScreen extends AbstractScreen implements
 				Label alligatorsEatenText = new Label(
 						_("statistic_label_game_alligators_eaten"), style);
 				Label alligatorsEatenVal = new Label(""
-						+ statistic.getAlligatorsEaten(), style);
+						+ selectedStatistic.getAlligatorsEaten(), style);
 
 				Label alligatorsPlacedText = new Label(
 						_("statistic_label_game_alligators_placed"), style);
 				Label alligatorsPlacedVal = new Label(""
-						+ statistic.getAlligatorsPlaced(), style);
+						+ selectedStatistic.getAlligatorsPlaced(), style);
 
 				Label eggsHatchedText = new Label(
 						_("statistic_label_game_eggs_hatched"), style);
 				Label eggsHatchedVal = new Label(""
-						+ statistic.getEggsHatched(), style);
+						+ selectedStatistic.getEggsHatched(), style);
 
 				Label eggsPlacedText = new Label(
 						_("statistic_label_game_eggs_placed"), style);
-				Label eggsPlacedVal = new Label("" + statistic.getEggsPlaced(),
+				Label eggsPlacedVal = new Label("" + selectedStatistic.getEggsPlaced(),
 						style);
 
 				content.add(alligatorsEatenText);
@@ -282,6 +292,9 @@ public class StatisticScreen extends AbstractScreen implements
 
 	@Override
 	protected void onShow() {
+		if (selectedName != null) {
+			selectedStatistic = statisticController.getStatistic(selectedName);
+		}
 		showCategory(lastCategory);
 	}
 
