@@ -1,4 +1,5 @@
 package de.croggle.game;
+import static de.croggle.backends.BackendHelper.getAssetDirPath;
 
 public class Tutorial {
 
@@ -17,7 +18,7 @@ public class Tutorial {
 	}
 
 	public String getId() {
-		return id;
+		return getAssetDirPath() + id;
 	}
 
 	public void setId(String id) {
@@ -25,7 +26,7 @@ public class Tutorial {
 	}
 
 	public String getPicturePath() {
-		return picturePath;
+		return getAssetDirPath() + picturePath;
 	}
 
 	public void setPicturePath(String picturePath) {

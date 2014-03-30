@@ -17,6 +17,7 @@ public class TutorialHelper {
 		FileHandle handle = Gdx.files.internal(getAssetDirPath() + "tutorial/tutorials.json");
 		Json json = new Json();
 		tutorials = json.fromJson(ArrayList.class, handle.readString());
+	
 	}
 
 	public static void initialize() {
@@ -37,7 +38,7 @@ public class TutorialHelper {
 			}
 		}
 		// return some dummy stuff so it won't crash
-		return new Tutorial("", "tutorials/introduction.png",
+		return new Tutorial("", "tutorial/introduction.png",
 				"tutorial_missing");
 	}
 
