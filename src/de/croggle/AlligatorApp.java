@@ -40,7 +40,7 @@ import de.croggle.ui.screens.StatisticScreen;
  */
 public class AlligatorApp extends Game {
 
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	public static boolean HEADLESS = false;
 
 	private ProfileController profileController;
