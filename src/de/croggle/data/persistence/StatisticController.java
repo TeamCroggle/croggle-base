@@ -116,8 +116,7 @@ public class StatisticController implements StatisticsDeltaProcessor {
 				+ statisticsDelta.getUsedHints());
 		currentStatistic.setPlaytime(currentStatistic.getPlaytime()
 				+ statisticsDelta.getPlaytime());
-		currentStatistic.setLevelsComplete(currentStatistic.getLevelsComplete()
-				+ statisticsDelta.getLevelsComplete());
+
 
 		game.getAchievementController().processStatisticChange(statisticsDelta,
 				currentStatistic);
