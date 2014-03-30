@@ -14,7 +14,7 @@ public class AlligatorsPlacedPerLevelAchievement extends PerLevelAchievement {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int requirementsMet(Statistic statistic, Statistic statisticDelta) {
+	public int requirementsMet(Statistic statisticDelta) {
 		int index = getIndex();
 		int alligatorsPlacedPerLevel = statisticDelta.getAlligatorsPlaced();
 		while (index < (getNumberOfStages() - 1)
