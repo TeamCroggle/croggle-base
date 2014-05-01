@@ -12,8 +12,8 @@ import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.game.board.operations.CountBoardObjects;
 import de.croggle.game.board.operations.FindEating;
-import de.croggle.game.board.operations.RemoveAgedAlligators;
-import de.croggle.game.board.operations.RemoveUselessAgedAlligators;
+import de.croggle.game.board.operations.RemoveLonelyAgedAlligators;
+import de.croggle.game.board.operations.RemoveNeedlessAgedAlligators;
 import de.croggle.game.board.operations.ReplaceEggs;
 import de.croggle.game.board.operations.validation.BoardError;
 import de.croggle.game.board.operations.validation.BoardErrorType;
@@ -98,8 +98,8 @@ public class Simulator {
 		ReplaceEggs.replace(constellation, eater.getColor(), eaten,
 				boardMessenger, colorController);
 
-		RemoveAgedAlligators.remove(currentBoard, boardMessenger);
-		RemoveUselessAgedAlligators.remove(currentBoard, boardMessenger);
+		RemoveLonelyAgedAlligators.remove(currentBoard, boardMessenger);
+		RemoveNeedlessAgedAlligators.remove(currentBoard, boardMessenger);
 		if (MAX_ALLIGATORS < CountBoardObjects.count(currentBoard)) {
 			throw new AlligatorOverflowException();
 		}

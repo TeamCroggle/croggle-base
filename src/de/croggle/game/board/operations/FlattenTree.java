@@ -15,9 +15,9 @@ import de.croggle.game.board.InternalBoardObject;
  * "flat" array of BoardObjects. Useful if sequentially iterating through all
  * objects in the tree is needed to be achieved.
  */
-public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
+public class FlattenTree<T extends BoardObject> extends DFTDVisitor {
 
-	private List<T> flattened;
+	private final List<T> flattened;
 
 	private FlattenTree() {
 		flattened = new LinkedList<T>();
@@ -34,7 +34,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	 */
 	public static BoardObject[] toArray(BoardObject tree) {
 		FlattenTree<BoardObject> flattener = new FlattenTree<BoardObject>();
-		tree.accept(flattener);
+		flattener.beginTraversal(tree);
 		return flattener.flattened.toArray(new BoardObject[flattener.flattened
 				.size()]);
 	}
@@ -50,7 +50,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	 */
 	public static InternalBoardObject[] toArray(InternalBoardObject tree) {
 		FlattenTree<InternalBoardObject> flattener = new FlattenTree<InternalBoardObject>();
-		tree.accept(flattener);
+		flattener.beginTraversal(tree);
 		return flattener.flattened
 				.toArray(new InternalBoardObject[flattener.flattened.size()]);
 	}
@@ -66,7 +66,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	 */
 	public static List<BoardObject> toList(BoardObject tree) {
 		FlattenTree<BoardObject> flattener = new FlattenTree<BoardObject>();
-		tree.accept(flattener);
+		flattener.beginTraversal(tree);
 		return flattener.flattened;
 	}
 
@@ -81,7 +81,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	 */
 	public static List<InternalBoardObject> toList(InternalBoardObject tree) {
 		FlattenTree<InternalBoardObject> flattener = new FlattenTree<InternalBoardObject>();
-		tree.accept(flattener);
+		flattener.beginTraversal(tree);
 		return flattener.flattened;
 	}
 
@@ -90,7 +90,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void visitEgg(Egg egg) {
+	protected void dispatchEgg(Egg egg) {
 		flattened.add((T) egg);
 	}
 
@@ -99,9 +99,8 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void visitColoredAlligator(ColoredAlligator alligator) {
+	protected void dispatchColoredAlligator(ColoredAlligator alligator) {
 		flattened.add((T) alligator);
-		alligator.acceptOnChildren(this);
 	}
 
 	/**
@@ -109,9 +108,8 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void visitAgedAlligator(AgedAlligator alligator) {
+	protected void dispatchAgedAlligator(AgedAlligator alligator) {
 		flattened.add((T) alligator);
-		alligator.acceptOnChildren(this);
 	}
 
 	/**
@@ -119,9 +117,7 @@ public class FlattenTree<T extends BoardObject> implements BoardObjectVisitor {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void visitBoard(Board board) {
-		// Trust me, this will work :P
+	protected void dispatchBoard(Board board) {
 		flattened.add((T) board);
-		board.acceptOnChildren(this);
 	}
 }

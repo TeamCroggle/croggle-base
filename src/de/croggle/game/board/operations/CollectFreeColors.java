@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.croggle.game.Color;
-import de.croggle.game.board.AgedAlligator;
-import de.croggle.game.board.Board;
 import de.croggle.game.board.BoardObject;
 import de.croggle.game.board.ColoredAlligator;
 import de.croggle.game.board.Egg;
@@ -17,7 +15,7 @@ import de.croggle.game.board.Parent;
  * given subterm.
  * 
  */
-public class CollectFreeColors implements BoardObjectVisitor {
+public class CollectFreeColors extends DFTDVisitor {
 	private final Set<Color> freeColors;
 	private final BoardObject family;
 
@@ -36,7 +34,7 @@ public class CollectFreeColors implements BoardObjectVisitor {
 	 */
 	public static Color[] collect(BoardObject family) {
 		final CollectFreeColors visitor = new CollectFreeColors(family);
-		family.accept(visitor);
+		visitor.beginTraversal(family);
 		return visitor.freeColors.toArray(new Color[visitor.freeColors.size()]);
 	}
 
@@ -44,7 +42,7 @@ public class CollectFreeColors implements BoardObjectVisitor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitEgg(Egg egg) {
+	public void dispatchEgg(Egg egg) {
 		final Color eggColor = egg.getColor();
 		if (egg != family) {
 			for (Parent parent : GetParentHierarchy.get(egg)) {
@@ -61,29 +59,5 @@ public class CollectFreeColors implements BoardObjectVisitor {
 			}
 		}
 		freeColors.add(eggColor);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void visitColoredAlligator(ColoredAlligator alligator) {
-		alligator.acceptOnChildren(this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void visitAgedAlligator(AgedAlligator alligator) {
-		alligator.acceptOnChildren(this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void visitBoard(Board board) {
-		board.acceptOnChildren(this);
 	}
 }

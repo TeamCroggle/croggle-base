@@ -1,8 +1,5 @@
 package de.croggle.game.board.operations;
 
-import java.util.LinkedList;
-import java.util.Stack;
-
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.Board;
 import de.croggle.game.board.BoardObject;
@@ -12,23 +9,19 @@ import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.game.event.BoardEventMessenger;
 
-public class RemoveUselessAgedAlligators implements BoardObjectVisitor {
+/**
+ * Operation to remove aged allgiators which are not needed according to the
+ * associativity of the lambda calculus. The implementation currently looks for
+ * aged alligators, which are only preceded by unbound variables or nothing at
+ * all.
+ * 
+ */
+public class RemoveNeedlessAgedAlligators extends BFBUVisitor {
 	private final BoardEventMessenger boardMessenger;
-	private final LinkedList<Parent> parents;
-	private final Stack<Parent> bottomUpStack;
 
-	private RemoveUselessAgedAlligators(Parent family,
+	private RemoveNeedlessAgedAlligators(Parent family,
 			BoardEventMessenger boardMessenger) {
 		this.boardMessenger = boardMessenger;
-		parents = new LinkedList<Parent>();
-		bottomUpStack = new Stack<Parent>();
-		parents.add(family);
-		for (int i = 0; i < parents.size(); i++) {
-			parents.get(i).accept(this);
-		}
-		while (!bottomUpStack.isEmpty()) {
-			checkChildren(bottomUpStack.pop());
-		}
 	}
 
 	public static void remove(BoardObject family,
@@ -36,35 +29,24 @@ public class RemoveUselessAgedAlligators implements BoardObjectVisitor {
 		if (!(family instanceof Parent)) {
 			return;
 		}
-		new RemoveUselessAgedAlligators((Parent) family, boardMessenger);
+		RemoveNeedlessAgedAlligators remover = new RemoveNeedlessAgedAlligators(
+				(Parent) family, boardMessenger);
+		remover.beginTraversal(family);
 	}
 
 	@Override
-	public void visitEgg(Egg egg) {
+	public void dispatchColoredAlligator(ColoredAlligator alligator) {
+		checkChildren(alligator);
 	}
 
 	@Override
-	public void visitColoredAlligator(ColoredAlligator alligator) {
-		visitParent(alligator);
+	public void dispatchAgedAlligator(AgedAlligator alligator) {
+		checkChildren(alligator);
 	}
 
 	@Override
-	public void visitAgedAlligator(AgedAlligator alligator) {
-		visitParent(alligator);
-	}
-
-	@Override
-	public void visitBoard(Board board) {
-		visitParent(board);
-	}
-
-	private void visitParent(Parent p) {
-		for (InternalBoardObject child : p) {
-			if (child instanceof Parent) {
-				parents.add((Parent) child);
-			}
-		}
-		bottomUpStack.push(p);
+	public void dispatchBoard(Board board) {
+		checkChildren(board);
 	}
 
 	private void checkChildren(Parent p) {

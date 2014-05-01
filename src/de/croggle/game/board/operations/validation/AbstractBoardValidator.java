@@ -1,27 +1,16 @@
 package de.croggle.game.board.operations.validation;
 
-public abstract class AbstractBoardValidator {
-	protected boolean validateObjectUncolored = false;
-	protected boolean validateAgedAlligatorChildless = false;
-	protected boolean validateColoredAlligatorChildless = false;
-	protected boolean validateEmptyBoard = false;
+abstract class AbstractBoardValidator {
+	protected final boolean validateObjectUncolored;
+	protected final boolean validateAgedAlligatorChildless;
+	protected final boolean validateColoredAlligatorChildless;
+	protected final boolean validateEmptyBoard;
 
 	public AbstractBoardValidator(BoardErrorType[] errorTypes) {
-		this.applyErrorTypeSettings(errorTypes);
-	}
-
-	/**
-	 * Configures this {@link ValidateConstellation} to look for all
-	 * {@link BoardErrorType}s specified in the given array.
-	 * 
-	 * @param errorTypes
-	 *            the error types to be looked for
-	 */
-	protected final void applyErrorTypeSettings(BoardErrorType[] errorTypes) {
-		validateObjectUncolored = false;
-		validateAgedAlligatorChildless = false;
-		validateColoredAlligatorChildless = false;
-		validateEmptyBoard = false;
+		boolean validateObjectUncolored = false;
+		boolean validateAgedAlligatorChildless = false;
+		boolean validateColoredAlligatorChildless = false;
+		boolean validateEmptyBoard = false;
 		for (BoardErrorType t : errorTypes) {
 			switch (t) {
 			case AGEDALLIGATOR_CHILDLESS: {
@@ -45,5 +34,9 @@ public abstract class AbstractBoardValidator {
 			}
 			}
 		}
+		this.validateAgedAlligatorChildless = validateAgedAlligatorChildless;
+		this.validateColoredAlligatorChildless = validateColoredAlligatorChildless;
+		this.validateEmptyBoard = validateEmptyBoard;
+		this.validateObjectUncolored = validateObjectUncolored;
 	}
 }
