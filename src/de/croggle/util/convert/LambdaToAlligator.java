@@ -19,7 +19,7 @@ import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.game.board.operations.BoardObjectVisitor;
-import de.croggle.game.board.operations.RemoveAgedAlligators;
+import de.croggle.game.board.operations.RemoveLonelyAgedAlligators;
 
 /**
  * A helper class to allow for parsing lambda terms and build their alligator
@@ -102,7 +102,7 @@ public class LambdaToAlligator {
 			parseStageTwo();
 		}
 
-		RemoveAgedAlligators.remove(b);
+		RemoveLonelyAgedAlligators.remove(b);
 	}
 
 	/**

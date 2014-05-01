@@ -7,6 +7,7 @@ import java.util.Map;
 
 import de.croggle.game.Color;
 import de.croggle.game.board.operations.BoardObjectVisitor;
+import de.croggle.game.board.operations.StrategyBoardObjectVisitor;
 
 /**
  * Parent is an abstract class to model the functions board objects - which can
@@ -219,12 +220,6 @@ public abstract class Parent implements Iterable<InternalBoardObject>,
 		}
 	}
 
-	public void acceptOnChildren(BoardObjectVisitor visitor) {
-		for (InternalBoardObject child : this) {
-			child.accept(visitor);
-		}
-	}
-
 	@Override
 	public boolean match(BoardObject o) {
 		if (o == null)
@@ -265,5 +260,20 @@ public abstract class Parent implements Iterable<InternalBoardObject>,
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Causes the given visitor to visit all children of this parent instance.
+	 * Deprecated since the usage of this (convenience) method often indicates
+	 * poor abstraction of the traversation strategy. Instead, specializations
+	 * of {@link StrategyBoardObjectVisitor} should be used.
+	 * 
+	 * @param visitor
+	 */
+	@Deprecated
+	public void acceptOnChildren(BoardObjectVisitor visitor) {
+		for (InternalBoardObject child : this) {
+			child.accept(visitor);
+		}
 	}
 }

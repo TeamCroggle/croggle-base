@@ -4,31 +4,30 @@ import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.Board;
 import de.croggle.game.board.BoardObject;
 import de.croggle.game.board.ColoredAlligator;
-import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.game.event.BoardEventMessenger;
 
 /**
- * A visitor looking for aged alligators, which are not nessesary because they
- * have only one children.
+ * A visitor looking for aged alligators, which are not necessary because they
+ * have only one child or no children at all.
  * 
  */
-public class RemoveAgedAlligators implements BoardObjectVisitor {
+public class RemoveLonelyAgedAlligators extends DFBUVisitor {
 	private final BoardEventMessenger boardMessenger;
 
 	/**
 	 * 
 	 * @param boardMessenger
 	 */
-	private RemoveAgedAlligators(BoardEventMessenger boardMessenger) {
+	private RemoveLonelyAgedAlligators(BoardEventMessenger boardMessenger) {
 		this.boardMessenger = boardMessenger;
 	}
 
 	/**
 	 * 
 	 */
-	private RemoveAgedAlligators() {
+	private RemoveLonelyAgedAlligators() {
 		boardMessenger = null;
 	}
 
@@ -43,8 +42,8 @@ public class RemoveAgedAlligators implements BoardObjectVisitor {
 	 */
 	public static void remove(BoardObject family,
 			BoardEventMessenger boardMessenger) {
-		RemoveAgedAlligators visitor = new RemoveAgedAlligators(boardMessenger);
-		family.accept(visitor);
+		RemoveLonelyAgedAlligators visitor = new RemoveLonelyAgedAlligators(boardMessenger);
+		visitor.beginTraversal(family);
 	}
 
 	/**
@@ -54,23 +53,15 @@ public class RemoveAgedAlligators implements BoardObjectVisitor {
 	 *            the family in which old alligators should be removed
 	 */
 	public static void remove(BoardObject family) {
-		RemoveAgedAlligators visitor = new RemoveAgedAlligators();
-		family.accept(visitor);
+		RemoveLonelyAgedAlligators visitor = new RemoveLonelyAgedAlligators();
+		visitor.beginTraversal(family);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitEgg(Egg egg) {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void visitColoredAlligator(ColoredAlligator alligator) {
-		alligator.acceptOnChildren(this);
+	protected void dispatchColoredAlligator(ColoredAlligator alligator) {
 		checkChildren(alligator);
 	}
 
@@ -78,8 +69,7 @@ public class RemoveAgedAlligators implements BoardObjectVisitor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitAgedAlligator(AgedAlligator alligator) {
-		alligator.acceptOnChildren(this);
+	protected void dispatchAgedAlligator(AgedAlligator alligator) {
 		checkChildren(alligator);
 	}
 
@@ -87,8 +77,7 @@ public class RemoveAgedAlligators implements BoardObjectVisitor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitBoard(Board board) {
-		board.acceptOnChildren(this);
+	protected void dispatchBoard(Board board) {
 		checkChildren(board);
 	}
 

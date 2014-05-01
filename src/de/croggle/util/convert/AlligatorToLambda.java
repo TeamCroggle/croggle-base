@@ -16,7 +16,7 @@ import de.croggle.game.board.operations.BoardObjectVisitor;
 
 public class AlligatorToLambda implements BoardObjectVisitor {
 
-	private Map<Color, String> names;
+	private final Map<Color, String> names;
 	private String result;
 
 	private AlligatorToLambda() {
@@ -48,7 +48,7 @@ public class AlligatorToLambda implements BoardObjectVisitor {
 				name = "" + (char) ('a' + n - 11);
 			} else {
 				// TODO this will result in crap
-				name = "" + (char) ('α' + n - 26);
+				name = "" + (char) ('\u03b1' + n - 26); // starting with α
 			}
 			names.put(c, name);
 			return name;
@@ -61,9 +61,14 @@ public class AlligatorToLambda implements BoardObjectVisitor {
 	}
 
 	private void visitParent(Parent p, boolean parenthesis) {
-		if (p.getChildCount() <= 1) {
-			p.acceptOnChildren(this);
-		} else {
+		switch (p.getChildCount()) {
+		case 0:
+			break;
+		case 1: {
+			p.getFirstChild().accept(this);
+			break;
+		}
+		default: {
 			if (parenthesis) {
 				result += "(";
 			}
@@ -77,6 +82,7 @@ public class AlligatorToLambda implements BoardObjectVisitor {
 			if (parenthesis) {
 				result += ")";
 			}
+		}
 		}
 	}
 
