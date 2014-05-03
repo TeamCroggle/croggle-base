@@ -35,6 +35,15 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	private final BoardActor b;
 	private boolean firstRebuild = true;
 
+	final float ageAnimationDuration = 0.3f;
+	final float createAnimatonDuration = 0.3f;
+	final float moveToAnimationDuration = 0.3f;
+	final float resizeAnimationDuration = 0.3f;
+	final float flashDuration = 0.4f;
+	final float rotationDuration = 0.4f;
+	final float eatAnimationDuration = 0.4f;
+	final float fadeOutDuration = 0.4f;
+
 	public BoardActorBoardChangeAnimator(BoardActor b) {
 		this.b = b;
 	}
@@ -76,16 +85,18 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		final List<InternalBoardObject> eatenLst = FlattenTree
 				.toList(eatenFamily);
 
-		final float animDuration = 0.4f;
-
 		BoardObjectActor actor;
 		// fade out the actors
 		for (InternalBoardObject eaten : eatenLst) {
 			actor = b.getLayout().getActor(eaten);
-			MoveToAction moveAction = Actions.moveTo(eaterActor.getX(),
-					eaterActor.getY(), animDuration);
+			MoveToAction moveAction = Actions.moveTo(
+					eaterActor.getX() + eaterActor.getWidth()
+							* eaterActor.getScaleX() / 2,
+					eaterActor.getY() + eaterActor.getHeight()
+							* eaterActor.getScaleY() / 2, eatAnimationDuration);
 			actor.addAction(moveAction);
-			ScaleToAction scaleAction = Actions.scaleTo(0, 0, animDuration);
+			ScaleToAction scaleAction = Actions.scaleTo(0, 0,
+					eatAnimationDuration);
 			actor.addAction(scaleAction);
 		}
 
@@ -93,7 +104,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		b.addAction(new TemporalAction() {
 			@Override
 			protected void begin() {
-				setDuration(animDuration);
+				setDuration(eatAnimationDuration);
 			}
 
 			@Override
@@ -122,8 +133,8 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	 * 
 	 * @param object
 	 */
-	private void removeObjectAnimated(final InternalBoardObject object) {
-		final float fadingtime = .3f;
+	private void removeObjectAnimated(final InternalBoardObject object,
+			final float fadingtime) {
 		BoardObjectActor ba = b.getLayout().getActor(object);
 		ba.addAction(Actions.fadeOut(fadingtime));
 		b.addAction(new TemporalAction() {
@@ -160,7 +171,10 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	@Override
 	public void onAgedAlligatorVanishes(AgedAlligator alligator,
 			int positionInParent) {
-		removeObjectAnimated(alligator);
+		BoardObjectActor gator = b.getLayout().getActor(alligator);
+		gator.setOrigin(gator.getWidth() / 2, gator.getHeight() / 2);
+		gator.addAction(Actions.rotateBy(180, rotationDuration));
+		removeObjectAnimated(alligator, fadeOutDuration);
 	}
 
 	/**
@@ -192,8 +206,8 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		flash.setFillParent(true);
 		b.addToActor(flash);
 		flash.validate();
-		flash.addAction(Actions.alpha(0.f, 0.4f));
-		flash.addAction(Actions.delay(0.4f, Actions.removeActor()));
+		flash.addAction(Actions.alpha(0.f, flashDuration));
+		flash.addAction(Actions.delay(flashDuration, Actions.removeActor()));
 	}
 
 	/**
@@ -219,7 +233,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		for (ActorDelta delta : creation) {
 			deltaPool.free(delta);
 		}
-		removeObjectAnimated(replacedEgg);
+		removeObjectAnimated(replacedEgg, fadeOutDuration);
 		b.layoutSizeChanged();
 	}
 
@@ -232,23 +246,20 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	}
 
 	private void applyDeltaAnimated(ActorDelta delta) {
-		final float moveToDuration = 0.3f;
-		final float sizeToDuration = 0.3f;
-
 		Actor actor = delta.getActor();
 		if (delta.isxChanged()) {
 			MoveToAction moveTo;
 			if (delta.isyChanged()) {
 				moveTo = Actions.moveTo(delta.getNewX(), delta.getNewY(),
-						moveToDuration);
+						moveToAnimationDuration);
 			} else {
 				moveTo = Actions.moveTo(delta.getNewX(), actor.getY(),
-						moveToDuration);
+						moveToAnimationDuration);
 			}
 			actor.addAction(moveTo);
 		} else if (delta.isyChanged()) {
 			MoveToAction moveTo = Actions.moveTo(actor.getX(), delta.getNewY(),
-					moveToDuration);
+					moveToAnimationDuration);
 			actor.addAction(moveTo);
 		}
 
@@ -256,22 +267,20 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			SizeToAction sizeTo;
 			if (delta.isHeightChanged()) {
 				sizeTo = Actions.sizeTo(delta.getNewWidth(),
-						delta.getNewHeight(), sizeToDuration);
+						delta.getNewHeight(), resizeAnimationDuration);
 			} else {
 				sizeTo = Actions.sizeTo(delta.getNewWidth(), actor.getHeight(),
-						sizeToDuration);
+						resizeAnimationDuration);
 			}
 			actor.addAction(sizeTo);
 		} else if (delta.isyChanged()) {
 			SizeToAction sizeTo = Actions.sizeTo(actor.getWidth(),
-					delta.getNewHeight(), sizeToDuration);
+					delta.getNewHeight(), resizeAnimationDuration);
 			actor.addAction(sizeTo);
 		}
 	}
 
 	private void applyCreationDeltas(final List<ActorDelta> deltas) {
-		float animDuration = 0.3f;
-
 		BoardObjectActor actor;
 		for (ActorDelta delta : deltas) {
 			actor = delta.getActor();
@@ -283,7 +292,8 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 			actor.setScale(0.f);
 			b.addLayoutActor(actor);
-			ScaleToAction scaleAction = Actions.scaleTo(1, 1, animDuration);
+			ScaleToAction scaleAction = Actions.scaleTo(1, 1,
+					createAnimatonDuration);
 			actor.addAction(scaleAction);
 		}
 	}
@@ -317,17 +327,15 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	@Override
 	public void onAge(ColoredAlligator colored, AgedAlligator aged) {
-		final float animationDuration = 0.3f;
-
 		BoardObjectActor coloredActor = b.getLayout().getActor(colored);
 		AgedAlligatorActor agedActor = BoardObjectActorFactory
 				.instantiateAgedAlligatorActor(aged);
 		agedActor.setSize(coloredActor.getWidth(), coloredActor.getHeight());
 		agedActor.setPosition(coloredActor.getX(), coloredActor.getY());
 		agedActor.setColor(1.f, 1.f, 1.f, 0.f);
-		agedActor.addAction(Actions.alpha(1.f, animationDuration));
+		agedActor.addAction(Actions.alpha(1.f, ageAnimationDuration));
 		b.addLayoutActor(agedActor);
-		removeObjectAnimated(colored);
+		removeObjectAnimated(colored, fadeOutDuration);
 	}
 
 	@Override
