@@ -87,13 +87,13 @@ class WorldPane extends Group {
 			if (!child.isVisible()) {
 				continue;
 			}
-			child.parentToLocalCoordinates(point.set(x, y));
+			point = child.parentToLocalCoordinates(point.set(x, y));
 			Actor hit = child.hit(point.x, point.y, touchable);
 			if (hit != null) {
 				return hit;
 			}
 		}
-		localToParentCoordinates(point.set(x, y));
+		point = localToParentCoordinates(point.set(x, y));
 		if (point.x <= b.getWidth() && point.y <= b.getHeight()) {
 			return this;
 		}
