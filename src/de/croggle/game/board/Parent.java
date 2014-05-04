@@ -265,8 +265,8 @@ public abstract class Parent implements Iterable<InternalBoardObject>,
 	/**
 	 * Causes the given visitor to visit all children of this parent instance.
 	 * Deprecated since the usage of this (convenience) method often indicates
-	 * poor abstraction of the traversation strategy. Instead, specializations
-	 * of {@link StrategyBoardObjectVisitor} should be used.
+	 * poor abstraction of the traversal strategy. Instead, specializations of
+	 * {@link StrategyBoardObjectVisitor} should be used.
 	 * 
 	 * @param visitor
 	 */
