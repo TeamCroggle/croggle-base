@@ -3,13 +3,13 @@ package de.croggle.game.board.operations;
 import de.croggle.game.board.AgedAlligator;
 import de.croggle.game.board.Board;
 import de.croggle.game.board.ColoredAlligator;
-import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
+import de.croggle.game.board.Parent;
 
 /**
  * A visitor for finding a colored alligator which can eat a family next to it.
  */
-public class FindEating implements BoardObjectVisitor {
+public class FindEating extends DFTDVisitor {
 	private ColoredAlligator eater;
 
 	/**
@@ -32,7 +32,7 @@ public class FindEating implements BoardObjectVisitor {
 	 */
 	public static ColoredAlligator findEater(Board board) {
 		FindEating finder = new FindEating();
-		board.accept(finder);
+		finder.beginTraversal(board);
 		return finder.eater;
 	}
 
@@ -40,62 +40,33 @@ public class FindEating implements BoardObjectVisitor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitEgg(Egg egg) {
+	public void dispatchColoredAlligator(ColoredAlligator alligator) {
+		dispatchParent(alligator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitColoredAlligator(ColoredAlligator alligator) {
-		if (canEat(alligator)) {
-			eater = alligator;
-			return;
-		} else {
-			for (InternalBoardObject child : alligator) {
-				child.accept(this);
-				if (eater != null) {
-					break;
-				}
-			}
-		}
+	public void dispatchAgedAlligator(AgedAlligator alligator) {
+		dispatchParent(alligator);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitAgedAlligator(AgedAlligator alligator) {
-		for (InternalBoardObject child : alligator) {
-			child.accept(this);
-			if (eater != null) {
-				break;
+	public void dispatchBoard(Board board) {
+		dispatchParent(board);
+	}
+
+	private void dispatchParent(Parent p) {
+		if (p.getChildCount() > 1) {
+			InternalBoardObject firstChild = p.getFirstChild();
+			if (firstChild.getClass() == ColoredAlligator.class) {
+				eater = (ColoredAlligator) firstChild;
+				cancelTraversal();
 			}
 		}
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void visitBoard(Board board) {
-		for (InternalBoardObject child : board) {
-			child.accept(this);
-			if (eater != null) {
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Determine, whether a given {@link ColoredAlligator} can eat or not.
-	 * 
-	 * @param alligator
-	 *            the {@link ColoredAlligator} to be tested
-	 * @return true, if the given alligator can eat, false otherwise
-	 */
-	private boolean canEat(ColoredAlligator alligator) {
-		return !alligator.getParent().isLastChild(alligator);
-	}
-
 }

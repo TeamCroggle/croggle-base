@@ -17,7 +17,7 @@ public abstract class StrategyBoardObjectVisitor implements BoardObjectVisitor {
 		return canceled;
 	}
 
-	protected void cancel() {
+	protected void cancelTraversal() {
 		canceled = true;
 	}
 
