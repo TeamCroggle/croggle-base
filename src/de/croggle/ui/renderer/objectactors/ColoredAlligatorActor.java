@@ -17,7 +17,7 @@ public class ColoredAlligatorActor extends ColoredBoardObjectActor {
 	 * alligator with a specific color, mouth closed. Will initiate a transition
 	 * animation from mouth open to closed if it was open previously.
 	 */
-	public void enterNormalState() {
+	public void enterNormalState(float duration) {
 
 	}
 
@@ -26,7 +26,7 @@ public class ColoredAlligatorActor extends ColoredBoardObjectActor {
 	 * alligator with a specific color, mouth opened. Will initiate a transition
 	 * animation from mouth closed to open if it was closed previously.
 	 */
-	public void enterEatingState() {
+	public void enterEatingState(float duration) {
 
 	}
 
@@ -37,7 +37,7 @@ public class ColoredAlligatorActor extends ColoredBoardObjectActor {
 	 * open previously. Also turns the alligator around 180 degree, if it wasn't
 	 * in this state before.
 	 */
-	public void enterDyingState() {
+	public void enterDyingState(float duration) {
 
 	}
 

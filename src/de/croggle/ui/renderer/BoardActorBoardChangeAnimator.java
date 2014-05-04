@@ -37,12 +37,17 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	final float ageAnimationDuration = 0.3f;
 	final float createAnimatonDuration = 0.3f;
-	final float moveToAnimationDuration = 0.3f;
-	final float resizeAnimationDuration = 0.3f;
+
 	final float flashDuration = 0.4f;
 	final float rotationDuration = 0.4f;
-	final float eatAnimationDuration = 0.4f;
 	final float fadeOutDuration = 0.4f;
+	final float repositionAnimationDuration = 0.3f;
+	final float resizeAnimationDuration = 0.3f;
+
+	final float hatchAnimationDuration = 0.4f;
+
+	final float moveToEaterAnimationDuration = 0.4f;
+	final float openJawAnimationDuration = 0.4f;
 
 	public BoardActorBoardChangeAnimator(BoardActor b) {
 		this.b = b;
@@ -81,7 +86,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			final InternalBoardObject eatenFamily, int eatenParentPosition) {
 		ColoredAlligatorActor eaterActor = ((ColoredAlligatorActor) b
 				.getLayout().getActor(eater));
-		eaterActor.enterEatingState();
+		eaterActor.enterEatingState(openJawAnimationDuration);
 		final List<InternalBoardObject> eatenLst = FlattenTree
 				.toList(eatenFamily);
 
@@ -93,18 +98,23 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 					eaterActor.getX() + eaterActor.getWidth()
 							* eaterActor.getScaleX() / 2,
 					eaterActor.getY() + eaterActor.getHeight()
-							* eaterActor.getScaleY() / 2, eatAnimationDuration);
+							* eaterActor.getScaleY() / 2,
+					moveToEaterAnimationDuration);
 			actor.addAction(moveAction);
 			ScaleToAction scaleAction = Actions.scaleTo(0, 0,
-					eatAnimationDuration);
+					moveToEaterAnimationDuration);
 			actor.addAction(scaleAction);
 		}
+
+		eaterActor.setOrigin(eaterActor.getWidth() / 2,
+				eaterActor.getHeight() / 2);
+		eaterActor.addAction(Actions.rotateBy(180, rotationDuration));
 
 		// Really remove the eaten actors from the layout
 		b.addAction(new TemporalAction() {
 			@Override
 			protected void begin() {
-				setDuration(eatAnimationDuration);
+				setDuration(moveToEaterAnimationDuration);
 			}
 
 			@Override
@@ -222,7 +232,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	@Override
 	public void onHatched(Egg replacedEgg, InternalBoardObject bornFamily) {
 		EggActor eggActor = (EggActor) b.getLayout().getActor(replacedEgg);
-		eggActor.enterHatchingState();
+		eggActor.enterHatchingState(hatchAnimationDuration);
 		List<ActorDelta> deltas = b.getLayout().getDeltasToFix();
 		List<ActorDelta> creation = filterCreated(deltas, true);
 		applyCreationDeltas(creation);
@@ -251,15 +261,15 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			MoveToAction moveTo;
 			if (delta.isyChanged()) {
 				moveTo = Actions.moveTo(delta.getNewX(), delta.getNewY(),
-						moveToAnimationDuration);
+						repositionAnimationDuration);
 			} else {
 				moveTo = Actions.moveTo(delta.getNewX(), actor.getY(),
-						moveToAnimationDuration);
+						repositionAnimationDuration);
 			}
 			actor.addAction(moveTo);
 		} else if (delta.isyChanged()) {
 			MoveToAction moveTo = Actions.moveTo(actor.getX(), delta.getNewY(),
-					moveToAnimationDuration);
+					repositionAnimationDuration);
 			actor.addAction(moveTo);
 		}
 
