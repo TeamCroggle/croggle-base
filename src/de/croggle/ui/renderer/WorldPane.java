@@ -147,9 +147,8 @@ class WorldPane extends Group {
 	}
 
 	public void syncBounds() {
-		float s = getScaleX();
 		// keep the world actor bounds in sync with BoardActor
-		setWidth(b.getWidth() / s);
-		setHeight(b.getHeight() / s);
+		setWidth(b.getWidth() / getScaleX());
+		setHeight(b.getHeight() / getScaleY());
 	}
 }
