@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import de.croggle.backends.BackendHelper;
@@ -31,12 +32,38 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 	private boolean valid = false;
 	boolean colorBlindEnabled = false;
 
+	/**
+	 * Create a new ColoredBoardObject using the color from the given object and
+	 * the textures indicated by the given paths
+	 * 
+	 * @param object
+	 *            the object to be represented by this {@link Actor}
+	 * @param colorBlindEnabled
+	 *            whether to render patterns instead of colors
+	 * @param foregroundPath
+	 *            the path indicating the image containing the texture of the
+	 *            foreground (relative to the
+	 *            {@link BackendHelper#getAssetDirPath() asset directory})
+	 * @param maskPath
+	 *            the path indicating the image containing the mask texture
+	 *            (relative to the {@link BackendHelper#getAssetDirPath() asset
+	 *            directory})
+	 */
 	public ColoredBoardObjectActor(ColoredBoardObject object,
 			boolean colorBlindEnabled, String foregroundPath, String maskPath) {
 		super(object);
 		initialize(foregroundPath, maskPath, colorBlindEnabled);
 	}
 
+	/**
+	 * Initializer method to set up mask, background and foreground textures.
+	 * Protected so headless actor versions (for testing purposes) can override
+	 * the texture creation.
+	 * 
+	 * @param foregroundPath
+	 * @param maskPath
+	 * @param colorBlindEnabled
+	 */
 	protected void initialize(String foregroundPath, String maskPath,
 			boolean colorBlindEnabled) {
 		AssetManager assetManager = AssetManager.getInstance();
@@ -89,10 +116,6 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 		}
 	}
 
-	public boolean getColorBlindEnabled() {
-		return colorBlindEnabled;
-	}
-
 	private void drawAlphaMask(SpriteBatch batch) {
 		// prevent batch from drawing buffered stuff here
 		batch.flush();
@@ -103,8 +126,9 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
 
 		// draw alpha mask sprite(s)
-		batch.draw(mask, getX(), getY(), getWidth() * getScaleX(), getHeight()
-				* getScaleY());
+		batch.draw(mask, getX(), getY(), getOriginX(), getOriginY(),
+				getWidth(), getHeight(), getScaleX(), getScaleY(),
+				getRotation());
 
 		// flush the batch to the GPU
 		batch.flush();
@@ -128,11 +152,13 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 		// Math.ceil(getWidth()), (int) Math.ceil(getHeight()));
 
 		// draw our background to be masked
-		final float width = getWidth() * getScaleX();
-		final float height = getHeight() * getScaleY();
-		final int n = 10;
-		batch.draw(background, getX(), getY(), width, height, 0, n * height
-				/ width, n, 0);
+		final int n = 10; // number of patterns horizontally
+		final float width = getWidth();
+		final float height = getHeight();
+		batch.draw(background, getX(), getY(), getOriginX(), getOriginY(),
+				width, height, getScaleX(), getScaleY(), getRotation(), 0, 0,
+				background.getWidth() * n, (int) (background.getWidth() * (n
+						* height / width)), false, false);
 
 		batch.flush();
 		// disable scissor before continuing
@@ -142,8 +168,9 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 	}
 
 	private void drawForeground(SpriteBatch batch) {
-		batch.draw(foreground, getX(), getY(), getWidth() * getScaleX(),
-				getHeight() * getScaleY());
+		batch.draw(foreground, getX(), getY(), getOriginX(), getOriginY(),
+				getWidth(), getHeight(), getScaleX(), getScaleY(),
+				getRotation());
 
 		// flush the batch to the GPU
 		batch.flush();
@@ -182,20 +209,5 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl.glColorMask(true, true, true, true);
 		batch.setColor(c);
-	}
-
-	/**
-	 * Updates the actor based on time.
-	 * 
-	 * @param delta
-	 *            Time in seconds since the last update.
-	 */
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-	}
-
-	@Override
-	protected void sizeChanged() {
 	}
 }

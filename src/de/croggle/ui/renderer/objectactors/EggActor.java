@@ -15,7 +15,7 @@ public class EggActor extends ColoredBoardObjectActor {
 	 * Signals the actor to (re-)enter the normal rendering state. That is, an
 	 * egg with a specific color.
 	 */
-	public void enterNormalState() {
+	public void enterNormalState(float duration) {
 
 	}
 
@@ -24,7 +24,7 @@ public class EggActor extends ColoredBoardObjectActor {
 	 * scattered eggshell with the specific color. Will initiate a transition
 	 * animation from a normal egg to the broken eggshell.
 	 */
-	public void enterHatchingState() {
+	public void enterHatchingState(float duration) {
 
 	}
 
