@@ -3,6 +3,7 @@ package de.croggle.ui.renderer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
@@ -37,6 +38,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	final float ageAnimationDuration = 0.3f;
 	final float createAnimatonDuration = 0.3f;
+	final float recolorAnimationDuration = 1.0f;
 
 	final float flashDuration = 0.4f;
 	final float rotationDuration = 0.4f;
@@ -68,6 +70,8 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			 * moment
 			 */
 			ColoredBoardObjectActor cboa = (ColoredBoardObjectActor) actor;
+			cboa.setMixin(cboa.getBackground());
+			cboa.addAction(new RecolorAction(recolorAnimationDuration));
 			cboa.invalidate();
 		}
 	}
@@ -375,5 +379,44 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			deltaPool.free(delta);
 		}
 		b.layoutSizeChanged();
+	}
+
+	private class RecolorAction extends Action {
+		private final float duration;
+		private float total;
+
+		public RecolorAction(float duration) {
+			this.duration = duration;
+		}
+
+		@Override
+		public void setActor(Actor actor) {
+			if (actor != null) {
+				if (!(actor instanceof ColoredBoardObjectActor)) {
+					throw new RuntimeException(actor.getClass().getSimpleName());
+				}
+				((ColoredBoardObjectActor) actor).setMixinBlending(0.f);
+			}
+			super.setActor(actor);
+		}
+
+		@Override
+		public boolean act(float delta) {
+			if (total < duration) {
+				ColoredBoardObjectActor actor = (ColoredBoardObjectActor) getActor();
+				total += delta;
+				if (total + delta >= duration) {
+					actor.setMixinBlending(1.f);
+					return true;
+				} else {
+					float blending = actor.getMixinBlending();
+					blending += delta / duration;
+					actor.setMixinBlending(blending);
+					return false;
+				}
+			}
+			return true;
+		}
+
 	}
 }
