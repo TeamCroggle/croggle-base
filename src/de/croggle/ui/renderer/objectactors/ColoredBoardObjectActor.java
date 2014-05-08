@@ -41,7 +41,6 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 	private Texture mixin;
 	private final float[] vertices;
 	private final ShaderProgram shader;
-	private final ShaderProgram shaderBlendin;
 	/**
 	 * with how much alpha background will be drawn, as opposed to mixin, which
 	 * is drawn with 1 - mixinBlending
@@ -84,17 +83,9 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 				.getAssetDirPath() + vertexShaderLoc),
 				Gdx.files.internal(BackendHelper.getAssetDirPath()
 						+ fragmentShaderLoc));
-		shaderBlendin = new ShaderProgram(Gdx.files.internal(BackendHelper
-				.getAssetDirPath() + vertexShaderLoc),
-				Gdx.files.internal(BackendHelper.getAssetDirPath()
-						+ blendFragmentShaderLoc));
 		if (!shader.isCompiled()) {
 			throw new IllegalArgumentException("Error compiling shader: "
 					+ shader.getLog());
-		}
-		if (!shaderBlendin.isCompiled()) {
-			throw new IllegalArgumentException(
-					"Error compiling shaderBlendin: " + shaderBlendin.getLog());
 		}
 
 		initialize(foregroundPath, maskPath, colorBlindEnabled);
@@ -204,37 +195,27 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl.glDepthMask(false);
+		shader.begin();
+		background.bind(1);
+		foreground.getTexture().bind(2);
 		if (mixinBlending < 0.99f && mixin != null) {
-
-			background.bind(1);
-			foreground.getTexture().bind(2);
 			mixin.bind(3);
-			// bind to texture unit 0 last for spritebatch
-			mask.getTexture().bind(0);
-
-			shaderBlendin.begin();
-			shaderBlendin.setUniformMatrix("u_projTrans", combined);
-			shaderBlendin.setUniformi("u_mask", 0);
-			shaderBlendin.setUniformi("u_background", 1);
-			shaderBlendin.setUniformi("u_foreground", 2);
-			shaderBlendin.setUniformi("u_blendin", 3);
-			shaderBlendin.setUniformf("u_blendin_priority", mixinBlending);
-			mesh.render(shaderBlendin, GL20.GL_TRIANGLE_STRIP, 0, 4);
-			shaderBlendin.end();
+			shader.setUniformi("u_blendin", 3);
+			shader.setUniformf("u_blendin_priority", mixinBlending);
 		} else {
-			background.bind(1);
-			foreground.getTexture().bind(2);
-			// bind to texture unit 0 last for spritebatch
-			mask.getTexture().bind(0);
-
-			shader.begin();
-			shader.setUniformMatrix("u_projTrans", combined);
-			shader.setUniformi("u_mask", 0);
-			shader.setUniformi("u_background", 1);
-			shader.setUniformi("u_foreground", 2);
-			mesh.render(shader, GL20.GL_TRIANGLE_STRIP, 0, 4);
-			shader.end();
+			shader.setUniformi("u_blendin", 1); // same as background
+			shader.setUniformf("u_blendin_priority", 1.f);
 		}
+		// bind to texture unit 0 last for spritebatch
+		mask.getTexture().bind(0);
+
+		shader.setUniformMatrix("u_projTrans", combined);
+		shader.setUniformi("u_mask", 0);
+		shader.setUniformi("u_background", 1);
+		shader.setUniformi("u_foreground", 2);
+
+		mesh.render(shader, GL20.GL_TRIANGLE_STRIP, 0, 4);
+		shader.end();
 
 		batch.begin();
 	}
