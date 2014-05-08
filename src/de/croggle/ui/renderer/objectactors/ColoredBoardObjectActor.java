@@ -320,7 +320,7 @@ public abstract class ColoredBoardObjectActor extends BoardObjectActor {
 		float background_u = 0;
 		float background_v = 0;
 		float background_u2 = n;
-		float background_v2 = n * width / height;
+		float background_v2 = n * height / width;
 
 		float color = getColor().toFloatBits();
 		int idx = 0;
