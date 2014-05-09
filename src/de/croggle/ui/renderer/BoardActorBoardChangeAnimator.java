@@ -1,6 +1,7 @@
 package de.croggle.ui.renderer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SizeToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.ReflectionPool;
 
 import de.croggle.data.AssetManager;
 import de.croggle.game.Color;
@@ -35,6 +37,9 @@ import de.croggle.ui.renderer.objectactors.EggActor;
 class BoardActorBoardChangeAnimator implements BoardEventListener {
 	private final BoardActor b;
 	private boolean firstRebuild = true;
+	private LinkedList<Animation> animationQueue;
+	private final Pool<Animation> animationPool;
+	private final PopAnimationAction popAction;
 
 	final float ageAnimationDuration = 0.3f;
 	final float createAnimatonDuration = 0.3f;
@@ -53,6 +58,8 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	public BoardActorBoardChangeAnimator(BoardActor b) {
 		this.b = b;
+		animationPool = new ReflectionPool<Animation>(Animation.class);
+		popAction = new PopAnimationAction();
 	}
 
 	/**
@@ -381,6 +388,50 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		b.layoutSizeChanged();
 	}
 
+	/**
+	 * Registers a set of given {@link Action}s to the animator's Action queue.
+	 * To be able to register the actions at the {@link BoardObjectActor} they
+	 * belong to it is necessary that the Actions have their respective Actor
+	 * set via setActor.
+	 * 
+	 * @param actions
+	 *            The actions to be enqueued to this animator's animation queue.
+	 *            Must have their {@link Actor}s set for proper registering.
+	 * @param duration
+	 *            The time needed to pass so that a new animation can be
+	 *            started, in seconds
+	 */
+	private void registerAnimationActions(float duration, Action... actions) {
+		Animation anim = animationPool.obtain();
+		anim.set(duration, actions);
+		animationQueue.add(anim);
+
+		// if we added the first action, we will need to pop directly to trigger
+		// the animation process
+		if (animationQueue.size() == 1) {
+			popAnimationActions();
+		}
+	}
+
+	/**
+	 * Pops the topmost set of Actions from the animation queue and registers
+	 * all actions in it to their respective Actors. Also sets a timer to
+	 * automatically pop the next set of animation actions after the current set
+	 * is finished.
+	 */
+	private void popAnimationActions() {
+		Animation anim = animationQueue.remove(0);
+		for (Action a : anim.actions) {
+			a.getActor().addAction(a);
+		}
+
+		popAction.reset();
+		popAction.setDuration(anim.duration);
+		this.b.removeAction(popAction);
+		this.b.addAction(popAction);
+		animationPool.free(anim);
+	}
+
 	private class RecolorAction extends Action {
 		private final float duration;
 		private float total;
@@ -418,5 +469,27 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			return true;
 		}
 
+	}
+
+	private class PopAnimationAction extends TemporalAction {
+		@Override
+		protected void update(float percent) {
+		}
+
+		@Override
+		protected void end() {
+			BoardActorBoardChangeAnimator.this.popAnimationActions();
+		}
+
+	}
+
+	private class Animation {
+		public Action[] actions;
+		public float duration;
+
+		public void set(float duration, Action[] actions) {
+			this.actions = actions;
+			this.duration = duration;
+		}
 	}
 }
