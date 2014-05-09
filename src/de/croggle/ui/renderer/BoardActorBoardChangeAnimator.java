@@ -37,9 +37,11 @@ import de.croggle.ui.renderer.objectactors.EggActor;
 class BoardActorBoardChangeAnimator implements BoardEventListener {
 	private final BoardActor b;
 	private boolean firstRebuild = true;
-	private LinkedList<Animation> animationQueue;
+	private final LinkedList<Animation> animationQueue;
 	private final Pool<Animation> animationPool;
 	private final PopAnimationAction popAction;
+
+	private final Pool<RecolorAction> recolorPool;
 
 	final float ageAnimationDuration = 0.3f;
 	final float createAnimatonDuration = 0.3f;
@@ -59,7 +61,9 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	public BoardActorBoardChangeAnimator(BoardActor b) {
 		this.b = b;
 		animationPool = new ReflectionPool<Animation>(Animation.class);
+		recolorPool = new ReflectionPool<RecolorAction>(RecolorAction.class);
 		popAction = new PopAnimationAction();
+		animationQueue = new LinkedList<Animation>();
 	}
 
 	/**
@@ -78,8 +82,11 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			 */
 			ColoredBoardObjectActor cboa = (ColoredBoardObjectActor) actor;
 			cboa.setMixin(cboa.getBackground());
-			cboa.addAction(new RecolorAction(recolorAnimationDuration));
 			cboa.invalidate();
+			RecolorAction action = recolorPool.obtain();
+			action.set(recolorAnimationDuration);
+			action.setActor(cboa);
+			registerAnimationActions(recolorAnimationDuration, action);
 		}
 	}
 
@@ -420,24 +427,27 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	 * is finished.
 	 */
 	private void popAnimationActions() {
-		Animation anim = animationQueue.remove(0);
-		for (Action a : anim.actions) {
-			a.getActor().addAction(a);
-		}
+		if (!animationQueue.isEmpty()) {
+			Animation anim = animationQueue.remove(0);
+			for (Action a : anim.actions) {
+				a.getActor().addAction(a);
+			}
 
-		popAction.reset();
-		popAction.setDuration(anim.duration);
-		this.b.removeAction(popAction);
-		this.b.addAction(popAction);
-		animationPool.free(anim);
+			popAction.reset();
+			popAction.setDuration(anim.duration);
+			this.b.removeAction(popAction);
+			this.b.addAction(popAction);
+			animationPool.free(anim);
+		}
 	}
 
-	private class RecolorAction extends Action {
-		private final float duration;
+	private static class RecolorAction extends Action {
+		private float duration;
 		private float total;
 
-		public RecolorAction(float duration) {
+		public void set(float duration) {
 			this.duration = duration;
+			total = 0;
 		}
 
 		@Override
@@ -483,7 +493,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	}
 
-	private class Animation {
+	private static class Animation {
 		public Action[] actions;
 		public float duration;
 
