@@ -57,7 +57,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	final float hatchAnimationDuration = 0.4f;
 
 	final float moveToEaterAnimationDuration = 0.4f;
-	final float openJawAnimationDuration = 0.4f;
+	final float openJawAnimationDuration = 0.0f; // TODO not supported yet
 
 	public BoardActorBoardChangeAnimator(BoardActor b) {
 		this.b = b;
@@ -113,7 +113,8 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		final float eaterScaleY = eaterActor.getScaleY();
 		eaterActor.setOrigin(eaterWidth / 2, eaterHeight / 2);
 		// don't forget this animation when summing up durations later
-		eaterActor.enterEatingState(openJawAnimationDuration);
+		Action eat = eaterActor
+				.enterEatingStateAction(openJawAnimationDuration);
 		final List<InternalBoardObject> eatenLst = FlattenTree
 				.toList(eatenFamily);
 
@@ -145,8 +146,9 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 			actions.add(delayedAll);
 		}
-		registerAnimationActions(openJawAnimationDuration
-				+ moveToEaterAnimationDuration, actions.toArray(new Action[0]));
+		registerAnimationActions(openJawAnimationDuration, eat);
+		registerAnimationActions(moveToEaterAnimationDuration,
+				actions.toArray(new Action[0]));
 		// not used since eating alligators age before they die
 		// Action eaterDies = Actions.rotateBy(180, rotationDuration);
 		// eaterDies.setActor(eaterActor);
@@ -239,10 +241,13 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	@Override
 	public void onHatched(Egg replacedEgg, InternalBoardObject bornFamily) {
 		EggActor eggActor = (EggActor) b.getLayout().getActor(replacedEgg);
-		eggActor.enterHatchingState(hatchAnimationDuration);
+		Action hatch = eggActor
+				.enterHatchingStateAction(hatchAnimationDuration);
 		List<ActorDelta> deltas = b.getLayout().getDeltasToFix();
 		List<ActorDelta> creation = filterCreated(deltas, true);
-		float creationTime = applyCreationDeltas(creation);
+		List<Action> creations = applyCreationDeltas(creation);
+		float creationTime = creations.isEmpty() ? 0
+				: ((TemporalAction) creations.get(0)).getDuration();
 		Pool<ActorDelta> deltaPool = b.getLayout().getDeltaPool();
 		for (ActorDelta delta : deltas) {
 			deltaPool.free(delta);
@@ -250,12 +255,16 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		for (ActorDelta delta : creation) {
 			deltaPool.free(delta);
 		}
+
 		Action remove = removeObjectAction(replacedEgg, fadeOutDuration);
-		Action delayedRemove = Actions.delay(creationTime, remove);
-		// TODO make the permanent setActor not mandatory/ hide it in
-		// abstraction where it is done automatically
-		delayedRemove.setActor(eggActor);
-		registerAnimationActions(creationTime + fadeOutDuration, delayedRemove);
+		Action hatchThenRemove = Actions.sequence(hatch, remove);
+		hatchThenRemove.setActor(eggActor);
+
+		creations.add(hatchThenRemove);
+
+		registerAnimationActions(Math.max(hatchAnimationDuration
+				+ fadeOutDuration, creationTime),
+				creations.toArray(new Action[0]));
 		b.layoutSizeChanged();
 	}
 
@@ -265,7 +274,10 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		for (ActorDelta delta : deltas) {
 			actions.add(applyDeltaAnimated(delta));
 		}
-		float creationDuration = applyCreationDeltas(created);
+		List<Action> creations = applyCreationDeltas(created);
+		actions.addAll(creations);
+		float creationDuration = creations.isEmpty() ? 0
+				: ((TemporalAction) creations.get(0)).getDuration();
 		float duration = Math.max(creationDuration,
 				Math.max(repositionAnimationDuration, resizeAnimationDuration));
 		registerAnimationActions(duration, actions.toArray(new Action[0]));
@@ -314,8 +326,9 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	 * @param deltas
 	 * @return the number of seconds needed to perform the animations
 	 */
-	private float applyCreationDeltas(final List<ActorDelta> deltas) {
+	private List<Action> applyCreationDeltas(final List<ActorDelta> deltas) {
 		BoardObjectActor actor;
+		final ArrayList<Action> actions = new ArrayList<Action>();
 		for (ActorDelta delta : deltas) {
 			actor = delta.getActor();
 
@@ -326,15 +339,12 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 			actor.setScale(0.f);
 			b.addLayoutActor(actor);
-			ScaleToAction scaleAction = Actions.scaleTo(1, 1,
-					createAnimatonDuration);
-			actor.addAction(scaleAction);
+			ScaleToAction scale = Actions.scaleTo(1, 1, createAnimatonDuration);
+			scale.setActor(actor);
+
+			actions.add(scale);
 		}
-		if (deltas.isEmpty()) {
-			return 0;
-		} else {
-			return createAnimatonDuration;
-		}
+		return actions;
 	}
 
 	/**
