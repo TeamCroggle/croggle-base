@@ -35,7 +35,7 @@ public abstract class AbstractScreen implements Screen {
 	private boolean widgetsInitialized = false;
 
 	private final InputMultiplexer inputMediator;
-	
+
 	protected AbstractScreen temporaryPredecessor = null;
 
 	/**
@@ -217,8 +217,8 @@ public abstract class AbstractScreen implements Screen {
 				throw new GdxRuntimeException("Background not found");
 			}
 		} catch (GdxRuntimeException ex) {
-			System.err.println("Couldn't load background \"" + backgroundPath
-					+ "\". Falling back to standard.");
+			Gdx.app.log("AbstractScreen", "Couldn't load background \""
+					+ backgroundPath + "\". Falling back to standard.");
 			setBackground(BackendHelper.getAssetDirPath()
 					+ "textures/swamp.png");
 			return;
@@ -234,10 +234,10 @@ public abstract class AbstractScreen implements Screen {
 
 	/**
 	 * Override this method if you want to use the LogicalPredecessorListener
-	 * and set the respective predecessor screen in it. On default, 
-	 * if a temporary predecessor is set it will be displayed, else 
-	 * the main menu screen is displayed. The temporary predecessor will be invalidated
-	 * after it gets displayed.
+	 * and set the respective predecessor screen in it. On default, if a
+	 * temporary predecessor is set it will be displayed, else the main menu
+	 * screen is displayed. The temporary predecessor will be invalidated after
+	 * it gets displayed.
 	 */
 	protected void showLogicalPredecessor() {
 		if (temporaryPredecessor == null) {

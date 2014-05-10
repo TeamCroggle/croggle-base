@@ -231,12 +231,6 @@ public class BoardActor extends Group implements SettingChangeListener {
 		initializePosition();
 	}
 
-	void layoutSizeChanged() {
-		if (zoomAndPan != null) {
-			zoomAndPan.validate();
-		}
-	}
-
 	public Vector2 boardActorToWorldCoordinates(Vector2 coords) {
 		return world.parentToLocalCoordinates(coords);
 	}
@@ -339,6 +333,12 @@ public class BoardActor extends Group implements SettingChangeListener {
 		}
 	}
 
+	/**
+	 * Returns whether or not the editing functionality is enabled for this
+	 * {@link BoardActor} or not.
+	 * 
+	 * @return true if editing is possible for the user, false otherwise
+	 */
 	public boolean isUserLayoutInteractionEnabled() {
 		return layoutEditingEnabled;
 	}
@@ -377,10 +377,38 @@ public class BoardActor extends Group implements SettingChangeListener {
 		}
 	}
 
+	/**
+	 * Disables all editing functionality on the actor. This means that it will
+	 * also be impossible to {@link #getObjectBar() get the object bar}.
+	 */
 	public void disableLayoutEditing() {
 		layoutEditing.unregisterLayoutListeners();
 		layoutEditing = null;
 		layoutEditingEnabled = false;
+	}
+
+	/**
+	 * Sets a listener to be called back when a set of animations has finished
+	 * running.
+	 * 
+	 * @param listener
+	 *            The listener to be called back
+	 */
+	public void setAnimationsFinishedListener(
+			AnimationsFinishedListener listener) {
+		boardAnimator.setAnimationsFinishedLitener(listener);
+	}
+
+	/**
+	 * Sets the speed factor of the {@link BoardActor}'s animation system. A
+	 * speed value of 2 means double the speed, which causes the animations to
+	 * take half the time
+	 * 
+	 * @param speed
+	 *            The speed factor
+	 */
+	public void setAnimationSpeed(float speed) {
+		boardAnimator.setAnimationSpeed(speed);
 	}
 
 	@Override
@@ -422,6 +450,12 @@ public class BoardActor extends Group implements SettingChangeListener {
 		}
 
 		return null;
+	}
+
+	void layoutSizeChanged() {
+		if (zoomAndPan != null) {
+			zoomAndPan.validate();
+		}
 	}
 
 	/*

@@ -235,7 +235,7 @@ class LevelLoadHelper {
 		JsonValue animationPaths = json.get("animation");
 		for (int i = 0; i < animationPaths.size; i++) {
 			if (animationPaths.getString(i).equals("")) {
-				System.err.println("Warning: Empty animation path");
+				Gdx.app.log("LevelLoadHelper", "Warning: Empty animation path");
 				continue;
 			}
 			animations.add(BackendHelper.getAssetDirPath()

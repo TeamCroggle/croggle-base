@@ -1,5 +1,7 @@
 package de.croggle.backends;
 
+import com.badlogic.gdx.Gdx;
+
 import de.croggle.backends.sqlite.ContentValues;
 import de.croggle.backends.sqlite.DatabaseHelper;
 
@@ -9,8 +11,8 @@ public abstract class BackendHelper {
 
 	private static void initialize(BackendHelper backend) {
 		if (BackendHelper.backend != null) {
-			System.err
-					.println("Warning: BackendHelper instantiated more than once");
+			Gdx.app.log("Backedhelper",
+					"Warning: BackendHelper instantiated more than once");
 		}
 		BackendHelper.backend = backend;
 	}
