@@ -1,5 +1,7 @@
 package de.croggle.ui.renderer.objectactors;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
+
 import de.croggle.game.board.Egg;
 
 /**
@@ -12,20 +14,21 @@ public class EggActor extends ColoredBoardObjectActor {
 	}
 
 	/**
-	 * Signals the actor to (re-)enter the normal rendering state. That is, an
-	 * egg with a specific color.
+	 * Returns an Action that transitions between a normal egg and one with a
+	 * broken shell within the given time.
+	 * 
+	 * @param duration
+	 *            The time it takes to transition,in seconds
 	 */
-	public void enterNormalState() {
-
-	}
-
-	/**
-	 * Signals the actor to enter the hatching rendering state. That is,
-	 * scattered eggshell with the specific color. Will initiate a transition
-	 * animation from a normal egg to the broken eggshell.
-	 */
-	public void enterHatchingState() {
-
+	public Action enterHatchingStateAction(float duration) {
+		Action result = new Action() {
+			@Override
+			public boolean act(float delta) {
+				return true;
+			}
+		};
+		result.setActor(this);
+		return result;
 	}
 
 	@Override

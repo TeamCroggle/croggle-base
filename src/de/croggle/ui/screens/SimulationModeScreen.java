@@ -56,6 +56,8 @@ public class SimulationModeScreen extends AbstractScreen implements
 
 	private static final long MAX_AUTOMATIC_SIMULATION_DELAY = 6000;
 	private static final long MIN_AUTOMATIC_SIMULATION_DELAY = 1000;
+	private static final float MIN_ANIM_SPEED = 1.0f;
+	private static final float MAX_ANIM_SPEED = 3.0f;
 
 	private final StepAction stepper;
 
@@ -177,17 +179,21 @@ public class SimulationModeScreen extends AbstractScreen implements
 			}
 		});
 
-		Slider delaySlider = new Slider(-MAX_AUTOMATIC_SIMULATION_DELAY,
-				-MIN_AUTOMATIC_SIMULATION_DELAY, 1000, false,
+		Slider speedSlider = new Slider(0.f, 1.f, 1 / 5.f, false,
 				helper.getSliderStyle());
-		delaySlider.setValue(-automaticSimulationFrequency);
-		delaySlider.addListener(new ChangeListener() {
-
+		final float initialValue = (MAX_AUTOMATIC_SIMULATION_DELAY - automaticSimulationFrequency)
+				/ (float) (MAX_AUTOMATIC_SIMULATION_DELAY - MIN_AUTOMATIC_SIMULATION_DELAY);
+		speedSlider.setValue(initialValue);
+		speedSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				Slider slider = (Slider) actor;
 				if (!slider.isDragging()) {
-					long newFrequency = (long) -slider.getValue();
+					final float animSpeed = MIN_ANIM_SPEED + slider.getValue()
+							* (MAX_ANIM_SPEED - MIN_ANIM_SPEED);
+					boardActor.setAnimationSpeed(animSpeed);
+					long newFrequency = MAX_AUTOMATIC_SIMULATION_DELAY
+							- (long) (slider.getValue() * (MAX_AUTOMATIC_SIMULATION_DELAY - MIN_AUTOMATIC_SIMULATION_DELAY));
 					if (newFrequency != automaticSimulationFrequency) {
 						automaticSimulationFrequency = newFrequency;
 						if (isSimulating) {
@@ -197,7 +203,6 @@ public class SimulationModeScreen extends AbstractScreen implements
 						}
 					}
 				}
-
 			}
 		});
 
@@ -215,7 +220,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 
 		controlTable.pad(30).padRight(0);
 		controlTable.add(leftTable).expand().fill();
-		controlTable.add(delaySlider).width(300).pad(30).bottom();
+		controlTable.add(speedSlider).width(300).pad(30).bottom();
 		controlTable.add(controlPanelTable);
 	}
 
@@ -297,13 +302,15 @@ public class SimulationModeScreen extends AbstractScreen implements
 		private float delay;
 		private float waited = 0;
 		private boolean hasStarted = false;
-		
+
 		private static final float INTIAL_DELAY = 0.5f;
-	
+
+		@Override
 		public void reset() {
+			super.reset();
 			hasStarted = false;
 			waited = 0;
-			
+
 		}
 
 		public void setDelay(long delay) {
@@ -314,7 +321,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 		public boolean act(float delta) {
 			if (SimulationModeScreen.this.isSimulating) {
 				waited += delta;
-				if (waited >= delay  || !hasStarted && waited >= INTIAL_DELAY) {
+				if (waited >= delay || !hasStarted && waited >= INTIAL_DELAY) {
 					hasStarted = true;
 					evaluateStep();
 					waited -= delay;
@@ -333,18 +340,20 @@ public class SimulationModeScreen extends AbstractScreen implements
 			menuDialog.show(stage);
 		}
 	}
-	
+
 	private void evaluateStep() {
 		try {
 			gameController.evaluateStep();
 		} catch (ColorOverflowException e) {
 			stopAutomaticSimulation();
-			NotificationDialog dialog = new NotificationDialog(_("alligator_overflow_msg"));
+			NotificationDialog dialog = new NotificationDialog(
+					_("alligator_overflow_msg"));
 			dialog.registerListener(this);
 			dialog.show(stage);
 		} catch (AlligatorOverflowException e) {
 			stopAutomaticSimulation();
-			NotificationDialog dialog = new NotificationDialog(_("alligator_overflow_msg"));
+			NotificationDialog dialog = new NotificationDialog(
+					_("alligator_overflow_msg"));
 			dialog.registerListener(this);
 			dialog.show(stage);
 		}
@@ -358,7 +367,7 @@ public class SimulationModeScreen extends AbstractScreen implements
 	@Override
 	public void onNotificationClose() {
 		game.showPlacementModeScreen(gameController);
-		
+
 	}
 
 }

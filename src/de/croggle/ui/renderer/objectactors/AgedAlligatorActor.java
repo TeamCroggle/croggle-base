@@ -52,8 +52,9 @@ public class AgedAlligatorActor extends BoardObjectActor {
 		Color c = batch.getColor();
 		Color n = getColor();
 		batch.setColor(n.r, n.g, n.b, n.a * parentAlpha);
-		batch.draw(foreground, getX(), getY(), getWidth() * getScaleX(),
-				getHeight() * getScaleY());
+		batch.draw(foreground, getX(), getY(), getOriginX(), getOriginY(),
+				getWidth(), getHeight(), getScaleX(), getScaleY(),
+				getRotation());
 		batch.flush();
 		batch.setColor(c);
 	}

@@ -168,7 +168,8 @@ public class BoardObjectActorFactory {
 		switch (getType(a)) {
 		case EGG: {
 			EggActor ea = (EggActor) a;
-			EggActor res = instantiateEggActor((Egg) ibo, ea.colorBlindEnabled);
+			EggActor res = instantiateEggActor((Egg) ibo,
+					ea.getColorBlindEnabled());
 			result = res;
 			break;
 		}
@@ -180,7 +181,7 @@ public class BoardObjectActorFactory {
 		case COLORED_ALLIGATOR: {
 			ColoredAlligatorActor ca = (ColoredAlligatorActor) a;
 			ColoredAlligatorActor res = instantiateColoredAlligatorActor(
-					(ColoredAlligator) ibo, ca.colorBlindEnabled);
+					(ColoredAlligator) ibo, ca.getColorBlindEnabled());
 			result = res;
 			break;
 		}

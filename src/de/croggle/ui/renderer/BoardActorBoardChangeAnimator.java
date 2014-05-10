@@ -1,16 +1,20 @@
 package de.croggle.ui.renderer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SizeToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.ReflectionPool;
 
 import de.croggle.data.AssetManager;
 import de.croggle.game.Color;
@@ -33,10 +37,40 @@ import de.croggle.ui.renderer.objectactors.EggActor;
 
 class BoardActorBoardChangeAnimator implements BoardEventListener {
 	private final BoardActor b;
+
+	private AnimationsFinishedListener finishedListener;
+
 	private boolean firstRebuild = true;
+	private final LinkedList<Animation> animationQueue;
+	private final Pool<Animation> animationPool;
+	private final PopAnimationAction popAction;
+
+	private final Pool<RecolorAction> recolorPool;
+
+	private final float ageAnimationDuration = 0.3f;
+	private final float createAnimatonDuration = 0.3f;
+	private final float recolorAnimationDuration = 0.6f;
+
+	private final float flashDuration = 0.4f;
+	private final float rotationDuration = 0.4f;
+	private final float fadeOutDuration = 0.4f;
+	private final float repositionAnimationDuration = 0.3f;
+	private final float resizeAnimationDuration = 0.3f;
+
+	private final float hatchAnimationDuration = 0.4f;
+
+	private final float moveToEaterAnimationDuration = 0.4f;
+	private final float openJawAnimationDuration = 0.0f; // TODO not supported
+															// yet
+
+	private float speedFactor = 1.f;
 
 	public BoardActorBoardChangeAnimator(BoardActor b) {
 		this.b = b;
+		animationPool = new ReflectionPool<Animation>(Animation.class);
+		recolorPool = new ReflectionPool<RecolorAction>(RecolorAction.class);
+		popAction = new PopAnimationAction();
+		animationQueue = new LinkedList<Animation>();
 	}
 
 	/**
@@ -53,8 +87,15 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			 * TODO unnecessary "if" if recolor events were fired at the right
 			 * moment
 			 */
+			final float duration = recolorAnimationDuration + speedFactor;
+
 			ColoredBoardObjectActor cboa = (ColoredBoardObjectActor) actor;
+			cboa.setMixin(cboa.getBackground());
 			cboa.invalidate();
+			RecolorAction action = recolorPool.obtain();
+			action.set(duration);
+			action.setActor(cboa);
+			registerAnimationActions(duration, action);
 		}
 	}
 
@@ -72,83 +113,76 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			final InternalBoardObject eatenFamily, int eatenParentPosition) {
 		ColoredAlligatorActor eaterActor = ((ColoredAlligatorActor) b
 				.getLayout().getActor(eater));
-		eaterActor.enterEatingState();
+		final float eaterX = eaterActor.getX();
+		final float eaterY = eaterActor.getY();
+		final float eaterWidth = eaterActor.getWidth();
+		final float eaterHeight = eaterActor.getHeight();
+		final float eaterScaleX = eaterActor.getScaleX();
+		final float eaterScaleY = eaterActor.getScaleY();
+		final float moveDuration = moveToEaterAnimationDuration
+				* speedFactor;
+		final float openJawDuration = openJawAnimationDuration * speedFactor;
+		eaterActor.setOrigin(eaterWidth / 2, eaterHeight / 2);
+		// don't forget this animation when summing up durations later
+		Action eat = eaterActor.enterEatingStateAction(openJawDuration);
 		final List<InternalBoardObject> eatenLst = FlattenTree
 				.toList(eatenFamily);
 
-		final float animDuration = 0.4f;
+		final ArrayList<Action> actions = new ArrayList<Action>();
 
 		BoardObjectActor actor;
-		// fade out the actors
 		for (InternalBoardObject eaten : eatenLst) {
 			actor = b.getLayout().getActor(eaten);
-			MoveToAction moveAction = Actions.moveTo(eaterActor.getX(),
-					eaterActor.getY(), animDuration);
-			actor.addAction(moveAction);
-			ScaleToAction scaleAction = Actions.scaleTo(0, 0, animDuration);
-			actor.addAction(scaleAction);
+			MoveToAction move = Actions.moveTo(eaterX + eaterWidth / 2
+					- eaterWidth * eaterScaleX / 2, eaterY + eaterHeight / 2
+					- eaterHeight * eaterScaleY / 2, moveDuration);
+			// move.setActor(actor);
+
+			ScaleToAction scale = Actions.scaleTo(0, 0, moveDuration);
+			// scale.setActor(actor);
+
+			RemoveObjectAction remove = new RemoveObjectAction();
+			remove.set(this);
+			// remove.setActor(actor);
+
+			Action scaleThenRemove = Actions.sequence(scale, remove);
+
+			Action all = Actions.parallel(move, scaleThenRemove);
+
+			Action delayedAll = Actions.delay(openJawDuration, all);
+			delayedAll.setActor(actor);
+
+			actions.add(delayedAll);
 		}
-
-		// Really remove the eaten actors from the layout
-		b.addAction(new TemporalAction() {
-			@Override
-			protected void begin() {
-				setDuration(animDuration);
-			}
-
-			@Override
-			protected void update(float percent) {
-				// do nothing
-			}
-
-			@Override
-			protected void end() {
-				BoardObjectActor eatenActor;
-				for (InternalBoardObject eaten : eatenLst) {
-					eatenActor = b.getLayout().getActor(eaten);
-					b.removeLayoutActor(eatenActor);
-				}
-				fixLayout();
-			}
-		});
+		registerAnimationActions(openJawDuration, eat);
+		registerAnimationActions(moveDuration, actions.toArray(new Action[0]));
+		// not used since eating alligators age before they die
+		// Action eaterDies = Actions.rotateBy(180, rotationDuration);
+		// eaterDies.setActor(eaterActor);
+		// registerAnimationActions(rotationDuration, eaterDies);
 	}
 
 	/**
-	 * Animates the removal of the given {@link InternalBoardObject} by fading
-	 * it out. <br />
+	 * Creates an Action that animates the removal of the given
+	 * {@link InternalBoardObject} by fading it out. <br />
 	 * Careful: Don't rely on this method to add newly created objects to the
 	 * layout, since this would only occur after the animation time. During that
 	 * time, the layout would be in an inconsistent state.
 	 * 
 	 * @param object
+	 * @param fadingtime
+	 *            Number of seconds the object's Actor representation is to be
+	 *            faded out
 	 */
-	private void removeObjectAnimated(final InternalBoardObject object) {
-		final float fadingtime = .3f;
+	private Action removeObjectAction(final InternalBoardObject object,
+			final float fadingtime) {
 		BoardObjectActor ba = b.getLayout().getActor(object);
-		ba.addAction(Actions.fadeOut(fadingtime));
-		b.addAction(new TemporalAction() {
-			@Override
-			protected void begin() {
-				setDuration(fadingtime);
-			}
-
-			@Override
-			protected void update(float percent) {
-				// do nothing
-			}
-
-			@Override
-			protected void end() {
-				BoardObjectActor actor = b.getLayout().getActor(object);
-				b.removeLayoutActor(actor);
-				List<ActorDelta> deltas = b.getLayout().getDeltasToFix();
-				applyDeltasAnimated(deltas);
-				Pool<ActorDelta> deltaPool = b.getLayout().getDeltaPool();
-				for (ActorDelta delta : deltas) {
-					deltaPool.free(delta);
-				}
-			}
-		});
+		Action fadeout = Actions.fadeOut(fadingtime);
+		RemoveObjectAction remove = new RemoveObjectAction();
+		remove.set(this);
+		Action result = Actions.sequence(fadeout, remove);
+		result.setActor(ba);
+		return result;
 	}
 
 	/**
@@ -160,7 +194,17 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	@Override
 	public void onAgedAlligatorVanishes(AgedAlligator alligator,
 			int positionInParent) {
-		removeObjectAnimated(alligator);
+		BoardObjectActor gator = b.getLayout().getActor(alligator);
+		gator.setOrigin(gator.getWidth() / 2, gator.getHeight() / 2);
+
+		final float rotationDuration = this.rotationDuration * speedFactor;
+		final float fadeOutDuration = this.fadeOutDuration * speedFactor;
+
+		Action rotate = Actions.rotateBy(180, rotationDuration);
+		Action remove = removeObjectAction(alligator, fadeOutDuration);
+		Action sequence = Actions.sequence(rotate, remove);
+		sequence.setActor(gator);
+		registerAnimationActions(rotationDuration + fadeOutDuration, sequence);
 	}
 
 	/**
@@ -192,8 +236,8 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		flash.setFillParent(true);
 		b.addToActor(flash);
 		flash.validate();
-		flash.addAction(Actions.alpha(0.f, 0.4f));
-		flash.addAction(Actions.delay(0.4f, Actions.removeActor()));
+		flash.addAction(Actions.alpha(0.f, flashDuration));
+		flash.addAction(Actions.delay(flashDuration, Actions.removeActor()));
 	}
 
 	/**
@@ -207,11 +251,16 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 	 */
 	@Override
 	public void onHatched(Egg replacedEgg, InternalBoardObject bornFamily) {
+		final float hatchDuration = hatchAnimationDuration * speedFactor;
+		final float fadeDuration = fadeOutDuration * speedFactor;
+
 		EggActor eggActor = (EggActor) b.getLayout().getActor(replacedEgg);
-		eggActor.enterHatchingState();
+		Action hatch = eggActor.enterHatchingStateAction(hatchDuration);
 		List<ActorDelta> deltas = b.getLayout().getDeltasToFix();
 		List<ActorDelta> creation = filterCreated(deltas, true);
-		applyCreationDeltas(creation);
+		List<Action> creations = applyCreationDeltas(creation);
+		float creationTime = creations.isEmpty() ? 0
+				: ((TemporalAction) creations.get(0)).getDuration();
 		Pool<ActorDelta> deltaPool = b.getLayout().getDeltaPool();
 		for (ActorDelta delta : deltas) {
 			deltaPool.free(delta);
@@ -219,60 +268,89 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		for (ActorDelta delta : creation) {
 			deltaPool.free(delta);
 		}
-		removeObjectAnimated(replacedEgg);
+
+		Action remove = removeObjectAction(replacedEgg, fadeDuration);
+		Action hatchThenRemove = Actions.sequence(hatch, remove);
+		hatchThenRemove.setActor(eggActor);
+
+		creations.add(hatchThenRemove);
+
+		registerAnimationActions(
+				Math.max(hatchDuration + fadeDuration, creationTime),
+				creations.toArray(new Action[0]));
 		b.layoutSizeChanged();
 	}
 
 	private void applyDeltasAnimated(List<ActorDelta> deltas) {
-		List<ActorDelta> created = filterCreated(deltas, true);
+		final float repositionDuration = repositionAnimationDuration
+				* speedFactor;
+		final float resizeDuration = resizeAnimationDuration * speedFactor;
+
+		final List<ActorDelta> created = filterCreated(deltas, true);
+		final ArrayList<Action> actions = new ArrayList<Action>();
 		for (ActorDelta delta : deltas) {
-			applyDeltaAnimated(delta);
+			actions.add(applyDeltaAnimated(delta));
 		}
-		applyCreationDeltas(created);
+		final List<Action> creations = applyCreationDeltas(created);
+		actions.addAll(creations);
+		final float creationDuration = creations.isEmpty() ? 0
+				: ((TemporalAction) creations.get(0)).getDuration();
+		final float duration = Math.max(creationDuration,
+				Math.max(repositionDuration, resizeDuration));
+
+		registerAnimationActions(duration, actions.toArray(new Action[0]));
 	}
 
-	private void applyDeltaAnimated(ActorDelta delta) {
-		final float moveToDuration = 0.3f;
-		final float sizeToDuration = 0.3f;
+	private Action applyDeltaAnimated(ActorDelta delta) {
+		final float repositionDuration = repositionAnimationDuration
+				* speedFactor;
+		final float resizeDuration = resizeAnimationDuration * speedFactor;
 
 		Actor actor = delta.getActor();
+		final ParallelAction result = new ParallelAction();
 		if (delta.isxChanged()) {
 			MoveToAction moveTo;
 			if (delta.isyChanged()) {
 				moveTo = Actions.moveTo(delta.getNewX(), delta.getNewY(),
-						moveToDuration);
+						repositionDuration);
 			} else {
 				moveTo = Actions.moveTo(delta.getNewX(), actor.getY(),
-						moveToDuration);
+						repositionDuration);
 			}
-			actor.addAction(moveTo);
+			result.addAction(moveTo);
 		} else if (delta.isyChanged()) {
 			MoveToAction moveTo = Actions.moveTo(actor.getX(), delta.getNewY(),
-					moveToDuration);
-			actor.addAction(moveTo);
+					repositionDuration);
+			result.addAction(moveTo);
 		}
 
 		if (delta.isWidthChanged()) {
 			SizeToAction sizeTo;
 			if (delta.isHeightChanged()) {
 				sizeTo = Actions.sizeTo(delta.getNewWidth(),
-						delta.getNewHeight(), sizeToDuration);
+						delta.getNewHeight(), resizeDuration);
 			} else {
 				sizeTo = Actions.sizeTo(delta.getNewWidth(), actor.getHeight(),
-						sizeToDuration);
+						resizeDuration);
 			}
-			actor.addAction(sizeTo);
+			result.addAction(sizeTo);
 		} else if (delta.isyChanged()) {
 			SizeToAction sizeTo = Actions.sizeTo(actor.getWidth(),
-					delta.getNewHeight(), sizeToDuration);
-			actor.addAction(sizeTo);
+					delta.getNewHeight(), resizeDuration);
+			result.addAction(sizeTo);
 		}
+		result.setActor(actor);
+		return result;
 	}
 
-	private void applyCreationDeltas(final List<ActorDelta> deltas) {
-		float animDuration = 0.3f;
-
+	/**
+	 * 
+	 * @param deltas
+	 * @return the number of seconds needed to perform the animations
+	 */
+	private List<Action> applyCreationDeltas(final List<ActorDelta> deltas) {
 		BoardObjectActor actor;
+		final ArrayList<Action> actions = new ArrayList<Action>();
 		for (ActorDelta delta : deltas) {
 			actor = delta.getActor();
 
@@ -281,11 +359,16 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 				((ColoredBoardObjectActor) actor).invalidate();
 			}
 
+			final float duration = createAnimatonDuration * speedFactor;
+
 			actor.setScale(0.f);
 			b.addLayoutActor(actor);
-			ScaleToAction scaleAction = Actions.scaleTo(1, 1, animDuration);
-			actor.addAction(scaleAction);
+			ScaleToAction scale = Actions.scaleTo(1, 1, duration);
+			scale.setActor(actor);
+
+			actions.add(scale);
 		}
+		return actions;
 	}
 
 	/**
@@ -317,17 +400,21 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	@Override
 	public void onAge(ColoredAlligator colored, AgedAlligator aged) {
-		final float animationDuration = 0.3f;
-
 		BoardObjectActor coloredActor = b.getLayout().getActor(colored);
 		AgedAlligatorActor agedActor = BoardObjectActorFactory
 				.instantiateAgedAlligatorActor(aged);
 		agedActor.setSize(coloredActor.getWidth(), coloredActor.getHeight());
 		agedActor.setPosition(coloredActor.getX(), coloredActor.getY());
 		agedActor.setColor(1.f, 1.f, 1.f, 0.f);
-		agedActor.addAction(Actions.alpha(1.f, animationDuration));
 		b.addLayoutActor(agedActor);
-		removeObjectAnimated(colored);
+
+		final float duration = ageAnimationDuration * speedFactor;
+
+		Action add = Actions.alpha(1.f, duration);
+		add.setActor(agedActor);
+		Action remove = removeObjectAction(colored, duration);
+		remove.setActor(coloredActor);
+		registerAnimationActions(duration, add, remove);
 	}
 
 	@Override
@@ -357,5 +444,171 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			deltaPool.free(delta);
 		}
 		b.layoutSizeChanged();
+	}
+
+	/**
+	 * Registers a set of given {@link Action}s to the animator's Action queue.
+	 * To be able to register the actions at the {@link BoardObjectActor} they
+	 * belong to it is necessary that the Actions have their respective Actor
+	 * set via setActor.
+	 * 
+	 * @param actions
+	 *            The actions to be enqueued to this animator's animation queue.
+	 *            Must have their {@link Actor}s set for proper registering.
+	 * @param duration
+	 *            The time needed to pass so that a new animation can be
+	 *            started, in seconds
+	 */
+	private void registerAnimationActions(float duration, Action... actions) {
+		Animation anim = animationPool.obtain();
+		anim.set(duration, actions);
+		animationQueue.add(anim);
+
+		// if there are no ongoing actions, we have to trigger the first one
+		// manually
+		if (animationQueue.size() == 1) {
+			popAnimationActions();
+		}
+	}
+
+	/**
+	 * Pops the topmost set of Actions from the animation queue and registers
+	 * all actions in it to their respective Actors. Also sets a timer to
+	 * automatically pop the next set of animation actions after the current set
+	 * is finished.
+	 */
+	private void popAnimationActions() {
+		if (popAction.ended) {
+			if (!animationQueue.isEmpty()) {
+				Animation anim = animationQueue.remove(0);
+				for (Action a : anim.actions) {
+					a.getActor().addAction(a);
+				}
+
+				popAction.reset(); // causes .ended to be set to false
+				popAction.setDuration(anim.duration);
+				this.b.removeAction(popAction);
+				this.b.addAction(popAction);
+				animationPool.free(anim);
+			} else {
+				if (finishedListener != null) {
+					finishedListener.finished();
+				}
+			}
+		}
+	}
+
+	public void setAnimationsFinishedLitener(AnimationsFinishedListener listener) {
+		this.finishedListener = listener;
+	}
+
+	public void setAnimationSpeed(float speed) {
+		this.speedFactor = 1 / speed; // invert, since speed=2 means half the
+											// time
+	}
+
+	private static class RecolorAction extends Action {
+		private float duration;
+		private float total;
+
+		public void set(float duration) {
+			super.reset();
+			this.duration = duration;
+			total = 0;
+		}
+
+		@Override
+		public void setActor(Actor actor) {
+			if (actor != null) {
+				if (!(actor instanceof ColoredBoardObjectActor)) {
+					throw new RuntimeException(actor.getClass().getSimpleName());
+				}
+				((ColoredBoardObjectActor) actor).setMixinBlending(0.f);
+			}
+			super.setActor(actor);
+		}
+
+		@Override
+		public boolean act(float delta) {
+			if (total < duration) {
+				ColoredBoardObjectActor actor = (ColoredBoardObjectActor) getActor();
+				total += delta;
+				if (total + delta >= duration) {
+					actor.setMixinBlending(1.f);
+					return true;
+				} else {
+					float blending = actor.getMixinBlending();
+					blending += delta / duration;
+					actor.setMixinBlending(blending);
+					return false;
+				}
+			}
+			return true;
+		}
+
+	}
+
+	private class PopAnimationAction extends TemporalAction {
+		private boolean ended = true;
+
+		@Override
+		public void reset() {
+			super.reset();
+			ended = false;
+		}
+
+		@Override
+		protected void update(float percent) {
+		}
+
+		@Override
+		protected void end() {
+			ended = true;
+			BoardActorBoardChangeAnimator.this.popAnimationActions();
+		}
+	}
+
+	private static class Animation {
+		public Action[] actions;
+		public float duration;
+
+		public void set(float duration, Action[] actions) {
+			this.actions = actions;
+			this.duration = duration;
+		}
+	}
+
+	private static class RemoveObjectAction extends Action {
+
+		private boolean done = false;
+
+		private BoardActorBoardChangeAnimator animator;
+
+		public void set(BoardActorBoardChangeAnimator animator) {
+			super.reset();
+			this.animator = animator;
+			done = false;
+		}
+
+		@Override
+		public boolean act(float timDelta) {
+			if (!done) {
+				done = true;
+				BoardActor board = animator.b;
+				ActorLayout layout = board.getLayout();
+				BoardObjectActor actor = layout
+						.getActor(((BoardObjectActor) getActor())
+								.getBoardObject());
+				board.removeLayoutActor(actor);
+				List<ActorDelta> deltas = layout.getDeltasToFix();
+				animator.applyDeltasAnimated(deltas);
+				Pool<ActorDelta> deltaPool = layout.getDeltaPool();
+				for (ActorDelta delta : deltas) {
+					deltaPool.free(delta);
+				}
+			}
+			return true;
+		}
+
 	}
 }
