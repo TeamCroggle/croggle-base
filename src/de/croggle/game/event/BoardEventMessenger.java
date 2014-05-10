@@ -72,7 +72,6 @@ public class BoardEventMessenger {
 			InternalBoardObject eatenFamily, int eatenPositionInParent) {
 		for (BoardEventListener listener : listeners) {
 			listener.onEat(eater, eatenFamily, eatenPositionInParent);
-			;
 		}
 	}
 
@@ -99,7 +98,6 @@ public class BoardEventMessenger {
 	public void notifyBoardRebuilt(Board board) {
 		for (BoardEventListener listener : listeners) {
 			listener.onBoardRebuilt(board);
-			;
 		}
 	}
 
@@ -133,7 +131,6 @@ public class BoardEventMessenger {
 	public void notifyObjectPlaced(InternalBoardObject placed) {
 		for (BoardEventListener listener : listeners) {
 			listener.onObjectPlaced(placed);
-			;
 		}
 	}
 

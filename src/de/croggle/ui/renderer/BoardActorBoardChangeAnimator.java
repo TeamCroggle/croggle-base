@@ -119,8 +119,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		final float eaterHeight = eaterActor.getHeight();
 		final float eaterScaleX = eaterActor.getScaleX();
 		final float eaterScaleY = eaterActor.getScaleY();
-		final float moveDuration = moveToEaterAnimationDuration
-				* speedFactor;
+		final float moveDuration = moveToEaterAnimationDuration * speedFactor;
 		final float openJawDuration = openJawAnimationDuration * speedFactor;
 		eaterActor.setOrigin(eaterWidth / 2, eaterHeight / 2);
 		// don't forget this animation when summing up durations later
@@ -301,6 +300,19 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 		registerAnimationActions(duration, actions.toArray(new Action[0]));
 	}
 
+	private void applyDeltasAnimatedImmediately(List<ActorDelta> deltas) {
+		final List<ActorDelta> created = filterCreated(deltas, true);
+		Action action;
+		for (ActorDelta delta : deltas) {
+			action = applyDeltaAnimated(delta);
+			action.getActor().addAction(action);
+		}
+		final List<Action> creations = applyCreationDeltas(created);
+		for (Action creation : creations) {
+			creation.getActor().addAction(creation);
+		}
+	}
+
 	private Action applyDeltaAnimated(ActorDelta delta) {
 		final float repositionDuration = repositionAnimationDuration
 				* speedFactor;
@@ -438,7 +450,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	void fixLayout() {
 		List<ActorDelta> deltas = b.getLayout().getDeltasToFix();
-		applyDeltasAnimated(deltas);
+		applyDeltasAnimatedImmediately(deltas);
 		Pool<ActorDelta> deltaPool = b.getLayout().getDeltaPool();
 		for (ActorDelta delta : deltas) {
 			deltaPool.free(delta);
@@ -504,7 +516,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	public void setAnimationSpeed(float speed) {
 		this.speedFactor = 1 / speed; // invert, since speed=2 means half the
-											// time
+										// time
 	}
 
 	private static class RecolorAction extends Action {
