@@ -1,5 +1,7 @@
 package de.croggle.ui.renderer.objectactors;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
+
 import de.croggle.game.board.ColoredAlligator;
 
 /**
@@ -13,32 +15,24 @@ public class ColoredAlligatorActor extends ColoredBoardObjectActor {
 	}
 
 	/**
-	 * Signals the actor to (re-)enter the normal rendering state. That is, an
-	 * alligator with a specific color, mouth closed. Will initiate a transition
-	 * animation from mouth open to closed if it was open previously.
-	 */
-	public void enterNormalState(float duration) {
-
-	}
-
-	/**
 	 * Signals the actor to enter the eating rendering state. That is, an
 	 * alligator with a specific color, mouth opened. Will initiate a transition
 	 * animation from mouth closed to open if it was closed previously.
+	 * 
+	 * @param duration
+	 *            The number of seconds to pass until the animation is done
+	 * @return an action that will transition the actor, when executed, from
+	 *         normal to eating state
 	 */
-	public void enterEatingState(float duration) {
-
-	}
-
-	/**
-	 * Signals the actor to enter the dying rendering state. That is, an
-	 * alligator with a specific color, mouth closed and turned on its back.
-	 * Will initiate a transition animation from mouth open to closed if it was
-	 * open previously. Also turns the alligator around 180 degree, if it wasn't
-	 * in this state before.
-	 */
-	public void enterDyingState(float duration) {
-
+	public Action enterEatingStateAction(float duration) {
+		Action result = new Action() {
+			@Override
+			public boolean act(float delta) {
+				return true;
+			}
+		};
+		result.setActor(this);
+		return result;
 	}
 
 	@Override
