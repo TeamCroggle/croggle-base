@@ -13,6 +13,7 @@ import de.croggle.game.board.Egg;
 import de.croggle.game.board.InternalBoardObject;
 import de.croggle.game.board.Parent;
 import de.croggle.ui.StyleHelper;
+import de.croggle.ui.renderer.layout.ActorLayoutConfiguration;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActorFactory;
@@ -59,11 +60,22 @@ public class ObjectBar extends Table {
 
 		setBackground(StyleHelper.getInstance().getDrawable("widgets/button"));
 
-		// TODO size guessed and hardcoded, add way to get preferred aspect
-		// ratio
-		add(coloredAlligator).size(200, 110).row();
-		add(agedAlligator).size(200, 95).row();
-		add(eggActor).size(140, 100).row();
+		// TODO size not really adapted to the bar's size
+		final float alligatorWidth = 200;
+		final float eggWidth = 100;
+		add(coloredAlligator).size(
+				alligatorWidth,
+				alligatorWidth
+						/ ActorLayoutConfiguration
+								.getDefaultColoredALligatorAspectRatio()).row();
+		add(agedAlligator).size(
+				alligatorWidth,
+				alligatorWidth
+						/ ActorLayoutConfiguration
+								.getDefaultAgedAlligatorAspectRatio()).row();
+		add(eggActor).size(eggWidth,
+				eggWidth / ActorLayoutConfiguration.getDefaultEggAspectRatio())
+				.row();
 	}
 
 	private BoardObjectActor getPlacedActor(BoardObjectActor prototype) {
