@@ -64,35 +64,7 @@ public class ActorLayoutConfiguration {
 		horizontalPadding = 0;
 		verticalPadding = 0;
 
-		if (!aspectRatiosInitialized) {
-			TextureAtlasData data = new TextureAtlasData(
-					Gdx.files.internal(BackendHelper.getAssetDirPath()
-							+ "textures/pack.atlas"),
-					Gdx.files.internal(BackendHelper.getAssetDirPath()
-							+ "textures"), false);
-			boolean foundEgg = false;
-			boolean foundAged = false;
-			boolean foundColored = false;
-			for (TextureAtlasData.Region region : data.getRegions()) {
-				if (region.name.equals("agedalligator/alligator")) {
-					foundAged = true;
-					agedAlligatorAspectRatio = region.width
-							/ (float) region.height;
-				} else if (region.name.equals("coloredalligator/foreground")) {
-					foundColored = true;
-					coloredAlligatorAspectRatio = region.width
-							/ (float) region.height;
-				} else if (region.name.equals("egg/foreground")) {
-					foundEgg = true;
-					eggAspectRatio = region.width / (float) region.height;
-				}
-				if (foundEgg && foundColored && foundAged) {
-					break;
-				}
-			}
-
-			aspectRatiosInitialized = true;
-		}
+		initializeAspectRatios();
 
 		eggWidth = 100;
 		eggHeight = eggWidth / eggAspectRatio;
@@ -195,6 +167,66 @@ public class ActorLayoutConfiguration {
 		uniformObjectHeight = Math.max(
 				Math.max(eggHeight, coloredAlligatorHeight),
 				agedAlligatorHeight);
+	}
+
+	private static void initializeAspectRatios() {
+		if (!aspectRatiosInitialized) {
+			TextureAtlasData data = new TextureAtlasData(
+					Gdx.files.internal(BackendHelper.getAssetDirPath()
+							+ "textures/pack.atlas"),
+					Gdx.files.internal(BackendHelper.getAssetDirPath()
+							+ "textures"), false);
+			boolean foundEgg = false;
+			boolean foundAged = false;
+			boolean foundColored = false;
+			for (TextureAtlasData.Region region : data.getRegions()) {
+				if (region.name.equals("agedalligator/alligator")) {
+					foundAged = true;
+					agedAlligatorAspectRatio = region.width
+							/ (float) region.height;
+				} else if (region.name.equals("coloredalligator/foreground")) {
+					foundColored = true;
+					coloredAlligatorAspectRatio = region.width
+							/ (float) region.height;
+				} else if (region.name.equals("egg/foreground")) {
+					foundEgg = true;
+					eggAspectRatio = region.width / (float) region.height;
+				}
+				if (foundEgg && foundColored && foundAged) {
+					break;
+				}
+			}
+
+			aspectRatiosInitialized = true;
+		}
+	}
+
+	/**
+	 * 
+	 * @return The aspect ratio width/height of the egg foreground texture
+	 */
+	public static float getDefaultEggAspectRatio() {
+		initializeAspectRatios();
+		return eggAspectRatio;
+	}
+
+	/**
+	 * 
+	 * @return The aspect ratio width/height of the aged alligator texture
+	 */
+	public static float getDefaultAgedAlligatorAspectRatio() {
+		initializeAspectRatios();
+		return agedAlligatorAspectRatio;
+	}
+
+	/**
+	 * 
+	 * @return The aspect ratio width/height of the colored alligator foreground
+	 *         texture
+	 */
+	public static float getDefaultColoredALligatorAspectRatio() {
+		initializeAspectRatios();
+		return coloredAlligatorAspectRatio;
 	}
 
 	/**
