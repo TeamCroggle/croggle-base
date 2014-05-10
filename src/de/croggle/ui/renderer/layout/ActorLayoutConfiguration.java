@@ -1,7 +1,10 @@
 package de.croggle.ui.renderer.layout;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
 import com.badlogic.gdx.math.Vector2;
 
+import de.croggle.backends.BackendHelper;
 import de.croggle.game.ColorController;
 import de.croggle.ui.renderer.objectactors.AgedAlligatorActor;
 import de.croggle.ui.renderer.objectactors.BoardObjectActor;
@@ -18,6 +21,10 @@ import de.croggle.ui.renderer.objectactors.EggActor;
  * TreeGrowths are set, especially in horizontal direction.
  */
 public class ActorLayoutConfiguration {
+	private static boolean aspectRatiosInitialized = false;
+	private static float eggAspectRatio = 0;
+	private static float agedAlligatorAspectRatio = 0;
+	private static float coloredAlligatorAspectRatio = 0;
 
 	private boolean colorBlindEnabled;
 	private TreeGrowth horizontalGrowth;
@@ -57,17 +64,22 @@ public class ActorLayoutConfiguration {
 		horizontalPadding = 0;
 		verticalPadding = 0;
 
+		initializeAspectRatios();
+
 		eggWidth = 100;
-		eggHeight = 70;
+		eggHeight = eggWidth / eggAspectRatio;
 
 		agedAlligatorWidth = 150;
-		agedAlligatorHeight = 70;
+		agedAlligatorHeight = agedAlligatorWidth / agedAlligatorAspectRatio;
 
 		coloredAlligatorWidth = agedAlligatorWidth;
-		coloredAlligatorHeight = 80;
+		coloredAlligatorHeight = coloredAlligatorWidth
+				/ coloredAlligatorAspectRatio;
 
-		uniformObjectWidth = 150;
-		uniformObjectHeight = 80;
+		uniformObjectWidth = Math.max(eggWidth,
+				Math.max(agedAlligatorWidth, coloredAlligatorWidth));
+		uniformObjectHeight = Math.max(eggHeight,
+				Math.max(agedAlligatorHeight, coloredAlligatorHeight));
 	}
 
 	/**
@@ -155,6 +167,66 @@ public class ActorLayoutConfiguration {
 		uniformObjectHeight = Math.max(
 				Math.max(eggHeight, coloredAlligatorHeight),
 				agedAlligatorHeight);
+	}
+
+	private static void initializeAspectRatios() {
+		if (!aspectRatiosInitialized) {
+			TextureAtlasData data = new TextureAtlasData(
+					Gdx.files.internal(BackendHelper.getAssetDirPath()
+							+ "textures/pack.atlas"),
+					Gdx.files.internal(BackendHelper.getAssetDirPath()
+							+ "textures"), false);
+			boolean foundEgg = false;
+			boolean foundAged = false;
+			boolean foundColored = false;
+			for (TextureAtlasData.Region region : data.getRegions()) {
+				if (region.name.equals("agedalligator/alligator")) {
+					foundAged = true;
+					agedAlligatorAspectRatio = region.width
+							/ (float) region.height;
+				} else if (region.name.equals("coloredalligator/foreground")) {
+					foundColored = true;
+					coloredAlligatorAspectRatio = region.width
+							/ (float) region.height;
+				} else if (region.name.equals("egg/foreground")) {
+					foundEgg = true;
+					eggAspectRatio = region.width / (float) region.height;
+				}
+				if (foundEgg && foundColored && foundAged) {
+					break;
+				}
+			}
+
+			aspectRatiosInitialized = true;
+		}
+	}
+
+	/**
+	 * 
+	 * @return The aspect ratio width/height of the egg foreground texture
+	 */
+	public static float getDefaultEggAspectRatio() {
+		initializeAspectRatios();
+		return eggAspectRatio;
+	}
+
+	/**
+	 * 
+	 * @return The aspect ratio width/height of the aged alligator texture
+	 */
+	public static float getDefaultAgedAlligatorAspectRatio() {
+		initializeAspectRatios();
+		return agedAlligatorAspectRatio;
+	}
+
+	/**
+	 * 
+	 * @return The aspect ratio width/height of the colored alligator foreground
+	 *         texture
+	 */
+	public static float getDefaultColoredALligatorAspectRatio() {
+		initializeAspectRatios();
+		return coloredAlligatorAspectRatio;
 	}
 
 	/**
