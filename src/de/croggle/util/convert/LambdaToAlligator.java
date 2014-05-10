@@ -1,6 +1,5 @@
 package de.croggle.util.convert;
 
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -35,7 +34,7 @@ public class LambdaToAlligator {
 
 	private final String bindPrfx;
 	private final String bindPstfx;
-	private final Deque<UnparsedObject> unparsedDeque;
+	private final List<UnparsedObject> unparsedDeque;
 	private final List<UnparsedObject> unparsedList;
 	private final Map<String, Color> colors;
 	private final ColorController ccntrl;
@@ -55,7 +54,7 @@ public class LambdaToAlligator {
 		bindPrfx = abstractionPrefix;
 		bindPstfx = abstractionSeparator;
 		unparsedDeque = new LinkedList<UnparsedObject>();
-		unparsedList = (LinkedList<UnparsedObject>) unparsedDeque;
+		unparsedList = unparsedDeque;
 		ccntrl = new ColorController();
 		colors = new HashMap<String, Color>(30);
 	}
@@ -91,7 +90,7 @@ public class LambdaToAlligator {
 		b.addChild(unp);
 
 		// stage one parsing
-		while (unparsedDeque.element().getClass() == UnparsedObject.class) {
+		while (unparsedDeque.get(0).getClass() == UnparsedObject.class) {
 			parseStageOne();
 		}
 
@@ -111,10 +110,10 @@ public class LambdaToAlligator {
 	 */
 	private void parseStageOne() {
 		if (unparsedDeque.isEmpty()
-				|| unparsedDeque.element().getClass() != UnparsedObject.class)
+				|| unparsedDeque.get(0).getClass() != UnparsedObject.class)
 			return;
 
-		UnparsedObject o = unparsedDeque.element();
+		UnparsedObject o = unparsedDeque.get(0);
 		String e = o.getExpr();
 		if (e.startsWith(bindPstfx)) {
 			throw new IllegalArgumentException(
@@ -137,9 +136,9 @@ public class LambdaToAlligator {
 	private void parseStageTwo() {
 		if (unparsedDeque.isEmpty())
 			return;
-		assert (unparsedDeque.element().getClass() != UnparsedObject.class);
+		assert (unparsedDeque.get(0).getClass() != UnparsedObject.class);
 
-		UnparsedObject o = unparsedDeque.element();
+		UnparsedObject o = unparsedDeque.get(0);
 		if (o.getClass() == AbstractionBegin.class) {
 			buildAbstraction((AbstractionBegin) o);
 		} else if (o.getClass() == OpeningBrace.class) {
@@ -346,18 +345,18 @@ public class LambdaToAlligator {
 		if (!rest.trim().equals("")) {
 			UnparsedObject restObj = new UnparsedObject(rest);
 			p.insertChild(restObj, pos + 1);
-			unparsedDeque.addFirst(restObj);
+			unparsedDeque.add(0, restObj);
 		}
 
 		p.replaceChild(o, as);
-		unparsedDeque.addLast(as);
+		unparsedDeque.add(as);
 		unparsedDeque.remove(o);
 
 		p.insertChild(varObj, pos);
-		unparsedDeque.addFirst(varObj);
+		unparsedDeque.add(0, varObj);
 
 		p.insertChild(ab, pos);
-		unparsedDeque.addLast(ab);
+		unparsedDeque.add(ab);
 
 	}
 
@@ -399,21 +398,21 @@ public class LambdaToAlligator {
 		if (!rest.trim().equals("")) {
 			UnparsedObject restObj = new UnparsedObject(rest);
 			p.insertChild(restObj, pos + 1);
-			unparsedDeque.addFirst(restObj);
+			unparsedDeque.add(0, restObj);
 		}
 
 		p.replaceChild(o, cb);
-		unparsedDeque.addLast(cb);
+		unparsedDeque.add(cb);
 		unparsedDeque.remove(o);
 
 		if (!body.trim().equals("")) {
 			UnparsedObject bodyObj = new UnparsedObject(body);
 			p.insertChild(bodyObj, pos);
-			unparsedDeque.addFirst(bodyObj);
+			unparsedDeque.add(0, bodyObj);
 		}
 
 		p.insertChild(ob, pos);
-		unparsedDeque.addLast(ob);
+		unparsedDeque.add(ob);
 
 	}
 
@@ -463,13 +462,13 @@ public class LambdaToAlligator {
 		String rest = e.substring(end);
 		if (!rest.trim().equals("")) {
 			UnparsedObject restObj = new UnparsedObject(rest);
-			unparsedDeque.addFirst(restObj);
+			unparsedDeque.add(0, restObj);
 			p.insertChild(restObj, p.getChildPosition(o) + 1);
 		}
 
 		p.replaceChild(o, varObj);
 		unparsedDeque.remove(o);
-		unparsedDeque.addLast(varObj);
+		unparsedDeque.add(varObj);
 	}
 
 	/**
