@@ -49,7 +49,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 
 	private final float ageAnimationDuration = 0.3f;
 	private final float createAnimatonDuration = 0.3f;
-	private final float recolorAnimationDuration = 0.6f;
+	private final float recolorAnimationDuration = 0.3f;
 
 	private final float flashDuration = 0.4f;
 	private final float rotationDuration = 0.4f;
@@ -87,7 +87,7 @@ class BoardActorBoardChangeAnimator implements BoardEventListener {
 			 * TODO unnecessary "if" if recolor events were fired at the right
 			 * moment
 			 */
-			final float duration = recolorAnimationDuration + speedFactor;
+			final float duration = recolorAnimationDuration * speedFactor;
 
 			ColoredBoardObjectActor cboa = (ColoredBoardObjectActor) actor;
 			cboa.setMixin(cboa.getBackground());
