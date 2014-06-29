@@ -1,0 +1,131 @@
+{
+	"de.croggle": {
+		"levels": [
+			{
+				"type": "multiple choice",
+				"description": "Bret Victors Beispiel",
+				"design": "",
+				"animation": [],
+				"abort simulation after": 111,
+				"hints": [""],
+				"data": {
+					"initial": {
+						"families": [
+							{
+								"type": "colored alligator",
+								"movable": false,
+								"removable": false,
+								"color": 2,
+								"recolorable": false,
+								"children": [
+									{
+										"type": "colored alligator",
+										"movable": false,
+										"removable": false,
+										"color": 14,
+										"recolorable": false,
+										"children": [
+											{
+												"type": "egg",
+												"movable": false,
+												"removable": false,
+												"color": 2,
+												"recolorable": false
+											},
+											{
+												"type": "egg",
+												"movable": false,
+												"removable": false,
+												"color": 14,
+												"recolorable": false
+											},
+										]
+									}
+								]
+							},
+							{
+								"type": "colored alligator",
+								"movable": false,
+								"removable": false,
+								"color": 13,
+								"recolorable": false,
+								"children": [
+									{
+										"type": "egg",
+										"movable": false,
+										"removable": false,
+										"color": 13,
+										"recolorable": false
+									},
+								]
+							}
+						]
+					},
+					"answers": [
+						{
+							"families": [
+								{
+									"type": "egg",
+									"movable": false,
+									"removable": false,
+									"color": 13,
+									"recolorable": false
+								},
+							]
+						},
+						{
+							"families": [
+								{
+									"type": "colored alligator",
+									"movable": false,
+									"removable": false,
+									"color": 14,
+									"recolorable": false,
+									"children": [
+										{
+											"type": "egg",
+											"movable": false,
+											"removable": false,
+											"color": 14,
+											"recolorable": false
+										},
+									]
+								}
+							]
+						},
+						{
+							"families": [
+								{
+									"type": "colored alligator",
+									"movable": false,
+									"removable": false,
+									"color": 14,
+									"recolorable": false,
+									"children": [
+										{
+											"type": "colored alligator",
+											"movable": false,
+											"removable": false,
+											"color": 13,
+											"recolorable": false,
+											"children": [
+												{
+													"type": "egg",
+													"movable": false,
+													"removable": false,
+													"color": 13,
+													"recolorable": false
+												},
+											]
+										}
+									]
+								}
+							]
+						}
+					],
+					"correct answer": 1
+				}
+			}
+		]
+	}
+}
